@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ArgentSea\ArgentSea.csproj" />
+    <ProjectReference Include="..\ArgentSea.Shared\src\ArgentSea.csproj" />
   </ItemGroup>
 
 </Project>

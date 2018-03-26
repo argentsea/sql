@@ -34,7 +34,7 @@ namespace ArgentSea.Sql.Test
 			//var moreOptions = Options.Create(new SampleOptions());
 
 			//Get option
-			var sqlOptions = ServiceProvider.GetServices(typeof(SqlConfig)).First();
+			//var sqlOptions = ServiceProvider.GetServices(typeof(SqlConfig)).First();
 
 		}
 	}

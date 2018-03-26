@@ -19,4 +19,13 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="ArgentSea">
+      <HintPath>..\..\ArgentSea\ArgentSea.Sql\bin\Debug\netstandard2.0\ArgentSea.dll</HintPath>
+    </Reference>
+    <Reference Include="ArgentSea.Sql">
+      <HintPath>..\..\ArgentSea\ArgentSea.Sql\bin\Debug\netstandard2.0\ArgentSea.Sql.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

@@ -1,3 +1,50 @@
 ﻿{
+  "Resilience": [
+    {
 
+    }
+  ],
+  "DataSecurity": [
+    {
+
+    },
+    {
+
+    }
+  ],
+  "DbConnections": [
+    {
+      "DatabaseKey": "",
+      "SecurityKey": "",
+      "DataResilienceKey": "",
+      "DataConnection": {
+        "ApplicationIntent": "",
+        "ApplicationName": "",
+        "ConnectRetryCount": 10,
+        "ConnectRetryInterval": 10,
+        "ConnectTimeout": 10,
+        "CurrentLanguage": "",
+        "DataSource": "",
+        "Encrypt": false,
+        "FailoverPartner": "",
+        "InitialCatalog": "dbName",
+        "LoadBalanceTimeout": 10,
+        "MaxPoolSize": 10,
+        "MinPoolSize": 1,
+        "MultipleActiveResultSets": true,
+        "MultiSubnetFailover": true,
+        "PacketSize": 2048,
+        "PersistSecurityInfo": false,
+        "Pooling": false,
+        "Replication": false,
+        "TrustServerCertificate": false,
+        "TypeSystemVersion": "",
+        "WorkstationID": "WorkstationID"
+      }
+
+    }
+  ],
+  "ShardConnections": [
+
+  ]
 }
