@@ -19,23 +19,24 @@ namespace Microsoft.Extensions.DependencyInjection
             IConfiguration config
             ) 
         {
-			services.Configure<DataResilienceConfigurationOptions>(cResilienceOptionName, config.GetSection("Resilience"));
-			services.Configure<DataSecurityOptions>(cSecurityOptionName, config.GetSection("DataSecurity"));
+			services.Configure<DataResilienceOptions>(cResilienceOptionName, config);
+			services.Configure<DataSecurityOptions>(cSecurityOptionName, config);
 			services.AddSingleton<IDataProviderServices>(new DataProviderServices());
-			services.Configure<SqlDbConnectionConfigurationOptions>(cDataOptionName, config.GetSection("DbConnections"));
+			services.Configure<SqlDbConnectionOptions>(cDataOptionName, config);
 			//(Logger)
 			services.AddSingleton<DbDataStores, DbDataStores>();
 			return services;
         }
-		public static IServiceCollection AddSqlShardConfiguration<TShard>(
+		public static IServiceCollection AddSqlDbShardConfiguration<TShard>(
 			this IServiceCollection services,
 			IConfiguration config
 			) where TShard: IComparable
 		{
-			services.Configure<DataResilienceConfigurationOptions>(cResilienceOptionName, config.GetSection("Resilience"));
-			services.Configure<DataSecurityOptions>(cSecurityOptionName, config.GetSection("DataSecurity"));
+			services.Configure<DataResilienceOptions>(cResilienceOptionName, config);
+			services.Configure<DataSecurityOptions>(cSecurityOptionName, config);
 			services.AddSingleton<IDataProviderServices>(new DataProviderServices());
-			services.Configure<SqlShardConnectionConfigurationOptions<TShard>>(cDataOptionName, config.GetSection("ShardConnections"));
+			services.Configure<SqlDbConnectionOptions>(cDataOptionName, config);
+			services.Configure<SqlShardConnectionOptions<TShard>>(cDataOptionName, config);
 			//(Logger)
 			services.AddSingleton<ShardDataStores<TShard>, ShardDataStores<TShard>>();
 			return services;

@@ -1,50 +1,312 @@
 ﻿{
-  "Resilience": [
-    {
+	"DataResilienceStrategies": [
+		{
+			"DataResilienceKey": "local",
+			"RetryCount": 5,
+			"RetryInterval": 10,
+			"RetryLengthening": "Fibonacci",
+			"CircuitBreakerFailureCount": 20,
+			"CircuitBreakerTestInterval": 25
+		},
+		{
+			"DataResilienceKey": "remote",
+			"RetryCount": 6,
+			"RetryInterval": 11,
+			"RetryLengthening": "Cumulative",
+			"CircuitBreakerFailureCount": 21,
+			"CircuitBreakerTestInterval": 26
+		}
+	],
+	"Credentials": [
+		{
+			"SecurityKey": "One",
+			"UserName": "webUser",
+			"Password": "user1234"
+		},
+		{
+			"SecurityKey": "Two",
+			"WindowsAuth": true
+		}
+	],
 
-    }
-  ],
-  "DataSecurity": [
-    {
-
-    },
-    {
-
-    }
-  ],
-  "DbConnections": [
-    {
-      "DatabaseKey": "",
-      "SecurityKey": "",
-      "DataResilienceKey": "",
-      "DataConnection": {
-        "ApplicationIntent": "",
-        "ApplicationName": "",
-        "ConnectRetryCount": 10,
-        "ConnectRetryInterval": 10,
-        "ConnectTimeout": 10,
-        "CurrentLanguage": "",
-        "DataSource": "",
-        "Encrypt": false,
-        "FailoverPartner": "",
-        "InitialCatalog": "dbName",
-        "LoadBalanceTimeout": 10,
-        "MaxPoolSize": 10,
-        "MinPoolSize": 1,
-        "MultipleActiveResultSets": true,
-        "MultiSubnetFailover": true,
-        "PacketSize": 2048,
-        "PersistSecurityInfo": false,
-        "Pooling": false,
-        "Replication": false,
-        "TrustServerCertificate": false,
-        "TypeSystemVersion": "",
-        "WorkstationID": "WorkstationID"
-      }
-
-    }
-  ],
-  "ShardConnections": [
-
-  ]
+	"SqlDbConnections": [
+		{
+			"DatabaseKey": "MainDb",
+			"SecurityKey": "One",
+			"DataResilienceKey": "remote",
+			"DataConnection": {
+				"ApplicationIntent": "ReadOnly",
+				"ApplicationName": "MyApp",
+				"ConnectRetryCount": 11,
+				"ConnectRetryInterval": 11,
+				"ConnectTimeout": 21,
+				"CurrentLanguage": "us_english",
+				"DataSource": "MyServer",
+				"Encrypt": true,
+				"FailoverPartner": "MyMirror",
+				"InitialCatalog": "dbName",
+				"LoadBalanceTimeout": 21,
+				"MaxPoolSize": 31,
+				"MinPoolSize": 2,
+				"MultipleActiveResultSets": true,
+				"MultiSubnetFailover": true,
+				"PacketSize": 2048,
+				"PersistSecurityInfo": false,
+				"Pooling": false,
+				"Replication": false,
+				"TrustServerCertificate": true,
+				"TypeSystemVersion": "SQL Server 20008",
+				"WorkstationID": "MyPC"
+			}
+		},
+		{
+			"DatabaseKey": "OtherDb",
+			"SecurityKey": "Two",
+			"DataResilienceKey": "remote",
+			"DataConnection": {
+				"ApplicationIntent": "ReadWrite",
+				"ApplicationName": "MyOtherApp",
+				"ConnectRetryCount": 12,
+				"ConnectRetryInterval": 17,
+				"ConnectTimeout": 22,
+				"CurrentLanguage": "English",
+				"DataSource": "MyOtherServer",
+				"Encrypt": false,
+				"FailoverPartner": "MyMirror",
+				"InitialCatalog": "dbName2",
+				"LoadBalanceTimeout": 22,
+				"MaxPoolSize": 32,
+				"MinPoolSize": 3,
+				"MultipleActiveResultSets": false,
+				"MultiSubnetFailover": false,
+				"PacketSize": 4096,
+				"PersistSecurityInfo": true,
+				"Pooling": true,
+				"Replication": true,
+				"TrustServerCertificate": true,
+				"TypeSystemVersion": "SQL Server 2012",
+				"WorkstationID": "MyOtherPC"
+			}
+		}
+	],
+	"SqlShardSets": [
+		{
+			"ShardSetKey": "Set1",
+			"SecurityKey": "One",
+			"DataResilienceKey": "local",
+			"Shards": [
+				{
+					"ShardNumber": 0,
+					"ReadConnection": {
+						"ApplicationIntent": "ReadOnly",
+						"ApplicationName": "MyOtherApp",
+						"ConnectRetryCount": 12,
+						"ConnectRetryInterval": 17,
+						"ConnectTimeout": 22,
+						"CurrentLanguage": "English",
+						"DataSource": "MyOtherServer",
+						"Encrypt": false,
+						"FailoverPartner": "MyMirror",
+						"InitialCatalog": "dbName2",
+						"LoadBalanceTimeout": 21,
+						"MaxPoolSize": 22,
+						"MinPoolSize": 3,
+						"MultipleActiveResultSets": false,
+						"MultiSubnetFailover": false,
+						"PacketSize": 4096,
+						"PersistSecurityInfo": true,
+						"Pooling": true,
+						"Replication": true,
+						"TrustServerCertificate": true,
+						"TypeSystemVersion": "SQL Server 2012",
+						"WorkstationID": "MyOtherPC"
+					},
+					"WriteConnection": {
+						"ApplicationIntent": "ReadWrite",
+						"ApplicationName": "MyOtherApp",
+						"ConnectRetryCount": 12,
+						"ConnectRetryInterval": 17,
+						"ConnectTimeout": 22,
+						"CurrentLanguage": "English",
+						"DataSource": "MyOtherServer",
+						"Encrypt": false,
+						"FailoverPartner": "MyMirror",
+						"InitialCatalog": "dbName2",
+						"LoadBalanceTimeout": 21,
+						"MaxPoolSize": 22,
+						"MinPoolSize": 3,
+						"MultipleActiveResultSets": false,
+						"MultiSubnetFailover": false,
+						"PacketSize": 4096,
+						"PersistSecurityInfo": true,
+						"Pooling": true,
+						"Replication": true,
+						"TrustServerCertificate": true,
+						"TypeSystemVersion": "SQL Server 2012",
+						"WorkstationID": "MyOtherPC"
+					}
+				},
+				{
+					"ShardNumber": 1,
+					"ReadConnection": {
+						"ApplicationIntent": "ReadOnly",
+						"ApplicationName": "MyOtherApp",
+						"ConnectRetryCount": 12,
+						"ConnectRetryInterval": 17,
+						"ConnectTimeout": 22,
+						"CurrentLanguage": "English",
+						"DataSource": "MyOtherServer",
+						"Encrypt": false,
+						"FailoverPartner": "MyMirror",
+						"InitialCatalog": "dbName2",
+						"LoadBalanceTimeout": 21,
+						"MaxPoolSize": 22,
+						"MinPoolSize": 3,
+						"MultipleActiveResultSets": false,
+						"MultiSubnetFailover": false,
+						"PacketSize": 4096,
+						"PersistSecurityInfo": true,
+						"Pooling": true,
+						"Replication": true,
+						"TrustServerCertificate": true,
+						"TypeSystemVersion": "SQL Server 2012",
+						"WorkstationID": "MyOtherPC"
+					},
+					"WriteConnection": {
+						"ApplicationIntent": "ReadWrite",
+						"ApplicationName": "MyOtherApp",
+						"ConnectRetryCount": 12,
+						"ConnectRetryInterval": 17,
+						"ConnectTimeout": 22,
+						"CurrentLanguage": "English",
+						"DataSource": "MyOtherServer",
+						"Encrypt": false,
+						"FailoverPartner": "MyMirror",
+						"InitialCatalog": "dbName2",
+						"LoadBalanceTimeout": 21,
+						"MaxPoolSize": 22,
+						"MinPoolSize": 3,
+						"MultipleActiveResultSets": false,
+						"MultiSubnetFailover": false,
+						"PacketSize": 4096,
+						"PersistSecurityInfo": true,
+						"Pooling": true,
+						"Replication": true,
+						"TrustServerCertificate": true,
+						"TypeSystemVersion": "SQL Server 2012",
+						"WorkstationID": "MyOtherPC"
+					}
+				}
+			]
+		},
+		{
+			"ShardSetKey": "Set2",
+			"SecurityKey": "Two",
+			"DataResilienceKey": "remote",
+			"Shards": [
+				{
+					"ShardNumber": 0,
+					"ReadConnection": {
+						"ApplicationIntent": "ReadOnly",
+						"ApplicationName": "MyOtherApp",
+						"ConnectRetryCount": 12,
+						"ConnectRetryInterval": 17,
+						"ConnectTimeout": 22,
+						"CurrentLanguage": "English",
+						"DataSource": "MyOtherServer",
+						"Encrypt": false,
+						"FailoverPartner": "MyMirror",
+						"InitialCatalog": "dbName2",
+						"LoadBalanceTimeout": 21,
+						"MaxPoolSize": 22,
+						"MinPoolSize": 3,
+						"MultipleActiveResultSets": false,
+						"MultiSubnetFailover": false,
+						"PacketSize": 4096,
+						"PersistSecurityInfo": true,
+						"Pooling": true,
+						"Replication": true,
+						"TrustServerCertificate": true,
+						"TypeSystemVersion": "SQL Server 2012",
+						"WorkstationID": "MyOtherPC"
+					},
+					"WriteConnection": {
+						"ApplicationIntent": "ReadWrite",
+						"ApplicationName": "MyOtherApp",
+						"ConnectRetryCount": 12,
+						"ConnectRetryInterval": 17,
+						"ConnectTimeout": 22,
+						"CurrentLanguage": "English",
+						"DataSource": "MyOtherServer",
+						"Encrypt": false,
+						"FailoverPartner": "MyMirror",
+						"InitialCatalog": "dbName2",
+						"LoadBalanceTimeout": 21,
+						"MaxPoolSize": 22,
+						"MinPoolSize": 3,
+						"MultipleActiveResultSets": false,
+						"MultiSubnetFailover": false,
+						"PacketSize": 4096,
+						"PersistSecurityInfo": true,
+						"Pooling": true,
+						"Replication": true,
+						"TrustServerCertificate": true,
+						"TypeSystemVersion": "SQL Server 2012",
+						"WorkstationID": "MyOtherPC"
+					}
+				},
+				{
+					"ShardNumber": 1,
+					"ReadConnection": {
+						"ApplicationIntent": "ReadOnly",
+						"ApplicationName": "MyOtherApp",
+						"ConnectRetryCount": 12,
+						"ConnectRetryInterval": 17,
+						"ConnectTimeout": 22,
+						"CurrentLanguage": "English",
+						"DataSource": "MyOtherServer",
+						"Encrypt": false,
+						"FailoverPartner": "MyMirror",
+						"InitialCatalog": "dbName2",
+						"LoadBalanceTimeout": 21,
+						"MaxPoolSize": 22,
+						"MinPoolSize": 3,
+						"MultipleActiveResultSets": false,
+						"MultiSubnetFailover": false,
+						"PacketSize": 4096,
+						"PersistSecurityInfo": true,
+						"Pooling": true,
+						"Replication": true,
+						"TrustServerCertificate": true,
+						"TypeSystemVersion": "SQL Server 2012",
+						"WorkstationID": "MyOtherPC"
+					},
+					"WriteConnection": {
+						"ApplicationIntent": "ReadWrite",
+						"ApplicationName": "MyOtherApp",
+						"ConnectRetryCount": 12,
+						"ConnectRetryInterval": 17,
+						"ConnectTimeout": 22,
+						"CurrentLanguage": "English",
+						"DataSource": "MyOtherServer",
+						"Encrypt": false,
+						"FailoverPartner": "MyMirror",
+						"InitialCatalog": "dbName2",
+						"LoadBalanceTimeout": 21,
+						"MaxPoolSize": 22,
+						"MinPoolSize": 3,
+						"MultipleActiveResultSets": false,
+						"MultiSubnetFailover": false,
+						"PacketSize": 4096,
+						"PersistSecurityInfo": true,
+						"Pooling": true,
+						"Replication": true,
+						"TrustServerCertificate": true,
+						"TypeSystemVersion": "SQL Server 2012",
+						"WorkstationID": "MyOtherPC"
+					}
+				}
+			]
+		}
+	]
 }

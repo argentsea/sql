@@ -4,10 +4,10 @@ using System.Text;
 
 namespace ArgentSea.Sql
 {
-	public class SqlDbConnectionConfigurationOptions : IDbDataConfigurationOptions
+	public class SqlDbConnectionOptions : IDbDataConfigurationOptions
 	{
-		public SqlDbConnectionConfiguration[] DbConnections { get; set; }
-		public IDbConnectionConfiguration[] DbConnectionsInternal { get => DbConnections; }
+		public SqlDbConnectionConfiguration[] SqlDbConnections { get; set; }
+		public IDbConnectionConfiguration[] DbConnectionsInternal { get => SqlDbConnections; }
 
 	}
 	public class SqlDbConnectionConfiguration : IDbConnectionConfiguration

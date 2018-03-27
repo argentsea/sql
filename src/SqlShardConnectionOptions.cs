@@ -4,10 +4,10 @@ using System.Text;
 
 namespace ArgentSea.Sql
 {
-    public class SqlShardConnectionConfigurationOptions<TShard> : IShardDataConfigurationOptions<TShard>
+    public class SqlShardConnectionOptions<TShard> : IShardDataConfigurationOptions<TShard>
 	{
-		public IShardConnectionsConfiguration<TShard>[] ShardSetsInternal { get => ShardSets; }
-		public SqlShardConnectionsConfiguration[] ShardSets { get; set; }
+		public IShardConnectionsConfiguration<TShard>[] ShardSetsInternal { get => SqlShardSets; }
+		public SqlShardConnectionsConfiguration[] SqlShardSets { get; set; }
 
 		public class SqlShardConnectionsConfiguration: IShardConnectionsConfiguration<TShard>
 		{

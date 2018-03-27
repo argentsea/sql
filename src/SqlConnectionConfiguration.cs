@@ -37,9 +37,6 @@ namespace ArgentSea.Sql
             => this.csb.ToString();
 
 
-
-
-
         /// <summary>
         /// Declares the application workload type when connecting to a database in an SQL Server Availability Group.
         /// </summary>
@@ -218,65 +215,69 @@ namespace ArgentSea.Sql
             set => this.csb.WorkstationID = value;
         }
 
-        /// <summary>
-        /// Gets or sets the value associated with the specified key.
-        /// </summary>
-        public object this[string key]
-        {
-            get => this.csb[key];
-            set => this.csb[key] = value;
-        }
 
-        /// <summary>
-        /// Gets an ICollection{string} containing the keys of this configuration.
-        /// </summary>
-        public ICollection<string> Keys
-        {
-            get => this.Keys;
-        }
 
-        /// <summary>
-        /// Gets an ICollection{string} containing the values in this configuration.
-        /// </summary>
-        public ICollection Values
-        {
-            get => this.csb.Values;
-        }
-        /// <summary>
-        /// Adds an item to the configuration
-        /// </summary>
-        /// <param name="item"></param>
-        public void Add(KeyValuePair<string, object> item)
-        {
-            this.csb.Add(item.Key, item.Value);
-        }
-        /// <summary>
-        /// Determines whether the configuration contains a specific key.
-        /// </summary>
-        public bool ContainsKey(string key)
-        {
-            return this.csb.ContainsKey(key);
-        }
+		/* Commented out, as one these causes an Access Violation, and they are not otherwise used:
+		/// <summary>
+		/// Gets or sets the value associated with the specified key.
+		/// </summary>
+		public object this[string key]
+		{
+			get => this.csb[key];
+			set => this.csb[key] = value;
+		}
 
-        /// <summary>
-        /// Removes the entry from the configuration instance.
-        /// </summary>
-        public void Remove(KeyValuePair<string, object> item)
-        {
-            this.csb.Remove(item.Key);
-        }
+		/// <summary>
+		/// Gets an ICollection{string} containing the keys of this configuration.
+		/// </summary>
+		public ICollection<string> Keys
+		{
+			get => this.Keys;
+		}
 
-        /// <summary>
-        /// Removes the entry from the configuration instance.
-        /// </summary>
-        public void Remove(string key)
-        {
-            this.csb.Remove(key);
-        }
+		/// <summary>
+		/// Gets an ICollection{string} containing the values in this configuration.
+		/// </summary>
+		public ICollection Values
+		{
+			get => this.csb.Values;
+		}
+		/// <summary>
+		/// Adds an item to the configuration
+		/// </summary>
+		/// <param name="item"></param>
+		public void Add(KeyValuePair<string, object> item)
+		{
+			this.csb.Add(item.Key, item.Value);
+		}
+		/// <summary>
+		/// Determines whether the configuration contains a specific key.
+		/// </summary>
+		public bool ContainsKey(string key)
+		{
+			return this.csb.ContainsKey(key);
+		}
 
-        public bool TryGetValue(string key, out object value)
-        {
-            return this.csb.TryGetValue(key, out value);
-        }
-    }
+		/// <summary>
+		/// Removes the entry from the configuration instance.
+		/// </summary>
+		public void Remove(KeyValuePair<string, object> item)
+		{
+			this.csb.Remove(item.Key);
+		}
+
+		/// <summary>
+		/// Removes the entry from the configuration instance.
+		/// </summary>
+		public void Remove(string key)
+		{
+			this.csb.Remove(key);
+		}
+
+		public bool TryGetValue(string key, out object value)
+		{
+			return this.csb.TryGetValue(key, out value);
+		}
+		*/
+	}
 }

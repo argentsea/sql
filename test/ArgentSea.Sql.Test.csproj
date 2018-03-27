@@ -11,6 +11,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="2.0.1" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.0.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.6.1" />
@@ -20,12 +21,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="ArgentSea">
-      <HintPath>..\..\ArgentSea\ArgentSea.Sql\bin\Debug\netstandard2.0\ArgentSea.dll</HintPath>
-    </Reference>
-    <Reference Include="ArgentSea.Sql">
-      <HintPath>..\..\ArgentSea\ArgentSea.Sql\bin\Debug\netstandard2.0\ArgentSea.Sql.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\ArgentSea.Shared\src\ArgentSea.csproj" />
+    <ProjectReference Include="..\src\ArgentSea.Sql.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="configurationsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
