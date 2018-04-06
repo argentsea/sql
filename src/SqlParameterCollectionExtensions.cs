@@ -20,16 +20,6 @@ namespace ArgentSea.Sql
             }
             return parameterName;
         }
-		public static DbParameterCollection MapInputParameters<TShard, TModel>(this DbParameterCollection prms, TModel model, ILogger logger) where TModel: class where TShard: IComparable
-		{
-			ShardMapper<TShard>.MapToInParameters(prms, model, logger);
-			return prms;
-		}
-		public static DbParameterCollection MapOutputParameters<TShard, TModel>(this DbParameterCollection prms, TModel model, ILogger logger) where TModel : class where TShard : IComparable
-		{
-			ShardMapper<TShard>.MapToOutParameters(prms, typeof(TModel), logger);
-			return prms;
-		}
 
 		#region String types
 		//NVARCHAR
@@ -365,7 +355,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">An unsigned 8-bit integer value or null.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlIntInParameter(this DbParameterCollection prms, string parameterName, byte? value)
+        public static DbParameterCollection AddSqlTinyIntInParameter(this DbParameterCollection prms, string parameterName, byte? value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.TinyInt)
             {
@@ -549,13 +539,15 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A decmial value .</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlDecimalInParameter(this DbParameterCollection prms, string parameterName, decimal value)
+        public static DbParameterCollection AddSqlDecimalInParameter(this DbParameterCollection prms, string parameterName, decimal value, byte precision, byte scale)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Decimal)
             {
                 Value = value,
-                Direction = ParameterDirection.Input
-            };
+                Direction = ParameterDirection.Input,
+				Precision = precision,
+				Scale = scale
+			};
             prms.Add(prm);
             return prms;
         }
@@ -566,13 +558,15 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A decmial value or null.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlDecimalInParameter(this DbParameterCollection prms, string parameterName, decimal? value)
+        public static DbParameterCollection AddSqlDecimalInParameter(this DbParameterCollection prms, string parameterName, decimal? value, byte precision, byte scale)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Decimal)
             {
                 Value = value.HasValue ? (dynamic)value.Value : System.DBNull.Value,
-                Direction = ParameterDirection.Input
-            };
+                Direction = ParameterDirection.Input,
+				Precision = precision,
+				Scale = scale
+			};
             prms.Add(prm);
             return prms;
         }
@@ -640,7 +634,7 @@ namespace ArgentSea.Sql
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
         public static DbParameterCollection AddSqlMoneyOutParameter(this DbParameterCollection prms, string parameterName)
         {
-            var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Decimal)
+            var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Money)
             {
                 Direction = ParameterDirection.Output
             };
@@ -690,13 +684,11 @@ namespace ArgentSea.Sql
         /// <param name="precision">Specifies the maximum number of digits used to store the number (inclusive of both sides of the decimal point).</param>
         /// <param name="scale">Specifies the number of digits used in the fractional portion of the number (i.e. digits to the right of the decimal point).</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlSmallMoneyOutParameter(this DbParameterCollection prms, string parameterName, byte precision, byte scale)
+        public static DbParameterCollection AddSqlSmallMoneyOutParameter(this DbParameterCollection prms, string parameterName)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.SmallMoney)
             {
-                Direction = ParameterDirection.Output,
-                Precision = precision,
-                Scale = scale
+                Direction = ParameterDirection.Output
             };
             prms.Add(prm);
             return prms;
@@ -1050,9 +1042,9 @@ namespace ArgentSea.Sql
         /// <param name="value">An array of bytes, or null.</param>
         /// <param name="length">The fixed number of bytes in the database column.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlBinaryInParameter(this DbParameterCollection prms, string parameterName, byte[] value)
-        {
-            var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Binary)
+        public static DbParameterCollection AddSqlBinaryInParameter(this DbParameterCollection prms, string parameterName, byte[] value, int length)
+		{
+            var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Binary, length)
             {
                 Value = value == null ? (dynamic)System.DBNull.Value : value,
                 Direction = ParameterDirection.Input
@@ -1067,9 +1059,9 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="length">The fixed number of bytes in the database column.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlBinaryOutParameter(this DbParameterCollection prms, string parameterName)
-        {
-            var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Binary)
+        public static DbParameterCollection AddSqlBinaryOutParameter(this DbParameterCollection prms, string parameterName, int length)
+		{
+            var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Binary, length)
             {
                 Direction = ParameterDirection.Output
             };
@@ -1097,112 +1089,6 @@ namespace ArgentSea.Sql
             return prms;
         }
 
-        #endregion
-        #region Casting
-        /// <summary>
-        /// Returns a string, or null if the parameter value is DbNull.
-        /// </summary>
-        /// <returns>Parameter value as a string.</returns>
-        public static string GetString(this SqlParameter prm) => prm.Value as string;
-        /// <summary>
-        /// Returns a byte array, or null if the parameter value is DbNull.
-        /// </summary>
-        /// <returns>Parameter value as a byte[].</returns>
-        public static byte[] GetBytes(this SqlParameter prm) => prm.Value as byte[];
-        /// <summary>
-        /// Returns a Char value from the parameter, or NUL (char 0) if the value is DbNull.
-        /// </summary>
-        /// <returns>Parameter value as Char.</returns>
-        //public static char GetChar(this SqlParameter prm)
-        //{
-        //    if (System.DBNull.Value.Equals(prm.Value))
-        //    {
-        //        return (char)0;
-        //    }
-        //    else
-        //    {
-        //        return (char)prm.Value;
-        //    }
-        //}
-        public static long GetLong(this SqlParameter prm) => (long)prm.Value;
-        public static long? GetNullableLong(this SqlParameter prm) => prm.Value as long?;
-        public static int GetInteger(this SqlParameter prm) => (int)prm.Value;
-        public static int? GetNullableInteger(this SqlParameter prm) => prm.Value as int?;
-        public static short GetShort(this SqlParameter prm) => (short)prm.Value;
-        public static short? GetNullableShort(this SqlParameter prm) => prm.Value as short?;
-        public static byte GetByte(this SqlParameter prm) => (byte)prm.Value;
-        public static byte? GetNullableByte(this SqlParameter prm) => prm.Value as byte?;
-        public static bool GetBoolean(this SqlParameter prm) => (bool)prm.Value;
-        public static bool? GetNullableBoolean(this SqlParameter prm) => prm.Value as bool?;
-        public static decimal GetDecimal(this SqlParameter prm) => (decimal)prm.Value;
-        public static decimal? GetNullableDecimal(this SqlParameter prm) => prm.Value as decimal?;
-        /// <summary>
-        /// Returns a double (64-bit floating point) value from the parameter, or NaN (Not a Number) if the value is DbNull.
-        /// </summary>
-        /// <returns>Parameter value as double.</returns>
-        public static double GetDouble(this SqlParameter prm)
-        {
-            if (System.DBNull.Value.Equals(prm.Value))
-            {
-                return double.NaN;
-            }
-            else
-            {
-                return (double)prm.Value;
-            }
-        }
-        public static double? GetNullableDouble(this SqlParameter prm)
-            => prm.Value as double?;
-        /// <summary>
-        /// Returns a double (32-bit floating point) value from the parameter, or NaN (Not a Number) if the value is DbNull.
-        /// </summary>
-        /// <returns>Parameter value as float.</returns>
-        public static float GetFloat(this SqlParameter prm)
-        {
-            if (System.DBNull.Value.Equals(prm.Value))
-            {
-                return float.NaN;
-            }
-            else
-            {
-                return (float)prm.Value;
-            }
-        }
-        public static float? GetNullableFloat(this SqlParameter prm)
-            => prm.Value as float?;
-
-        /// <summary>
-        /// Returns a Guid value from the parameter, or Guid.Emtpy if the value is DbNull.
-        /// </summary>
-        /// <returns>Parameter value as Guid.</returns>
-        public static Guid GetGuid(this SqlParameter prm)
-        {
-            if (System.DBNull.Value.Equals(prm.Value))
-            {
-                return Guid.Empty;
-            }
-            else
-            {
-                return (Guid)prm.Value;
-            }
-        }
-        public static Guid? GetNullableGuid(this SqlParameter prm)
-        {
-            if (System.DBNull.Value.Equals(prm.Value))
-            {
-                return null;
-            }
-            else
-            {
-                return (Guid?)prm.Value;
-            }
-        }
-        public static DateTime GetDateTime(this SqlParameter prm) => (DateTime)prm.Value;
-        public static DateTime? GetNullableDateTime(this SqlParameter prm) => prm.Value as DateTime?;
-        public static DateTimeOffset GetDateTimeOffset(this SqlParameter prm) => (DateTimeOffset)prm.Value;
-        public static DateTimeOffset? GetNullableDateTimeOffset(this SqlParameter prm) => prm.Value as DateTimeOffset?;
-        public static TimeSpan GetTimeSpan(this SqlParameter prm) => (TimeSpan)prm.Value;
-        public static TimeSpan? GetNullableTimeSpan(this SqlParameter prm) => prm.Value as TimeSpan?;
         #endregion
     }
 }

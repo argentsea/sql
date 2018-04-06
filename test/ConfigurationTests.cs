@@ -13,15 +13,8 @@ namespace ArgentSea.Sql.Test
     public class ConfigurationTests
     {
         [Fact]
-        public void TestMethod1()
+        public void TestConfigurationOptions()
         {
-			//var dtn = new Dictionary<string, string>();
-			//dtn.Add("", "");
-			//dtn.Add("", "");
-			//dtn.Add("", "");
-			//dtn.Add("", "");
-			//bldr.AddInMemoryCollection(dtn);
-
 			var bldr = new ConfigurationBuilder()
 				.AddJsonFile("configurationsettings.json");
 
@@ -59,11 +52,44 @@ namespace ArgentSea.Sql.Test
 
 			var sqlShardData = sqlShardOptions.Value;
 			sqlShardData.SqlShardSets.Length.Should().Be(2, "there are two shard sets defined");
+		}
+		[Fact]
+		public void TestServiceBuilder()
+		{
+			var bldr = new ConfigurationBuilder()
+				.AddJsonFile("configurationsettings.json");
 
-			//var securityOptions = serviceProvider.GetService<IOptions<DataSecurityOptions>>();
-			//var connectionOptions = serviceProvider.GetService<IOptions<SqlDbConnectionConfigurationOptions>>();
-			//var dataStores = serviceProvider.GetService<DbDataStores>();
+			var config = bldr.Build();
+			var services = new ServiceCollection();
+			services.AddOptions();
 
+			services.AddLogging();
+			services.AddSqlServices<byte>(config);
+
+			var serviceProvider = services.BuildServiceProvider();
+			var resilienceOptions = serviceProvider.GetService<IOptions<DataResilienceOptions>>();
+			var securityOptions = serviceProvider.GetService<IOptions<DataSecurityOptions>>();
+			var sqlDbOptions = serviceProvider.GetService<IOptions<SqlDbConnectionOptions>>();
+			var sqlShardOptions = serviceProvider.GetService<IOptions<SqlShardConnectionOptions<byte>>>();
+			var dbLogger = NSubstitute.Substitute.For<Microsoft.Extensions.Logging.ILogger<ArgentSea.DbDataStores<SqlDbConnectionOptions>>>();
+
+			var dbService = new DbDataStores<SqlDbConnectionOptions>(sqlDbOptions, securityOptions, resilienceOptions, new DataProviderServices(), dbLogger);
+			dbService.DbConnections.Count.Should().Be(2, "two connections are defined in the configuration file");
+
+			var shardLogger = NSubstitute.Substitute.For<Microsoft.Extensions.Logging.ILogger<ArgentSea.ShardDataStores<byte, SqlShardConnectionOptions<byte>>>>();
+
+			var shardService = new ShardDataStores<byte, SqlShardConnectionOptions<byte>>(sqlShardOptions, securityOptions, resilienceOptions, new DataProviderServices(), shardLogger);
+			shardService.ShardSets.Count.Should().Be(2, "two shard sets are defined in the configuration file");
+			shardService.ShardSets["Set1"].Count.Should().Be(2, "the configuration file has two shard connections defined on shard set Set1");
+			shardService.ShardSets["Set2"].Count.Should().Be(2, "the configuration file has two shard connections defined on shard set Set2");
+			shardService.ShardSets["Set1"][0].ReadConnection.ConnectionString.Should().Contain("webUser", "the configuration file specifies this credential key");
+			//shardService.ShardSets["Set1"][0].WriteConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
+			//shardService.ShardSets["Set1"][1].ReadConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
+			//shardService.ShardSets["Set1"][1].WriteConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
+			shardService.ShardSets["Set2"][0].ReadConnection.ConnectionString.Should().Contain("Integrated Security=True", "the configuration file specifies this credential key");
+			//shardService.ShardSets["Set2"][0].WriteConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
+			//shardService.ShardSets["Set2"][1].ReadConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
+			//shardService.ShardSets["Set2"][1].WriteConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
 		}
 	}
 }
