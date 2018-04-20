@@ -1,3 +1,4 @@
 [submodule "ArgentSea.Shared"]
 	path = ArgentSea.Shared
 	url = https://github.com/argentsea/shared.git
+ branch = master

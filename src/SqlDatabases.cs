@@ -11,7 +11,7 @@ namespace ArgentSea.Sql
 			IOptions<DataSecurityOptions> securityOptions,
 			IOptions<DataResilienceOptions> resilienceStrategiesOptions,
 			ILogger<SqlDatabases> logger
-			) : base(configOptions, securityOptions, resilienceStrategiesOptions, new DataProviderServiceFactory(), logger)
+			) : base(configOptions, securityOptions, resilienceStrategiesOptions, (IDataProviderServiceFactory)new DataProviderServiceFactory(), logger)
 		{
 
 		}
