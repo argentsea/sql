@@ -14,7 +14,7 @@ namespace ArgentSea.Sql
 
     public abstract class SqlParameterMapAttribute : ParameterMapAttribute
     {
-        public SqlParameterMapAttribute(string parameterName, SqlDbType sqlType): base(parameterName, sqlType)
+        public SqlParameterMapAttribute(string parameterName, SqlDbType sqlType): base(parameterName, (int)sqlType)
         {
         }
         protected internal abstract void AppendTvpExpressions(ParameterExpression expRecord, MemberExpression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger);
@@ -41,7 +41,7 @@ namespace ArgentSea.Sql
             => ExpressionHelpers.InParameterStringExpressionBuilder(this.ParameterName, this.Length, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlNVarCharInParameter), null, expressions, prms, expIgnoreParameters, parameterNames, expProperty, propertyType, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, MemberExpression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => TvpExpressionHelpers.TvpStringExpressionBuilder(this.ParameterName, this.SqlType, this.Length, expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
+            => TvpExpressionHelpers.TvpStringExpressionBuilder(this.ParameterName, (SqlDbType)this.SqlType, this.Length, expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression prms, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.OutParameterBuilder(this.ParameterName, prms, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlNVarCharOutParameter), Expression.Constant(this.Length, typeof(int)), null, parameterNames, expIgnoreParameters, logger);
@@ -74,7 +74,7 @@ namespace ArgentSea.Sql
 
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, MemberExpression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => TvpExpressionHelpers.TvpStringExpressionBuilder(this.ParameterName, this.SqlType, this.Length, expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
+            => TvpExpressionHelpers.TvpStringExpressionBuilder(this.ParameterName, (SqlDbType)this.SqlType, this.Length, expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression prms, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.OutParameterBuilder(this.ParameterName, prms, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlNCharOutParameter), Expression.Constant(this.Length, typeof(int)), null, parameterNames, expIgnoreParameters, logger);
@@ -110,7 +110,7 @@ namespace ArgentSea.Sql
             => ExpressionHelpers.InParameterStringExpressionBuilder(this.ParameterName, this.Length, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlVarCharInParameter), Expression.Constant(this.LocaleId, typeof(int)), expressions, prms, expIgnoreParameters, parameterNames, expProperty, propertyType, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, MemberExpression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => TvpExpressionHelpers.TvpStringExpressionBuilder(this.ParameterName, this.SqlType, this.Length, expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
+            => TvpExpressionHelpers.TvpStringExpressionBuilder(this.ParameterName, (SqlDbType)this.SqlType, this.Length, expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression prms, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.OutParameterBuilder(this.ParameterName, prms, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlVarCharOutParameter), Expression.Constant(this.Length, typeof(int)), Expression.Constant(this.LocaleId, typeof(int)), parameterNames, expIgnoreParameters, logger);
@@ -146,7 +146,7 @@ namespace ArgentSea.Sql
 
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, MemberExpression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => TvpExpressionHelpers.TvpStringExpressionBuilder(this.ParameterName, this.SqlType, this.Length, expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
+            => TvpExpressionHelpers.TvpStringExpressionBuilder(this.ParameterName, (SqlDbType)this.SqlType, this.Length, expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression prms, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.OutParameterBuilder(this.ParameterName, prms, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlCharOutParameter), Expression.Constant(this.Length, typeof(int)), Expression.Constant(this.LocaleId, typeof(int)), parameterNames, expIgnoreParameters, logger);
@@ -180,8 +180,8 @@ namespace ArgentSea.Sql
 		//=> ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, prms, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlBigIntInParameter), null, null, parameterNames, expLogger, logger);
 
 		protected internal override void AppendTvpExpressions(ParameterExpression expRecord, MemberExpression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
-			=> TvpExpressionHelpers.TvpEnumXIntExpressionBuilder(this.ParameterName, this.SqlType, nameof(SqlDataRecord.SetInt64), typeof(long), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
-		//=> TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ParameterName, this.SqlType, nameof(SqlDataRecord.SetInt64), typeof(long), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
+			=> TvpExpressionHelpers.TvpEnumXIntExpressionBuilder(this.ParameterName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetInt64), typeof(long), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
+		//=> TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ParameterName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetInt64), typeof(long), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
 		protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression prms, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Type propertyType, ParameterExpression expLogger, ILogger logger)
 			=> ExpressionHelpers.OutParameterBuilder(this.ParameterName, prms, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlBigIntOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
@@ -214,7 +214,7 @@ namespace ArgentSea.Sql
             => ExpressionHelpers.InParameterEnumXIntExpressionBuilder(this.ParameterName, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlIntInParameter), typeof(int?), expressions, prms, expIgnoreParameters, parameterNames, expProperty, propertyType, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, MemberExpression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => TvpExpressionHelpers.TvpEnumXIntExpressionBuilder(this.ParameterName, this.SqlType, nameof(SqlDataRecord.SetInt32), typeof(int), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
+            => TvpExpressionHelpers.TvpEnumXIntExpressionBuilder(this.ParameterName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetInt32), typeof(int), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression prms, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.OutParameterBuilder(this.ParameterName, prms, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlIntOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
@@ -245,7 +245,7 @@ namespace ArgentSea.Sql
             => ExpressionHelpers.InParameterEnumXIntExpressionBuilder(this.ParameterName, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlSmallIntInParameter), typeof(short?), expressions, prms, expIgnoreParameters, parameterNames, expProperty, propertyType, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, MemberExpression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => TvpExpressionHelpers.TvpEnumXIntExpressionBuilder(this.ParameterName, this.SqlType, nameof(SqlDataRecord.SetInt16), typeof(short), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
+            => TvpExpressionHelpers.TvpEnumXIntExpressionBuilder(this.ParameterName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetInt16), typeof(short), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression prms, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.OutParameterBuilder(this.ParameterName, prms, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlSmallIntOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
@@ -276,7 +276,7 @@ namespace ArgentSea.Sql
             => ExpressionHelpers.InParameterEnumXIntExpressionBuilder(this.ParameterName, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlTinyIntInParameter), typeof(byte?), expressions, prms, expIgnoreParameters, parameterNames, expProperty, propertyType, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, MemberExpression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => TvpExpressionHelpers.TvpEnumXIntExpressionBuilder(this.ParameterName, this.SqlType, nameof(SqlDataRecord.SetByte), typeof(byte), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
+            => TvpExpressionHelpers.TvpEnumXIntExpressionBuilder(this.ParameterName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetByte), typeof(byte), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression prms, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.OutParameterBuilder(this.ParameterName, prms, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlTinyIntOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
@@ -305,7 +305,7 @@ namespace ArgentSea.Sql
             => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, prms, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlBitInParameter), null, null, parameterNames, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, MemberExpression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ParameterName, this.SqlType, nameof(SqlDataRecord.SetBoolean), typeof(bool), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
+            => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ParameterName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetBoolean), typeof(bool), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression prms, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.OutParameterBuilder(this.ParameterName, prms, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlBitOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
@@ -355,7 +355,7 @@ namespace ArgentSea.Sql
             {
                 var ctor = typeof(SqlMetaData).GetConstructor(new[] { typeof(string), typeof(SqlDbType), typeof(byte), typeof(byte) });
                 var expPrmName = Expression.Constant(dataName, typeof(string));
-                var expPrmType = Expression.Constant(this.SqlType, typeof(SqlDbType));
+				var expPrmType = Expression.Constant((SqlDbType)this.SqlType, typeof(SqlDbType));
                 var expPrecision = Expression.Constant(this.Precision, typeof(byte));
                 var expScale = Expression.Constant(this.Scale, typeof(byte));
                 sqlMetaDataTypeExpressions.Add(Expression.New(ctor, new[] { expPrmName, expPrmType, expPrecision, expScale }));
@@ -413,7 +413,7 @@ namespace ArgentSea.Sql
             => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, prms, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlMoneyInParameter), null, null, parameterNames, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, MemberExpression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ParameterName, this.SqlType, nameof(SqlDataRecord.SetDecimal), typeof(decimal), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
+            => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ParameterName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetDecimal), typeof(decimal), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression prms, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.OutParameterBuilder(this.ParameterName, prms, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlMoneyOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
@@ -442,7 +442,7 @@ namespace ArgentSea.Sql
             => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, prms, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlSmallMoneyInParameter), null, null, parameterNames, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, MemberExpression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ParameterName, this.SqlType, nameof(SqlDataRecord.SetDecimal), typeof(decimal), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
+            => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ParameterName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetDecimal), typeof(decimal), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression prms, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.OutParameterBuilder(this.ParameterName, prms, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlSmallMoneyOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
@@ -472,7 +472,7 @@ namespace ArgentSea.Sql
 
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, MemberExpression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => TvpExpressionHelpers.TvpGuidFloatingPointExpressionBuilder(this.ParameterName, this.SqlType, nameof(SqlDataRecord.SetDouble), typeof(double), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
+            => TvpExpressionHelpers.TvpGuidFloatingPointExpressionBuilder(this.ParameterName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetDouble), typeof(double), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression prms, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.OutParameterBuilder(this.ParameterName, prms, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlFloatOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
@@ -502,7 +502,7 @@ namespace ArgentSea.Sql
 
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, MemberExpression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => TvpExpressionHelpers.TvpGuidFloatingPointExpressionBuilder(this.ParameterName, this.SqlType, nameof(SqlDataRecord.SetFloat), typeof(float), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
+            => TvpExpressionHelpers.TvpGuidFloatingPointExpressionBuilder(this.ParameterName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetFloat), typeof(float), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression prms, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.OutParameterBuilder(this.ParameterName, prms, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlRealOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
@@ -533,7 +533,7 @@ namespace ArgentSea.Sql
             => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, prms, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateTimeInParameter), null, null, parameterNames, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, MemberExpression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ParameterName, this.SqlType, nameof(SqlDataRecord.SetDateTime), typeof(DateTime), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
+            => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ParameterName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetDateTime), typeof(DateTime), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression prms, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.OutParameterBuilder(this.ParameterName, prms, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateTimeOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
@@ -562,7 +562,7 @@ namespace ArgentSea.Sql
             => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, prms, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateTime2InParameter), null, null, parameterNames, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, MemberExpression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ParameterName, this.SqlType, nameof(SqlDataRecord.SetDateTime), typeof(DateTime), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
+            => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ParameterName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetDateTime), typeof(DateTime), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression prms, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.OutParameterBuilder(this.ParameterName, prms, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateTime2OutParameter), null, null, parameterNames, expIgnoreParameters, logger);
@@ -591,7 +591,7 @@ namespace ArgentSea.Sql
             => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, prms, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateInParameter), null, null, parameterNames, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, MemberExpression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ParameterName, this.SqlType, nameof(SqlDataRecord.SetDateTime), typeof(DateTime), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
+            => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ParameterName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetDateTime), typeof(DateTime), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression prms, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.OutParameterBuilder(this.ParameterName, prms, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
@@ -620,7 +620,7 @@ namespace ArgentSea.Sql
             => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, prms, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlTimeInParameter), null, null, parameterNames, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, MemberExpression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ParameterName, this.SqlType, nameof(SqlDataRecord.SetTimeSpan), typeof(TimeSpan), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
+            => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ParameterName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetTimeSpan), typeof(TimeSpan), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression prms, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.OutParameterBuilder(this.ParameterName, prms, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlTimeOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
@@ -649,7 +649,7 @@ namespace ArgentSea.Sql
             => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, prms, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateTimeOffsetInParameter), null, null, parameterNames, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, MemberExpression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ParameterName, this.SqlType, nameof(SqlDataRecord.SetDateTimeOffset), typeof(DateTimeOffset), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
+            => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ParameterName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetDateTimeOffset), typeof(DateTimeOffset), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression prms, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.OutParameterBuilder(this.ParameterName, prms, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateTimeOffsetOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
@@ -682,7 +682,7 @@ namespace ArgentSea.Sql
             => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, prms, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlVarBinaryInParameter), Expression.Constant(this.Length, typeof(int)), null, parameterNames, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, MemberExpression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
-        => TvpExpressionHelpers.TvpBinaryExpressionBuilder(this.ParameterName, this.SqlType, this.Length, expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
+        => TvpExpressionHelpers.TvpBinaryExpressionBuilder(this.ParameterName, (SqlDbType)this.SqlType, this.Length, expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression prms, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.OutParameterBuilder(this.ParameterName, prms, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlVarBinaryOutParameter), Expression.Constant(this.Length, typeof(int)), null, parameterNames, expIgnoreParameters, logger);
@@ -713,7 +713,7 @@ namespace ArgentSea.Sql
             => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, prms, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlBinaryInParameter), Expression.Constant(this.Length, typeof(int)), null, parameterNames, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, MemberExpression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
-        => TvpExpressionHelpers.TvpBinaryExpressionBuilder(this.ParameterName, this.SqlType, this.Length, expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
+        => TvpExpressionHelpers.TvpBinaryExpressionBuilder(this.ParameterName, (SqlDbType)this.SqlType, this.Length, expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression prms, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.OutParameterBuilder(this.ParameterName, prms, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlBinaryOutParameter), Expression.Constant(this.Length, typeof(int)), null, parameterNames, expIgnoreParameters, logger);
@@ -743,7 +743,7 @@ namespace ArgentSea.Sql
 
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, MemberExpression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => TvpExpressionHelpers.TvpGuidFloatingPointExpressionBuilder(this.ParameterName, this.SqlType, nameof(SqlDataRecord.SetGuid), typeof(Guid), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
+            => TvpExpressionHelpers.TvpGuidFloatingPointExpressionBuilder(this.ParameterName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetGuid), typeof(Guid), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression prms, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.OutParameterBuilder(this.ParameterName, prms, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlUniqueIdentifierOutParameter), null, null, parameterNames, expIgnoreParameters, logger);

@@ -242,6 +242,7 @@ namespace ArgentSea.Sql
 		{
 			get => this.csb.Values;
 		}
+		*/
 		/// <summary>
 		/// Adds an item to the configuration
 		/// </summary>
@@ -278,6 +279,5 @@ namespace ArgentSea.Sql
 		{
 			return this.csb.TryGetValue(key, out value);
 		}
-		*/
 	}
 }

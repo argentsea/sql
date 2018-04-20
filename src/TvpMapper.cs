@@ -65,7 +65,7 @@ namespace ArgentSea.Sql
         {
             var unorderedProps = modelT.GetProperties();
             var props = unorderedProps.OrderBy(prop => prop.MetadataToken);
-            var miLogTrace = typeof(SqlLoggerExtensions).GetMethod(nameof(SqlLoggerExtensions.TraceTvpMapperProperty));
+            var miLogTrace = typeof(SqlLoggingExtensions).GetMethod(nameof(SqlLoggingExtensions.TraceTvpMapperProperty));
 
             foreach (var prop in props)
             {
@@ -111,7 +111,7 @@ namespace ArgentSea.Sql
             var modelT = typeof(T);
             if (!_setTvpParamCache.TryGetValue(modelT, out var SqlTblDelegate))
             {
-                SqlLoggerExtensions.SqlTvpCacheMiss(logger, modelT);
+                SqlLoggingExtensions.SqlTvpCacheMiss(logger, modelT);
                 SqlTblDelegate = BuildTableValuedParameterDelegate(modelT, logger);
                 if (!_setTvpParamCache.TryAdd(modelT, SqlTblDelegate))
                 {
@@ -120,7 +120,7 @@ namespace ArgentSea.Sql
             }
             else
             {
-                SqlLoggerExtensions.SqlTvpCacheHit(logger, modelT);
+                SqlLoggingExtensions.SqlTvpCacheHit(logger, modelT);
             }
             return SqlTblDelegate(model, logger);
         }

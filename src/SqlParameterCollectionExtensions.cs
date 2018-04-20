@@ -971,7 +971,6 @@ namespace ArgentSea.Sql
         /// </summary>
         /// <param name="prms">The existing parameter collection to which this parameter should be added.</param>
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
-        /// <param name="value">A 64-bit signed integer value or null.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
         public static DbParameterCollection AddSqlUniqueIdentifierInParameter(this DbParameterCollection prms, string parameterName, Guid? value)
         {

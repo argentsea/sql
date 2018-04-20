@@ -31,7 +31,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			//services.Configure<SqlDbConnectionOptions>(cDataOptionName, config);
 			services.Configure<DataResilienceOptions>(config);
 			services.Configure<DataSecurityOptions>(config);
-			services.AddSingleton<IDataProviderServices>(new DataProviderServices());
+			services.AddSingleton<IDataProviderServiceFactory>(new DataProviderServiceFactory());
 			services.Configure<SqlDbConnectionOptions>(config);
 			services.AddSingleton<DbDataStores<SqlDbConnectionOptions>, DbDataStores<SqlDbConnectionOptions>>();
 			return services;

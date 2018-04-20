@@ -7,7 +7,7 @@ using System.Data.SqlClient;
 
 namespace ArgentSea.Sql
 {
-    public class DataProviderServices: IDataProviderServices
+    public class DataProviderServiceFactory: IDataProviderServiceFactory
     {
         public bool GetIsErrorTransient(Exception exception)
         {
@@ -15,11 +15,24 @@ namespace ArgentSea.Sql
             {
                 switch (((SqlException)exception).Number)
                 {
-                    // Login to read-secondary failed due to long wait on 'HADR_DATABASE_WAIT_FOR_TRANSITION_TO_VERSIONING'. 
-                    // The replica is not available for login because row versions are missing for transactions that were in-flight when the replica 
-                    // was recycled. The issue can be resolved by rolling back or committing the active transactions on the primary replica. 
-                    // Occurrences of this condition can be minimized by avoiding long write transactions on the primary.
-                    case 4221:
+					// Attempted to update a row that was updated in a different transaction since the start of the present transaction.
+					case 41302:
+					// Repeatable read validation failure. A row read from a memory-optimized table this transaction has been updated by another transaction that has committed before the commit of this transaction.
+					case 41305:
+					// Serializable validation failure.A new row was inserted into a range that was scanned earlier by the present transaction.We call this a phantom row.
+					case 41325:
+					// Dependency failure: a dependency was taken on another transaction that later failed to commit.
+					case 41301:
+					// Quota for user data in memory-optimized tables and table variables was reached.
+					case 41823:
+					case 41840:
+					// Transaction exceeded the maximum number of commit dependencies.
+					case 41839:
+					// Login to read-secondary failed due to long wait on 'HADR_DATABASE_WAIT_FOR_TRANSITION_TO_VERSIONING'. 
+					// The replica is not available for login because row versions are missing for transactions that were in-flight when the replica 
+					// was recycled. The issue can be resolved by rolling back or committing the active transactions on the primary replica. 
+					// Occurrences of this condition can be minimized by avoiding long write transactions on the primary.
+					case 4221:
                     // Cannot process request. Too many operations in progress for subscription "%ld".
                     // The service is busy processing multiple requests for this subscription. Requests are currently blocked for 
                     // resource optimization. Query sys.dm_operation_status for operation status. Wait until pending requests are 
