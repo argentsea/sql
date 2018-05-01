@@ -27,13 +27,14 @@ namespace Microsoft.Extensions.DependencyInjection
         {
 			//services.Configure<DataResilienceOptions>(cResilienceOptionName, config);
 			//services.Configure<DataSecurityOptions>(cSecurityOptionName, config);
-			//services.AddSingleton<IDataProviderServices>(new DataProviderServices());
 			//services.Configure<SqlDbConnectionOptions>(cDataOptionName, config);
+
+			// even if these configs are already set by another provider, this will just overwrite with the same values.
 			services.Configure<DataResilienceOptions>(config);
 			services.Configure<DataSecurityOptions>(config);
-			services.AddSingleton<IDataProviderServiceFactory>(new DataProviderServiceFactory());
 			services.Configure<SqlDbConnectionOptions>(config);
-			services.AddSingleton<DbDataStores<SqlDbConnectionOptions>, DbDataStores<SqlDbConnectionOptions>>();
+			//services.AddSingleton<DbDataStores<SqlDbConnectionOptions>, DbDataStores<SqlDbConnectionOptions>>();
+			services.AddSingleton<SqlDatabases>();
 			return services;
         }
 
