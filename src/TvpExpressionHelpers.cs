@@ -31,9 +31,7 @@ namespace ArgentSea.Sql
                 {
                     var miEnumToString = typeof(Enum).GetMethod(nameof(Enum.ToString), new Type[] { });
                     var expGetString = Expression.Call(expProperty, miEnumToString);
-                    var expSet = Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, expGetString });
-                    setExpressions.Add(expSet);
-                    logger.SqlExpressionLog(expSet);
+                    setExpressions.Add(Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, expGetString }));
                 }
                 else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>) && Nullable.GetUnderlyingType(propertyType).IsEnum) //Nullable Enum
                 {
@@ -41,23 +39,19 @@ namespace ArgentSea.Sql
                     var piNullableHasValue = propertyType.GetProperty(nameof(Nullable<int>.HasValue));
                     var piNullableGetValue = propertyType.GetProperty(nameof(Nullable<int>.Value));
 
-                    var expIf = Expression.Condition(
-                        Expression.Property(expProperty, piNullableHasValue),
-                        Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, Expression.Call(Expression.Property(expProperty, piNullableGetValue), miEnumToString) }),
-                        Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal })
-                        );
-                    setExpressions.Add(expIf);
-                    logger.SqlExpressionLog(expIf);
+                    setExpressions.Add(Expression.Condition(
+						Expression.Property(expProperty, piNullableHasValue),
+						Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, Expression.Call(Expression.Property(expProperty, piNullableGetValue), miEnumToString) }),
+						Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal })
+						));
                 }
                 else
                 {
-                    var expIf = Expression.Condition(
-                        Expression.Equal(expProperty, Expression.Constant(null, typeof(string))),
-                        Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal }),
-                        Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, expProperty })
-                        );
-                    setExpressions.Add(expIf);
-                    logger.SqlExpressionLog(expIf);
+                    setExpressions.Add(Expression.Condition(
+						Expression.Equal(expProperty, Expression.Constant(null, typeof(string))),
+						Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal }),
+						Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, expProperty })
+						));
                 }
             }
         }
@@ -78,9 +72,7 @@ namespace ArgentSea.Sql
                 var expOrdinal = Expression.Constant(ordinal, typeof(int));
                 if (propertyType.IsEnum)
                 {
-                    var expSet = Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, Expression.Convert(expProperty, baseType) });
-                    setExpressions.Add(expSet);
-                    logger.SqlExpressionLog(expSet);
+                    setExpressions.Add(Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, Expression.Convert(expProperty, baseType) }));
                 }
                 else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
                 {
@@ -91,32 +83,26 @@ namespace ArgentSea.Sql
                     if (Nullable.GetUnderlyingType(propertyType).IsEnum)
                     {
 
-                        var expIf = Expression.Condition(
-                            Expression.Property(expProperty, piNullableHasValue),
-                            Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, Expression.Convert(Expression.Convert(Expression.Property(expProperty, piNullableGetValue), typeof(int)), baseType) }),
-                            Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal })
-                            );
-                        setExpressions.Add(expIf);
-                        logger.SqlExpressionLog(expIf);
+                        setExpressions.Add(Expression.Condition(
+							Expression.Property(expProperty, piNullableHasValue),
+							Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, Expression.Convert(Expression.Convert(Expression.Property(expProperty, piNullableGetValue), typeof(int)), baseType) }),
+							Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal })
+							));
 
                         //left off here: need to convert Nullable<Enum> and validate int
                     }
                     else //if (Nullable.GetUnderlyingType(propertyType) == typeof(int))
                     {
-                        var expIf = Expression.Condition(
-                            Expression.Property(expProperty, piNullableHasValue),
-                            Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, Expression.Convert(Expression.Property(expProperty, piNullableGetValue), baseType) }),
-                            Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal })
-                            );
-                        setExpressions.Add(expIf);
-                        logger.SqlExpressionLog(expIf);
+                        setExpressions.Add(Expression.Condition(
+							Expression.Property(expProperty, piNullableHasValue),
+							Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, Expression.Convert(Expression.Property(expProperty, piNullableGetValue), baseType) }),
+							Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal })
+							));
                     }
                 }
                 else
                 {
-                    var expSet = Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, expProperty });
-                    setExpressions.Add(expSet);
-                    logger.SqlExpressionLog(expSet);
+                    setExpressions.Add(Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, expProperty }));
                 }
             }
         }
@@ -141,30 +127,23 @@ namespace ArgentSea.Sql
                     var piNullableHasValue = propertyType.GetProperty(nameof(Nullable<int>.HasValue));
                     var piNullableGetValue = propertyType.GetProperty(nameof(Nullable<int>.Value));
 
-                    var expIf = Expression.Condition(
-                        Expression.Property(expProperty, piNullableHasValue),
-                        Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, Expression.Property(expProperty, piNullableGetValue) }),
-                        Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal })
-                        );
-
-                    setExpressions.Add(expIf);
-                    logger.SqlExpressionLog(expIf);
+                    setExpressions.Add(Expression.Condition(
+						Expression.Property(expProperty, piNullableHasValue),
+						Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, Expression.Property(expProperty, piNullableGetValue) }),
+						Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal })
+						));
                 }
                 else if (!propertyType.IsValueType)
                 {
-                    var expIf = Expression.Condition(
-                        Expression.Equal(expProperty, Expression.Constant(null, propertyType)),
-                        Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal }),
-                        Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, expProperty })
-                        );
-                    setExpressions.Add(expIf);
-                    logger.SqlExpressionLog(expIf);
+                    setExpressions.Add(Expression.Condition(
+						Expression.Equal(expProperty, Expression.Constant(null, propertyType)),
+						Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal }),
+						Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, expProperty })
+						));
                 }
                 else
                 {
-                    var expSet = Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, expProperty });
-                    setExpressions.Add(expSet);
-                    logger.SqlExpressionLog(expSet);
+                    setExpressions.Add(Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, expProperty }));
                 }
                 return true;
             }
@@ -189,34 +168,28 @@ namespace ArgentSea.Sql
                     var piNullableHasValue = propertyType.GetProperty(nameof(Nullable<int>.HasValue));
                     var piNullableGetValue = propertyType.GetProperty(nameof(Nullable<int>.Value));
 
-                    var expIf = Expression.Condition(
-                        Expression.Property(expProperty, piNullableHasValue),
-                        Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, Expression.Property(expProperty, piNullableGetValue) }),
-                        Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal })
-                        );
-                    setExpressions.Add(expIf);
-                    logger.SqlExpressionLog(expIf);
+                    setExpressions.Add(Expression.Condition(
+						Expression.Property(expProperty, piNullableHasValue),
+						Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, Expression.Property(expProperty, piNullableGetValue) }),
+						Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal })
+						));
                 }
                 else if (propertyType == typeof(Guid))
                 {
-                    var expIf = Expression.Condition(
-                        Expression.Equal(expProperty, Expression.Constant(Guid.Empty, propertyType)),
-                        Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal }),
-                        Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, expProperty })
-                        );
-                    setExpressions.Add(expIf);
-                    logger.SqlExpressionLog(expIf);
+                    setExpressions.Add(Expression.Condition(
+						Expression.Equal(expProperty, Expression.Constant(Guid.Empty, propertyType)),
+						Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal }),
+						Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, expProperty })
+						));
                 }
                 else
                 {
                     var miIsNaN = propertyType.GetMethod(nameof(double.IsNaN));
-                    var expIf = Expression.Condition(
-                        Expression.Call(miIsNaN, expProperty),
-                        Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal }),
-                        Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, expProperty })
-                        );
-                    setExpressions.Add(expIf);
-                    logger.SqlExpressionLog(expIf);
+                    setExpressions.Add(Expression.Condition(
+						Expression.Call(miIsNaN, expProperty),
+						Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal }),
+						Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, expProperty })
+						));
                 }
             }
         }
@@ -239,24 +212,14 @@ namespace ArgentSea.Sql
                 var expBufOffset = Expression.Constant(0, typeof(int));
                 var expLength = Expression.Property(expProperty, typeof(byte[]).GetProperty(nameof(Array.Length)));
 
-                var expIf = Expression.Condition(
-                        Expression.Equal(expProperty, Expression.Constant(null, typeof(byte[]))),
-                        Expression.Call(expRecord, miDbNull, new Expression[] { Expression.Constant(ordinal, typeof(int)) }),
-                        Expression.Call(expRecord, miSet, new Expression[] { Expression.Constant(ordinal, typeof(int)), expFieldOffset, expProperty, expBufOffset, expLength })
-                        );
-                setExpressions.Add(expIf);
-                logger.SqlExpressionLog(expIf);
+                setExpressions.Add(Expression.Condition(
+						Expression.Equal(expProperty, Expression.Constant(null, typeof(byte[]))),
+						Expression.Call(expRecord, miDbNull, new Expression[] { Expression.Constant(ordinal, typeof(int)) }),
+						Expression.Call(expRecord, miSet, new Expression[] { Expression.Constant(ordinal, typeof(int)), expFieldOffset, expProperty, expBufOffset, expLength })
+						));
             }
         }
-        private static string ToFieldName(string parameterName)
-        {
-            if (!string.IsNullOrEmpty(parameterName) && parameterName.StartsWith("@"))
-            {
-                parameterName = parameterName.Substring(1);
-            }
-            return parameterName;
-        }
-        private static string ToParameterName(string parameterName)
+        internal static string ToParameterName(string parameterName)
         {
             if (!string.IsNullOrEmpty(parameterName) && !parameterName.StartsWith("@"))
             {
@@ -264,5 +227,13 @@ namespace ArgentSea.Sql
             }
             return parameterName;
         }
-    }
+		internal static string ToFieldName(string parameterName)
+		{
+			if (!string.IsNullOrEmpty(parameterName) && parameterName.StartsWith("@"))
+			{
+				parameterName = parameterName.Substring(1);
+			}
+			return parameterName;
+		}
+	}
 }

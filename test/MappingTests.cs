@@ -143,7 +143,7 @@ namespace ArgentSea.Sql.Test
 			//((SqlParameter)prms["@ParentRecordId"]).Value.Should().Be(smv.RecordChild.Key.RecordID, "that is the assigned value");
 			//((SqlParameter)prms["@ChildRecordId"]).Value.Should().Be(smv.RecordChild.ChildRecordId, "that is the assigned value");
 			//((SqlParameter)prms["@DataRecordId2"]).Value.Should().Be(smv.RecordKeyTwo.Value.RecordID, "that is the assigned value");
-			//((SqlParameter)prms["@ChildShard2"]).Value.Should().Be(smv.RecordChild2.Value.Key.ShardNumber, "that is the assigned value");
+			//((SqlParameter)prms["@ChildShard2"]).Value.Should().Be(smv.RecordChild2.Value.Key.ShardId, "that is the assigned value");
 			//((SqlParameter)prms["@ParentRecord2Id"]).Value.Should().Be(smv.RecordChild2.Value.Key.RecordID, "that is the assigned value");
 			//((SqlParameter)prms["@ChildRecord2Id"]).Value.Should().Be(smv.RecordChild2.Value.ChildRecordId, "that is the assigned value");
 		}
@@ -554,7 +554,7 @@ namespace ArgentSea.Sql.Test
 			result.DayOfTheWeek.Value.Should().Be(DayOfWeek.Tuesday, "that was the output parameter value");
 			result.GarbageCollectorNotificationStatus.Should().Be(GCNotificationStatus.Failed, "that was the output parameter value");
 			//result.RecordKey.DataOrigin.SourceIndicator.Should().Be('a', "that is the data origin value");
-			//result.RecordKey.ShardNumber.Should().Be(6, "that was the output parameter value");
+			//result.RecordKey.ShardId.Should().Be(6, "that was the output parameter value");
 			//result.RecordKey.RecordID.Should().Be(4, "that was the output parameter value");
 			//result.RecordKey.TimeStamp[0].Should().Be(0, "that was the output parameter value");
 			//result.RecordKey.TimeStamp[1].Should().Be(1, "that was the output parameter value");
@@ -566,15 +566,15 @@ namespace ArgentSea.Sql.Test
 			//result.RecordKey.TimeStamp[7].Should().Be(7, "that was the output parameter value");
 			//result.RecordKey.TimeStamp.Length.Should().Be(8, "that is the size of the timestamp array");
 			//result.RecordChild.Key.DataOrigin.SourceIndicator.Should().Be('b', "that is the data origin value");
-			//result.RecordChild.Key.ShardNumber.Should().Be(15, "that was the output parameter value");
+			//result.RecordChild.Key.ShardId.Should().Be(15, "that was the output parameter value");
 			//result.RecordChild.Key.RecordID.Should().Be(5, "that was the output parameter value");
 			//result.RecordChild.Key.TimeStamp.Should().BeNull("because the timestamp was not included in this definition");
 			//result.RecordChild.ChildRecordId.Should().Be(6, "that was the output parameter value");
 			//result.RecordKeyTwo.Value.DataOrigin.SourceIndicator.Should().Be('c', "that is the data origin value");
-			//result.RecordKeyTwo.Value.ShardNumber.Should().Be(2, "that was the shardNumber provided");
+			//result.RecordKeyTwo.Value.ShardId.Should().Be(2, "that was the shardId provided");
 			//result.RecordKeyTwo.Value.RecordID.Should().Be(12345, "that was the output parameter value");
 			//result.RecordChild2.Value.Key.DataOrigin.SourceIndicator.Should().Be('d', "that is the data origin value");
-			//result.RecordChild2.Value.Key.ShardNumber.Should().Be(255, "that was the output parameter value");
+			//result.RecordChild2.Value.Key.ShardId.Should().Be(255, "that was the output parameter value");
 			//result.RecordChild2.Value.Key.RecordID.Should().Be(int.MaxValue, "that was the output parameter value");
 			//result.RecordChild2.Value.ChildRecordId.Should().Be(short.MaxValue, "that was the output parameter value");
 		}
@@ -670,11 +670,11 @@ namespace ArgentSea.Sql.Test
 			result.DayOfTheWeek.HasValue.Should().BeFalse("the output parameter was set to DbNull");
 			result.GarbageCollectorNotificationStatus.HasValue.Should().BeFalse("the output parameter was set to DbNull");
 			//result.RecordKey.DataOrigin.SourceIndicator.Should().Be('0', "that is the empty data origin value");
-			//result.RecordKey.ShardNumber.Should().Be(0, "that is the empty shardkey value");
+			//result.RecordKey.ShardId.Should().Be(0, "that is the empty shardkey value");
 			//result.RecordKey.RecordID.Should().Be(0, "that is the empty shardkey value");
 			//result.RecordKey.TimeStamp.Should().BeNull("that is the empty shardkey value");
 			//result.RecordChild.Key.DataOrigin.SourceIndicator.Should().Be('0', "that is the empty data origin value");
-			//result.RecordChild.Key.ShardNumber.Should().Be(0, "that is the empty shardchild value");
+			//result.RecordChild.Key.ShardId.Should().Be(0, "that is the empty shardchild value");
 			//result.RecordChild.Key.RecordID.Should().Be(0, "that is the empty shardchild value");
 			//result.RecordChild.Key.TimeStamp.Should().BeNull("that is the empty shardchild value");
 			//result.RecordChild.ChildRecordId.Should().Be(0, "that is the empty shardchild value");

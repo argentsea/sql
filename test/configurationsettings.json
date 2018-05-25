@@ -96,7 +96,7 @@
 			"DataResilienceKey": "local",
 			"Shards": [
 				{
-					"ShardNumber": 0,
+					"ShardId": 0,
 					"ReadConnection": {
 						"ApplicationIntent": "ReadOnly",
 						"ApplicationName": "MyOtherApp",
@@ -147,7 +147,7 @@
 					}
 				},
 				{
-					"ShardNumber": 1,
+					"ShardId": 1,
 					"ReadConnection": {
 						"ApplicationIntent": "ReadOnly",
 						"ApplicationName": "MyOtherApp",
@@ -205,7 +205,7 @@
 			"DataResilienceKey": "remote",
 			"Shards": [
 				{
-					"ShardNumber": 0,
+					"ShardId": 0,
 					"ReadConnection": {
 						"ApplicationIntent": "ReadOnly",
 						"ApplicationName": "MyOtherApp",
@@ -256,7 +256,7 @@
 					}
 				},
 				{
-					"ShardNumber": 1,
+					"ShardId": 1,
 					"ReadConnection": {
 						"ApplicationIntent": "ReadOnly",
 						"ApplicationName": "MyOtherApp",

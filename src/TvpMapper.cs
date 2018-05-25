@@ -37,9 +37,7 @@ namespace ArgentSea.Sql
 
             using (logger.BuildTvpScope(modelT))
             {
-                logger.SqlExpressionBlockStart(nameof(TvpMapper.ToTvpRecord), exprInPrms);
                 IterateTvpProperties(modelT, resultExpressions, setExpressions, sqlMetaTypeExpressions, prmModel, expRecord, expLogger, noDupPrmNameList, ref ordinal, logger);
-                logger.SqlExpressionBlockEnd(nameof(TvpMapper.ToTvpRecord));
 
                 var expNewSqlRecord = Expression.New(ctorSqlDataRecord, Expression.NewArrayInit(typeof(SqlMetaData), sqlMetaTypeExpressions.ToArray()));
                 var expAssign = Expression.Assign(expRecord, expNewSqlRecord);
@@ -47,15 +45,8 @@ namespace ArgentSea.Sql
                 resultExpressions.AddRange(setExpressions);
 
                 resultExpressions.Add(expRecord); //return type
-                if (logger.IsEnabled(LogLevel.Debug))
-                {
-                    logger.SqlExpressionNote($"Out-of-order expressions which should appear at the beginning of {nameof(TvpMapper.ToTvpRecord)}:");
-                    foreach (var exp in resultExpressions)
-                    {
-                        logger.SqlExpressionLog(exp);
-                    }
-                }
-            }
+
+			}
             var expBlock = Expression.Block(new[] { prmModel, expRecord }, resultExpressions);
             var lambda = Expression.Lambda<Func<object, ILogger, SqlDataRecord>>(expBlock, exprInPrms);
             return lambda.Compile();
@@ -74,11 +65,9 @@ namespace ArgentSea.Sql
                     var attrPMs = prop.GetCustomAttributes<SqlParameterMapAttribute>(true);
                     foreach (var attrPM in attrPMs)
                     {
-                        var dataName = ExpressionHelpers.ToFieldName(attrPM.ParameterName);
+                        var dataName = TvpExpressionHelpers.ToFieldName(attrPM.ParameterName);
 
-                        var expTrace = Expression.Call(miLogTrace, expLogger, Expression.Constant(prop.Name));
-                        setExpressions.Add(expTrace);
-                        logger.SqlExpressionLog(expTrace);
+                        setExpressions.Add(Expression.Call(miLogTrace, expLogger, Expression.Constant(prop.Name)));
 
                         if (!attrPM.IsValidType(prop.PropertyType))
                         {
@@ -99,14 +88,14 @@ namespace ArgentSea.Sql
                 }
             }
         }
-        /// Converts an object instance to a SqlMetaData instance.
-        /// To convert an object list to an table-value input parameter, use: var prm = lst.ConvertAll(x => MapToTableParameterRecord(x));
-        /// </summary>
-        /// <typeparam name="T">The type of the model object. The "MapTo" attributes are used to create the Sql metadata and columns. The object property order become the column order.</typeparam>
-        /// <param name="model">An object model instance. The property values are provided as table row values.</param>
-        /// <param name="ignoreFields">A lists of colums that should not be created. Entries should not start with '@'.</param>
-        /// <returns>A SqlMetaData object. A list of these can be used as a Sql table-valued parameter.</returns>
-        public static SqlDataRecord ToTvpRecord<T>(T model, ILogger logger) where T : class
+		/// Converts an object instance to a SqlMetaData instance.
+		/// To convert an object list to an table-value input parameter, use: var prm = lst.ConvertAll(x => MapToTableParameterRecord(x));
+		/// </summary>
+		/// <typeparam name="T">The type of the model object. The "MapTo" attributes are used to create the Sql metadata and columns. The object property order become the column order.</typeparam>
+		/// <param name="model">An object model instance. The property values are provided as table row values.</param>
+		/// <param name="ignoreFields">A lists of colums that should not be created. Entries should not start with '@'.</param>
+		/// <returns>A SqlMetaData object. A list of these can be used as a Sql table-valued parameter.</returns>
+		public static SqlDataRecord ToTvpRecord<T>(T model, ILogger logger) where T : class
         {
             var modelT = typeof(T);
             if (!_setTvpParamCache.TryGetValue(modelT, out var SqlTblDelegate))
