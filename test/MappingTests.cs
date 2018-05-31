@@ -49,8 +49,8 @@ namespace ArgentSea.Sql.Test
 				Modifier = ConsoleModifiers.Control,
 				DayOfTheWeek = DayOfWeek.Sunday,
 				GarbageCollectorNotificationStatus = GCNotificationStatus.NotApplicable,
-				//RecordKey = new ShardKey(new DataOrigin('x'), 2, 1234),
-				//RecordChild = new ShardChild(new DataOrigin('y'), 3, 4567, (short)-23456),
+				RecordKey = new ShardKey<byte, int>(new DataOrigin('x'), 2, 1234),
+				RecordChild = new ShardChild<byte, int, short>(new DataOrigin('y'), 3, 4567, (short)-23456),
 				//RecordKeyTwo = new ShardKey(new DataOrigin('z'), 32, -1234),
 				//RecordChild2 = new ShardChild(new DataOrigin('y'), 3, -4567, (short)-23456)
 			};
@@ -499,25 +499,27 @@ namespace ArgentSea.Sql.Test
 
 			cmd.Parameters.Add(new SqlParameter("@DataShard", System.Data.SqlDbType.TinyInt) { Value = (byte)6, Direction = System.Data.ParameterDirection.Output });
 			cmd.Parameters.Add(new SqlParameter("@DataRecordId", System.Data.SqlDbType.Int) { Value = 4, Direction = System.Data.ParameterDirection.Output });
-			cmd.Parameters.Add(new SqlParameter("@DataTimeStamp", System.Data.SqlDbType.Binary) { Value = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7 }, Direction = System.Data.ParameterDirection.Output });
 
 			cmd.Parameters.Add(new SqlParameter("@ChildShard", System.Data.SqlDbType.TinyInt) { Value = (byte)15, Direction = System.Data.ParameterDirection.Output });
 			cmd.Parameters.Add(new SqlParameter("@ParentRecordId", System.Data.SqlDbType.Int) { Value = 5, Direction = System.Data.ParameterDirection.Output });
 			cmd.Parameters.Add(new SqlParameter("@ChildRecordId", System.Data.SqlDbType.SmallInt) { Value = (short)6, Direction = System.Data.ParameterDirection.Output });
 
 			//cmd.Parameters.Add(new SqlParameter("@DataShard2", System.Data.SqlDbType.TinyInt) { Value = (byte)17, Direction = System.Data.ParameterDirection.Output });
-			cmd.Parameters.Add(new SqlParameter("@DataRecordId2", System.Data.SqlDbType.Int) { Value = 12345, Direction = System.Data.ParameterDirection.Output });
+			cmd.Parameters.Add(new SqlParameter("@DataRecordId2", System.Data.SqlDbType.BigInt) { Value = long.MaxValue, Direction = System.Data.ParameterDirection.Output });
 
 			cmd.Parameters.Add(new SqlParameter("@ChildShard2", System.Data.SqlDbType.TinyInt) { Value = (byte)255, Direction = System.Data.ParameterDirection.Output });
-			cmd.Parameters.Add(new SqlParameter("@ParentRecord2Id", System.Data.SqlDbType.Int) { Value = int.MaxValue, Direction = System.Data.ParameterDirection.Output });
-			cmd.Parameters.Add(new SqlParameter("@ChildRecord2Id", System.Data.SqlDbType.SmallInt) { Value = short.MaxValue, Direction = System.Data.ParameterDirection.Output });
+			cmd.Parameters.Add(new SqlParameter("@ParentRecord2Id", System.Data.SqlDbType.SmallInt) { Value = (short)12345, Direction = System.Data.ParameterDirection.Output });
+			cmd.Parameters.Add(new SqlParameter("@ChildRecord2Id", System.Data.SqlDbType.NVarChar, 255) { Value = "Test123", Direction = System.Data.ParameterDirection.Output });
 			/*
         [MapToShardKey('a', "DataShard", "DataRecordId", "DataTimeStamp")]
         public ShardKey RecordKey { get; set; } = ShardKey.Empty;
              */
 
-			var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-			var result = cmd.Parameters.ReadOutParameters<SqlMapModel>(dbLogger);
+			//var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+			//var dbLogger = new Microsoft.Extensions.Logging.Console.ConsoleLogger("one";
+			var dbLogger2 = new Microsoft.Extensions.Logging.LoggerFactory();
+			var dbLogger = dbLogger2.CreateLogger("");
+			var result = cmd.Parameters.ReadOutParameters<byte, SqlMapModel>((byte)5, dbLogger);
 			result.ArgentSeaTestDataId.Should().Be(10, "that was the output parameter value");
 			result.Name.Should().Be("Test2", "that was the output parameter value");
 			result.LatinName.Should().Be("Test3", "that was the output parameter value");
@@ -553,30 +555,25 @@ namespace ArgentSea.Sql.Test
 			result.Modifier.Should().Be(ConsoleModifiers.Control, "that was the output parameter value");
 			result.DayOfTheWeek.Value.Should().Be(DayOfWeek.Tuesday, "that was the output parameter value");
 			result.GarbageCollectorNotificationStatus.Should().Be(GCNotificationStatus.Failed, "that was the output parameter value");
-			//result.RecordKey.DataOrigin.SourceIndicator.Should().Be('a', "that is the data origin value");
-			//result.RecordKey.ShardId.Should().Be(6, "that was the output parameter value");
-			//result.RecordKey.RecordID.Should().Be(4, "that was the output parameter value");
-			//result.RecordKey.TimeStamp[0].Should().Be(0, "that was the output parameter value");
-			//result.RecordKey.TimeStamp[1].Should().Be(1, "that was the output parameter value");
-			//result.RecordKey.TimeStamp[2].Should().Be(2, "that was the output parameter value");
-			//result.RecordKey.TimeStamp[3].Should().Be(3, "that was the output parameter value");
-			//result.RecordKey.TimeStamp[4].Should().Be(4, "that was the output parameter value");
-			//result.RecordKey.TimeStamp[5].Should().Be(5, "that was the output parameter value");
-			//result.RecordKey.TimeStamp[6].Should().Be(6, "that was the output parameter value");
-			//result.RecordKey.TimeStamp[7].Should().Be(7, "that was the output parameter value");
-			//result.RecordKey.TimeStamp.Length.Should().Be(8, "that is the size of the timestamp array");
-			//result.RecordChild.Key.DataOrigin.SourceIndicator.Should().Be('b', "that is the data origin value");
-			//result.RecordChild.Key.ShardId.Should().Be(15, "that was the output parameter value");
-			//result.RecordChild.Key.RecordID.Should().Be(5, "that was the output parameter value");
-			//result.RecordChild.Key.TimeStamp.Should().BeNull("because the timestamp was not included in this definition");
-			//result.RecordChild.ChildRecordId.Should().Be(6, "that was the output parameter value");
-			//result.RecordKeyTwo.Value.DataOrigin.SourceIndicator.Should().Be('c', "that is the data origin value");
-			//result.RecordKeyTwo.Value.ShardId.Should().Be(2, "that was the shardId provided");
-			//result.RecordKeyTwo.Value.RecordID.Should().Be(12345, "that was the output parameter value");
-			//result.RecordChild2.Value.Key.DataOrigin.SourceIndicator.Should().Be('d', "that is the data origin value");
-			//result.RecordChild2.Value.Key.ShardId.Should().Be(255, "that was the output parameter value");
-			//result.RecordChild2.Value.Key.RecordID.Should().Be(int.MaxValue, "that was the output parameter value");
-			//result.RecordChild2.Value.ChildRecordId.Should().Be(short.MaxValue, "that was the output parameter value");
+
+			result.RecordKey.Value.Origin.SourceIndicator.Should().Be('x', "that is the data origin value");
+			result.RecordKey.Value.ShardId.Should().Be(6, "that was the output parameter value");
+			result.RecordKey.Value.RecordId.Should().Be(4, "that was the output parameter value");
+
+			result.RecordChild.Key.Origin.SourceIndicator.Should().Be('y', "that is the data origin value");
+			result.RecordChild.Key.ShardId.Should().Be(15, "that was the output parameter value");
+			result.RecordChild.Key.RecordId.Should().Be(5, "that was the output parameter value");
+			result.RecordChild.ChildId.Should().Be(6, "that was the output parameter value");
+
+			result.DataShard2.Origin.SourceIndicator.Should().Be('A', "that is the data origin value");
+			result.DataShard2.ShardId.Should().Be(5, "that is the value of the current shard");
+			result.DataShard2.RecordId.Should().Be(long.MaxValue, "that is the record id");
+
+			result.ChildShard2.Value.Origin.SourceIndicator.Should().Be('B', "that is the data origin value");
+			result.ChildShard2.Value.ShardId.Should().Be(255, "that is the value of the current shard");
+			result.ChildShard2.Value.RecordId.Should().Be(12345, "that is the record id");
+			result.ChildShard2.Value.ChildId.Should().Be("Test123", "that is the child id");
+
 		}
 		[Fact]
 		public void ValidateOutNullParameterReader()
