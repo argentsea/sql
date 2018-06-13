@@ -15,29 +15,30 @@ namespace ArgentSea.Sql
 {
     public class TvpMapper
     {
-        private static ConcurrentDictionary<Type, Func<object, ILogger, SqlDataRecord>> _setTvpParamCache = new ConcurrentDictionary<Type, Func<object, ILogger, SqlDataRecord>>();
+        private static ConcurrentDictionary<Type, Delegate> _setTvpParamCache = new ConcurrentDictionary<Type, Delegate>();
 
-        private static Func<object, ILogger, SqlDataRecord> BuildTableValuedParameterDelegate(Type modelT, ILogger logger)
+        private static Func<TModel, ILogger, SqlDataRecord> BuildTableValuedParameterDelegate<TModel>(ILogger logger) where TModel : class
         {
+            var tModel = typeof(TModel);
             var resultExpressions = new List<Expression>();
             var sqlMetaTypeExpressions = new List<NewExpression>();
             var setExpressions = new List<Expression>();
+            var variables = new List<ParameterExpression>();
 
-            ParameterExpression prmUntypedObj = Expression.Parameter(typeof(object), "objModel");
+            //ParameterExpression prmUntypedObj = Expression.Parameter(typeof(object), "objModel");
+            var prmModel = Expression.Parameter(tModel, "model");
             ParameterExpression expLogger = Expression.Parameter(typeof(ILogger), "logger");
-            var exprInPrms = new ParameterExpression[] { prmUntypedObj, expLogger };
-            var prmModel = Expression.Variable(modelT, "model");
+            var exprInPrms = new ParameterExpression[] { prmModel, expLogger };
 
             ConstructorInfo ctorSqlDataRecord = typeof(SqlDataRecord).GetConstructor(new[] { typeof(SqlMetaData[]) });
             var expRecord = Expression.Variable(typeof(SqlDataRecord), "result");
             var noDupPrmNameList = new HashSet<string>();
             var ordinal = 0;
-
-            resultExpressions.Add(Expression.Assign(prmModel, Expression.TypeAs(prmUntypedObj, modelT))); //var model = (modelT)object;
-
-            using (logger.BuildTvpScope(modelT))
+            //variables.Add(prmModel);
+            variables.Add(expRecord);
+            using (logger.BuildTvpScope(tModel))
             {
-                IterateTvpProperties(modelT, resultExpressions, setExpressions, sqlMetaTypeExpressions, prmModel, expRecord, expLogger, noDupPrmNameList, ref ordinal, logger);
+                IterateTvpProperties(tModel, resultExpressions, setExpressions, sqlMetaTypeExpressions, variables, prmModel, expRecord, expLogger, noDupPrmNameList, ref ordinal, logger);
 
                 var expNewSqlRecord = Expression.New(ctorSqlDataRecord, Expression.NewArrayInit(typeof(SqlMetaData), sqlMetaTypeExpressions.ToArray()));
                 var expAssign = Expression.Assign(expRecord, expNewSqlRecord);
@@ -47,71 +48,221 @@ namespace ArgentSea.Sql
                 resultExpressions.Add(expRecord); //return type
 
 			}
-            var expBlock = Expression.Block(new[] { prmModel, expRecord }, resultExpressions);
-            var lambda = Expression.Lambda<Func<object, ILogger, SqlDataRecord>>(expBlock, exprInPrms);
+            var expBlock = Expression.Block(variables, resultExpressions);
+            var lambda = Expression.Lambda<Func<TModel, ILogger, SqlDataRecord>>(expBlock, exprInPrms);
             return lambda.Compile();
         }
 
-        private static void IterateTvpProperties(Type modelT, List<Expression> resultExpressions, List<Expression> setExpressions, List<NewExpression> sqlMetaTypeExpressions, Expression prmModel, ParameterExpression expRecord, ParameterExpression expLogger, HashSet<string> noDupPrmNameList, ref int ordinal, ILogger logger)
+        private static void IterateTvpProperties(Type tModel, List<Expression> resultExpressions, List<Expression> setExpressions, List<NewExpression> sqlMetaTypeExpressions, List<ParameterExpression> variables, Expression prmModel, ParameterExpression expRecord, ParameterExpression expLogger, HashSet<string> noDupPrmNameList, ref int ordinal, ILogger logger)
         {
-            var unorderedProps = modelT.GetProperties();
+            var unorderedProps = tModel.GetProperties();
             var props = unorderedProps.OrderBy(prop => prop.MetadataToken);
             var miLogTrace = typeof(SqlLoggingExtensions).GetMethod(nameof(SqlLoggingExtensions.TraceTvpMapperProperty));
 
             foreach (var prop in props)
             {
-                if (prop.IsDefined(typeof(ParameterMapAttribute), true))
+                MemberExpression expProperty = Expression.Property(prmModel, prop);
+                MemberExpression expOriginalProperty = expProperty;
+                var isShardKey = prop.IsDefined(typeof(MapShardKeyAttribute), true);
+                var isShardChild = prop.IsDefined(typeof(MapShardChildAttribute), true);
+
+                if ((isShardKey || isShardChild) && prop.IsDefined(typeof(SqlParameterMapAttribute), true))
                 {
+                    Type propType = prop.PropertyType;
+                    var foundShardId = false;
+                    var foundRecordId = false;
+                    var foundChildId = false;
+                    string shardIdPrm;
+                    string recordIdPrm;
+                    string childIdPrm;
+                    setExpressions.Add(Expression.Call(miLogTrace, expLogger, Expression.Constant(prop.Name)));
+
+                    Expression expDetectNullOrEmpty;
+                    if (propType.IsGenericType && propType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                    {
+                        expProperty = Expression.Property(expProperty, propType.GetProperty(nameof(Nullable<int>.Value)));
+                        propType = Nullable.GetUnderlyingType(propType);
+                        expDetectNullOrEmpty = Expression.Property(expOriginalProperty, prop.PropertyType.GetProperty(nameof(Nullable<int>.HasValue)));
+                    }
+                    else
+                    {
+                        expDetectNullOrEmpty = Expression.NotEqual(expOriginalProperty, Expression.Property(null, propType.GetProperty(nameof(ShardKey<int, int>.Empty))));
+                    }
+
+                    if (isShardKey)
+                    {
+                        var shdData = prop.GetCustomAttribute<MapShardKeyAttribute>(true);
+                        shardIdPrm = shdData.ShardIdName;
+                        recordIdPrm = shdData.RecordIdName;
+                        childIdPrm = null;
+                    }
+                    else
+                    {
+                        var shdData = prop.GetCustomAttribute<MapShardChildAttribute>(true);
+                        shardIdPrm = shdData.ShardIdName;
+                        recordIdPrm = shdData.RecordIdName;
+                        childIdPrm = shdData.ChildIdName;
+                    }
                     var attrPMs = prop.GetCustomAttributes<SqlParameterMapAttribute>(true);
                     foreach (var attrPM in attrPMs)
                     {
-                        var dataName = TvpExpressionHelpers.ToFieldName(attrPM.ParameterName);
-
+                        if (!string.IsNullOrEmpty(shardIdPrm) && attrPM.Name == shardIdPrm)
+                        {
+                            foundShardId = true;
+                            var tDataShardId = propType.GetGenericArguments()[0];
+                            if (!attrPM.IsValidType(tDataShardId))
+                            {
+                                throw new InvalidMapTypeException(prop, attrPM.SqlType);
+                            }
+                            var expShardProperty = Expression.Property(expProperty, propType.GetProperty(nameof(ShardKey<int, int>.ShardId)));
+                            ParameterExpression expNullableShardId;
+                            if (tDataShardId.IsValueType)
+                            {
+                                expNullableShardId = Expression.Variable(typeof(Nullable<>).MakeGenericType(tDataShardId), prop.Name + "_NullableShardId");
+                            }
+                            else
+                            {
+                                expNullableShardId = Expression.Variable(tDataShardId, prop.Name + "_NullableShardId");
+                            }
+                            variables.Add(expNullableShardId);
+                            setExpressions.Add(Expression.IfThenElse(
+                                expDetectNullOrEmpty,
+                                Expression.Assign(expNullableShardId, Expression.Convert(expShardProperty, expNullableShardId.Type)),
+                                Expression.Assign(expNullableShardId, Expression.Constant(null, expNullableShardId.Type))
+                                ));
+                            attrPM.AppendTvpExpressions(expRecord, expNullableShardId, setExpressions, sqlMetaTypeExpressions, noDupPrmNameList, ref ordinal, expNullableShardId.Type, expLogger, logger);
+                            ordinal++;
+                        }
+                        if (attrPM.Name == recordIdPrm)
+                        {
+                            foundRecordId = true;
+                            var tDataRecordId = propType.GetGenericArguments()[1];
+                            if (!attrPM.IsValidType(tDataRecordId))
+                            {
+                                throw new InvalidMapTypeException(prop, attrPM.SqlType);
+                            }
+                            var expRecordProperty = Expression.Property(expProperty, propType.GetProperty(nameof(ShardKey<int, int>.RecordId)));
+                            ParameterExpression expNullableRecordId;
+                            if (tDataRecordId.IsValueType)
+                            {
+                                expNullableRecordId = Expression.Variable(typeof(Nullable<>).MakeGenericType(tDataRecordId), prop.Name + "_NullableRecordId");
+                            }
+                            else
+                            {
+                                expNullableRecordId = Expression.Variable(tDataRecordId, prop.Name + "_NullableRecordId");
+                            }
+                            variables.Add(expNullableRecordId);
+                            setExpressions.Add(Expression.IfThenElse(
+                                expDetectNullOrEmpty,
+                                Expression.Assign(expNullableRecordId, Expression.Convert(expRecordProperty, expNullableRecordId.Type)),
+                                Expression.Assign(expNullableRecordId, Expression.Constant(null, expNullableRecordId.Type))
+                                ));
+                            attrPM.AppendTvpExpressions(expRecord, expNullableRecordId, setExpressions, sqlMetaTypeExpressions, noDupPrmNameList, ref ordinal, expNullableRecordId.Type, expLogger, logger);
+                            ordinal++;
+                        }
+                        if (isShardChild && attrPM.Name == childIdPrm)
+                        {
+                            foundChildId = true;
+                            var tDataChildId = propType.GetGenericArguments()[2];
+                            if (!attrPM.IsValidType(tDataChildId))
+                            {
+                                throw new InvalidMapTypeException(prop, attrPM.SqlType);
+                            }
+                            var expChildProperty = Expression.Property(expProperty, propType.GetProperty(nameof(ShardChild<int, int, int>.ChildId)));
+                            ParameterExpression expNullableChildId;
+                            if (tDataChildId.IsValueType)
+                            {
+                                expNullableChildId = Expression.Variable(typeof(Nullable<>).MakeGenericType(tDataChildId), prop.Name + "_NullableChildId");
+                            }
+                            else
+                            {
+                                expNullableChildId = Expression.Variable(tDataChildId, prop.Name + "_NullableChildId");
+                            }
+                            variables.Add(expNullableChildId);
+                            setExpressions.Add(Expression.IfThenElse(
+                                expDetectNullOrEmpty,
+                                Expression.Assign(expNullableChildId, Expression.Convert(expChildProperty, expNullableChildId.Type)),
+                                Expression.Assign(expNullableChildId, Expression.Constant(null, expNullableChildId.Type))
+                                ));
+                            attrPM.AppendTvpExpressions(expRecord, expNullableChildId, setExpressions, sqlMetaTypeExpressions, noDupPrmNameList, ref ordinal, expNullableChildId.Type, expLogger, logger);
+                            ordinal++;
+                        }
+                    }
+                    if (!string.IsNullOrEmpty(shardIdPrm) && !foundShardId)
+                    {
+                        throw new Exception($"The shard attribute specified a shardId attribute named {shardIdPrm}, but the attribute was not found. Remove this argument if you do not have a Shard Id.");
+                    }
+                    if (!foundRecordId)
+                    {
+                        throw new Exception($"The shard attribute specified a recordId attribute named {recordIdPrm}, but the attribute was not found.");
+                    }
+                    if (isShardChild && !foundChildId)
+                    {
+                        throw new Exception($"The ShardChild attribute specified a childId attribute named {childIdPrm}, but the attribute was not found.");
+                    }
+                }
+                else if (prop.IsDefined(typeof(SqlParameterMapAttribute), true))
+                {
+                    bool alreadyFound = false;
+                    var attrPMs = prop.GetCustomAttributes<SqlParameterMapAttribute>(true);
+                    foreach (var attrPM in attrPMs)
+                    {
+                        if (alreadyFound)
+                        {
+                            throw new MultipleMapAttributesException(prop);
+                        }
+                        alreadyFound = true;
+                        var dataName = attrPM.ColumnName;
                         setExpressions.Add(Expression.Call(miLogTrace, expLogger, Expression.Constant(prop.Name)));
-
                         if (!attrPM.IsValidType(prop.PropertyType))
                         {
                             throw new ArgentSea.InvalidMapTypeException(prop, attrPM.SqlType);
                         }
-
-                        //var tinfo = prop.PropertyType.GetTypeInfo();
-                        MemberExpression expProperty = Expression.Property(prmModel, prop);
-
                         attrPM.AppendTvpExpressions(expRecord, expProperty, setExpressions, sqlMetaTypeExpressions, noDupPrmNameList, ref ordinal, prop.PropertyType, expLogger, logger);
                     }
                     ordinal++;
                 }
                 else if (prop.IsDefined(typeof(MapToModel)) && !prop.PropertyType.IsValueType)
                 {
-                    MemberExpression expProperty = Expression.Property(prmModel, prop);
-                    IterateTvpProperties(prop.PropertyType, resultExpressions, setExpressions, sqlMetaTypeExpressions, expProperty, expRecord, expLogger, noDupPrmNameList, ref ordinal, logger);
+                    IterateTvpProperties(prop.PropertyType, resultExpressions, setExpressions, sqlMetaTypeExpressions, variables, expProperty, expRecord, expLogger, noDupPrmNameList, ref ordinal, logger);
                 }
             }
         }
-		/// Converts an object instance to a SqlMetaData instance.
-		/// To convert an object list to an table-value input parameter, use: var prm = lst.ConvertAll(x => MapToTableParameterRecord(x));
-		/// </summary>
-		/// <typeparam name="T">The type of the model object. The "MapTo" attributes are used to create the Sql metadata and columns. The object property order become the column order.</typeparam>
-		/// <param name="model">An object model instance. The property values are provided as table row values.</param>
-		/// <param name="ignoreFields">A lists of colums that should not be created. Entries should not start with '@'.</param>
-		/// <returns>A SqlMetaData object. A list of these can be used as a Sql table-valued parameter.</returns>
-		public static SqlDataRecord ToTvpRecord<T>(T model, ILogger logger) where T : class
+
+        /// Converts an object instance to a SqlMetaData instance.
+        /// To convert an object list to an table-value input parameter, use: var prm = lst.ConvertAll(x => MapToTableParameterRecord(x));
+        /// </summary>
+        /// <typeparam name="TShard">The type of the shardId.</typeparam>
+        /// <typeparam name="TModel">The type of the model object. The "MapTo" attributes are used to create the Sql metadata and columns. The object property order become the column order.</typeparam>
+        /// <param name="shardId">The Id of the executing shard.</param>
+        /// <param name="model">An object model instance. The property values are provided as table row values.</param>
+        /// <param name="ignoreFields">A lists of colums that should not be created. Entries should not start with '@'.</param>
+        /// <returns>A SqlMetaData object. A list of these can be used as a Sql table-valued parameter.</returns>
+        public static SqlDataRecord ToTvpRecord<TModel>(TModel model, ILogger logger) where TModel : class
         {
-            var modelT = typeof(T);
-            if (!_setTvpParamCache.TryGetValue(modelT, out var SqlTblDelegate))
+            var modelT = typeof(TModel);
+            if (!_setTvpParamCache.TryGetValue(modelT, out var sqlTblDelegate))
             {
                 SqlLoggingExtensions.SqlTvpCacheMiss(logger, modelT);
-                SqlTblDelegate = BuildTableValuedParameterDelegate(modelT, logger);
-                if (!_setTvpParamCache.TryAdd(modelT, SqlTblDelegate))
+                sqlTblDelegate = BuildTableValuedParameterDelegate<TModel>(logger);
+                if (!_setTvpParamCache.TryAdd(modelT, sqlTblDelegate))
                 {
-                    SqlTblDelegate = _setTvpParamCache[modelT];
+                    sqlTblDelegate = _setTvpParamCache[modelT];
                 }
             }
             else
             {
                 SqlLoggingExtensions.SqlTvpCacheHit(logger, modelT);
             }
-            return SqlTblDelegate(model, logger);
+            return ((Func<TModel, ILogger, SqlDataRecord>)sqlTblDelegate)(model, logger);
+        }
+
+        private class BadShardType : IComparable
+        {
+            public int CompareTo(object obj)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

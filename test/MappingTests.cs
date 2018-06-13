@@ -51,8 +51,8 @@ namespace ArgentSea.Sql.Test
 				GarbageCollectorNotificationStatus = GCNotificationStatus.NotApplicable,
 				RecordKey = new ShardKey<byte, int>(new DataOrigin('x'), 2, 1234),
 				RecordChild = new ShardChild<byte, int, short>(new DataOrigin('y'), 3, 4567, (short)-23456),
-				//RecordKeyTwo = new ShardKey(new DataOrigin('z'), 32, -1234),
-				//RecordChild2 = new ShardChild(new DataOrigin('y'), 3, -4567, (short)-23456)
+                DataShard2 = new ShardKey<byte, long>('z', (byte)22, 123432L),
+                ChildShard2 = new ShardChild<byte, short, string>('!', 255, 255, "testing123")
 			};
 			var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
 			var prms = new QueryParameterCollection();
@@ -139,13 +139,13 @@ namespace ArgentSea.Sql.Test
 			((SqlParameter)prms["@DayOfTheWeek"]).SqlDbType.Should().Be(System.Data.SqlDbType.TinyInt, "that is the correct data type");
 			((SqlParameter)prms["@GCNotificationStatus"]).Value.Should().Be(GCNotificationStatus.NotApplicable.ToString(), "that is the assigned value");
 			((SqlParameter)prms["@GCNotificationStatus"]).SqlDbType.Should().Be(System.Data.SqlDbType.Char, "that is the correct data type");
-			//((SqlParameter)prms["@DataRecordId"]).Value.Should().Be(smv.RecordKey.RecordID, "that is the assigned value");
-			//((SqlParameter)prms["@ParentRecordId"]).Value.Should().Be(smv.RecordChild.Key.RecordID, "that is the assigned value");
-			//((SqlParameter)prms["@ChildRecordId"]).Value.Should().Be(smv.RecordChild.ChildRecordId, "that is the assigned value");
-			//((SqlParameter)prms["@DataRecordId2"]).Value.Should().Be(smv.RecordKeyTwo.Value.RecordID, "that is the assigned value");
-			//((SqlParameter)prms["@ChildShard2"]).Value.Should().Be(smv.RecordChild2.Value.Key.ShardId, "that is the assigned value");
-			//((SqlParameter)prms["@ParentRecord2Id"]).Value.Should().Be(smv.RecordChild2.Value.Key.RecordID, "that is the assigned value");
-			//((SqlParameter)prms["@ChildRecord2Id"]).Value.Should().Be(smv.RecordChild2.Value.ChildRecordId, "that is the assigned value");
+			((SqlParameter)prms["@DataRecordId"]).Value.Should().Be(smv.RecordKey.Value.RecordId, "that is the assigned value");
+			((SqlParameter)prms["@ParentRecordId"]).Value.Should().Be(smv.RecordChild.RecordId, "that is the assigned value");
+			((SqlParameter)prms["@ChildRecordId"]).Value.Should().Be(smv.RecordChild.ChildId, "that is the assigned value");
+			((SqlParameter)prms["@DataRecordId2"]).Value.Should().Be(smv.DataShard2.RecordId, "that is the assigned value");
+			((SqlParameter)prms["@ChildShard2"]).Value.Should().Be(smv.ChildShard2.Value.Key.ShardId, "that is the assigned value");
+			((SqlParameter)prms["@ParentRecord2Id"]).Value.Should().Be(smv.ChildShard2.Value.Key.RecordId, "that is the assigned value");
+			((SqlParameter)prms["@ChildRecord2Id"]).Value.Should().Be(smv.ChildShard2.Value.ChildId, "that is the assigned value");
 		}
 		[Fact]
 		public void ValidateInParameterNullMapper()
@@ -186,11 +186,11 @@ namespace ArgentSea.Sql.Test
 				Modifier = ConsoleModifiers.Shift,
 				DayOfTheWeek = DayOfWeek.Saturday,
 				GarbageCollectorNotificationStatus = GCNotificationStatus.Succeeded,
-				//RecordKey = new ShardKey(new DataOrigin('9'), 33, int.MinValue),
-				//RecordChild = new ShardChild(new DataOrigin('A'), 34, 35, -1),
-				//RecordChild2 = null,
-				//RecordKeyTwo = null
-			};
+                RecordKey = null,
+                RecordChild = ShardChild<byte, int, short>.Empty,
+                DataShard2 = ShardKey<byte, long>.Empty,
+                ChildShard2 = null
+            };
 			var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
 			var prms = new QueryParameterCollection();
 
@@ -198,102 +198,102 @@ namespace ArgentSea.Sql.Test
 			Assert.True(((SqlParameter)prms["@ArgentSeaTestDataId"]).SqlDbType == System.Data.SqlDbType.Int);
 			((SqlParameter)prms["@ArgentSeaTestDataId"]).SqlDbType.Should().Be(System.Data.SqlDbType.Int, "that is the correct data type");
 			((SqlParameter)prms["@ArgentSeaTestDataId"]).Value.Should().Be(smv.ArgentSeaTestDataId, "that is the assigned value");
-			((SqlParameter)prms["@ArgentSeaTestDataId"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@ArgentSeaTestDataId"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@Name"]).SqlDbType.Should().Be(System.Data.SqlDbType.NVarChar, "that is the correct data type");
 			((SqlParameter)prms["@Name"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
 			((SqlParameter)prms["@Name"]).Size.Should().Be(255, "that is the max length");
-			((SqlParameter)prms["@Name"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@Name"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@LatinName"]).SqlDbType.Should().Be(System.Data.SqlDbType.VarChar, "that is the correct data type");
 			((SqlParameter)prms["@LatinName"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
 			((SqlParameter)prms["@LatinName"]).Size.Should().Be(255, "that is the max length");
-			((SqlParameter)prms["@LatinName"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@LatinName"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@Iso3166"]).SqlDbType.Should().Be(System.Data.SqlDbType.NChar, "that is the correct data type");
 			((SqlParameter)prms["@Iso3166"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
 			((SqlParameter)prms["@Iso3166"]).Size.Should().Be(2, "that is the fixed length");
-			((SqlParameter)prms["@Iso3166"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@Iso3166"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@Iso639"]).SqlDbType.Should().Be(System.Data.SqlDbType.Char, "that is the correct data type");
 			((SqlParameter)prms["@Iso639"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
 			((SqlParameter)prms["@Iso639"]).Size.Should().Be(2, "that is the fixed length");
-			((SqlParameter)prms["@Iso639"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@Iso639"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@BigCount"]).SqlDbType.Should().Be(System.Data.SqlDbType.BigInt, "that is the correct data type");
 			((SqlParameter)prms["@BigCount"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
-			((SqlParameter)prms["@BigCount"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@BigCount"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@ValueCount"]).SqlDbType.Should().Be(System.Data.SqlDbType.Int, "that is the correct data type");
 			((SqlParameter)prms["@ValueCount"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
-			((SqlParameter)prms["@ValueCount"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@ValueCount"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@SmallCount"]).SqlDbType.Should().Be(System.Data.SqlDbType.SmallInt, "that is the correct data type");
 			((SqlParameter)prms["@SmallCount"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
-			((SqlParameter)prms["@SmallCount"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@SmallCount"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@ByteValue"]).SqlDbType.Should().Be(System.Data.SqlDbType.TinyInt, "that is the correct data type");
 			((SqlParameter)prms["@ByteValue"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
-			((SqlParameter)prms["@ByteValue"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@ByteValue"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@TrueFalse"]).SqlDbType.Should().Be(System.Data.SqlDbType.Bit, "that is the correct data type");
 			((SqlParameter)prms["@TrueFalse"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
-			((SqlParameter)prms["@TrueFalse"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@TrueFalse"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@GuidValue"]).SqlDbType.Should().Be(System.Data.SqlDbType.UniqueIdentifier, "that is the correct data type");
 			((SqlParameter)prms["@GuidValue"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
-			((SqlParameter)prms["@GuidValue"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@GuidValue"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@GuidNull"]).SqlDbType.Should().Be(System.Data.SqlDbType.UniqueIdentifier, "that is the correct data type");
 			((SqlParameter)prms["@GuidNull"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
-			((SqlParameter)prms["@GuidNull"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@GuidNull"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@Birthday"]).SqlDbType.Should().Be(System.Data.SqlDbType.Date, "that is the correct data type");
 			((SqlParameter)prms["@Birthday"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
-			((SqlParameter)prms["@Birthday"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@Birthday"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@RightNow"]).SqlDbType.Should().Be(System.Data.SqlDbType.DateTime, "that is the correct data type");
 			((SqlParameter)prms["@RightNow"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
-			((SqlParameter)prms["@RightNow"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@RightNow"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@ExactlyNow"]).SqlDbType.Should().Be(System.Data.SqlDbType.DateTime2, "that is the correct data type");
 			((SqlParameter)prms["@ExactlyNow"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
-			((SqlParameter)prms["@ExactlyNow"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@ExactlyNow"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@NowElsewhere"]).SqlDbType.Should().Be(System.Data.SqlDbType.DateTimeOffset, "that is the correct data type");
 			((SqlParameter)prms["@NowElsewhere"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
-			((SqlParameter)prms["@NowElsewhere"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@NowElsewhere"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@WakeUp"]).SqlDbType.Should().Be(System.Data.SqlDbType.Time, "that is the correct data type");
 			((SqlParameter)prms["@WakeUp"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
-			((SqlParameter)prms["@WakeUp"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@WakeUp"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@Latitude"]).SqlDbType.Should().Be(System.Data.SqlDbType.Decimal, "that is the correct data type");
 			((SqlParameter)prms["@Latitude"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
 			((SqlParameter)prms["@Latitude"]).Precision.Should().Be(9, "that is the specified precision");
 			((SqlParameter)prms["@Latitude"]).Scale.Should().Be(6, "that is the specified scale");
-			((SqlParameter)prms["@Latitude"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@Latitude"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@Longitude"]).SqlDbType.Should().Be(System.Data.SqlDbType.Float, "that is the correct data type");
 			((SqlParameter)prms["@Longitude"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
-			((SqlParameter)prms["@Longitude"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@Longitude"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@Altitude"]).SqlDbType.Should().Be(System.Data.SqlDbType.Real, "that is the correct data type");
 			((SqlParameter)prms["@Altitude"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
-			((SqlParameter)prms["@Altitude"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@Altitude"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@Ratio"]).SqlDbType.Should().Be(System.Data.SqlDbType.Float, "that is the correct data type");
 			((SqlParameter)prms["@Ratio"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
-			((SqlParameter)prms["@Ratio"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@Ratio"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@Temperature"]).SqlDbType.Should().Be(System.Data.SqlDbType.Real, "that is the correct data type");
 			((SqlParameter)prms["@Temperature"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
-			((SqlParameter)prms["@Temperature"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@Temperature"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@LongStory"]).SqlDbType.Should().Be(System.Data.SqlDbType.NVarChar, "that is the correct data type");
 			((SqlParameter)prms["@LongStory"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
 			((SqlParameter)prms["@LongStory"]).Size.Should().Be(-1, "this is nvarchar(max)");
-			((SqlParameter)prms["@LongStory"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@LongStory"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@LatinStory"]).SqlDbType.Should().Be(System.Data.SqlDbType.VarChar, "that is the correct data type");
 			((SqlParameter)prms["@LatinStory"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
 			((SqlParameter)prms["@LatinStory"]).Size.Should().Be(-1, "this is varchar(max)");
-			((SqlParameter)prms["@LatinStory"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@LatinStory"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@TwoBits"]).SqlDbType.Should().Be(System.Data.SqlDbType.Binary, "that is the correct data type");
 			((SqlParameter)prms["@TwoBits"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
 			((SqlParameter)prms["@TwoBits"]).Size.Should().Be(2, "that is the fixed length");
-			((SqlParameter)prms["@TwoBits"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@TwoBits"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@MissingBits"]).SqlDbType.Should().Be(System.Data.SqlDbType.VarBinary, "that is the correct data type");
 			((SqlParameter)prms["@MissingBits"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
 			((SqlParameter)prms["@MissingBits"]).Size.Should().Be(12, "that is the max length");
-			((SqlParameter)prms["@MissingBits"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@MissingBits"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@Blob"]).SqlDbType.Should().Be(System.Data.SqlDbType.VarBinary, "that is the correct data type");
 			((SqlParameter)prms["@Blob"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
 			((SqlParameter)prms["@Blob"]).Size.Should().Be(-1, "this is varbinary(max)");
-			((SqlParameter)prms["@Blob"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@Blob"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@Price"]).SqlDbType.Should().Be(System.Data.SqlDbType.Money, "that is the correct data type");
 			((SqlParameter)prms["@Price"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
-			((SqlParameter)prms["@Price"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@Price"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 			((SqlParameter)prms["@Cost"]).SqlDbType.Should().Be(System.Data.SqlDbType.SmallMoney, "that is the correct data type");
 			((SqlParameter)prms["@Cost"]).Value.Should().Be(System.DBNull.Value, "null should be DBNull");
-			((SqlParameter)prms["@Cost"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parmaeter");
+			((SqlParameter)prms["@Cost"]).Direction.Should().Be(System.Data.ParameterDirection.Input, "this should be an input parameter");
 
 			((SqlParameter)prms["@EnvironmentTarget"]).Value.Should().Be(smv.EnvTarget.ToString(), "that is the assigned value");
 			((SqlParameter)prms["@EnvironmentTarget"]).SqlDbType.Should().Be(System.Data.SqlDbType.VarChar, "that is the correct data type");
@@ -305,17 +305,17 @@ namespace ArgentSea.Sql.Test
 			((SqlParameter)prms["@DayOfTheWeek"]).SqlDbType.Should().Be(System.Data.SqlDbType.TinyInt, "that is the correct data type");
 			((SqlParameter)prms["@GCNotificationStatus"]).Value.Should().Be(GCNotificationStatus.Succeeded.ToString(), "that is the assigned value");
 			((SqlParameter)prms["@GCNotificationStatus"]).SqlDbType.Should().Be(System.Data.SqlDbType.Char, "that is the correct data type");
-			//((SqlParameter)prms["@DataRecordId"]).Value.Should().Be(smv.RecordKey.RecordID, "that is the assigned value");
-			////((SqlParameter)prms["@DataTimeStamp"]).Value.Should().Be(smv.RecordKey.TimeStamp, "that is the assigned value");
-			//((SqlParameter)prms["@ParentRecordId"]).Value.Should().Be(smv.RecordChild.Key.RecordID, "that is the assigned value");
-			//((SqlParameter)prms["@ChildRecordId"]).Value.Should().Be(smv.RecordChild.ChildRecordId, "that is the assigned value");
-			//((SqlParameter)prms["@DataRecordId2"]).Value.Should().Be(System.DBNull.Value, "a null value should create a db null parameter");
-			//((SqlParameter)prms["@ChildShard2"]).Value.Should().Be(System.DBNull.Value, "a null value should create a db null parameter");
-			//((SqlParameter)prms["@ParentRecord2Id"]).Value.Should().Be(System.DBNull.Value, "a null value should create a db null parameter");
-			//((SqlParameter)prms["@ChildRecord2Id"]).Value.Should().Be(System.DBNull.Value, "a null value should create a db null parameter");
 
-		}
-		[Fact]
+            ((SqlParameter)prms["@DataRecordId"]).Value.Should().Be(System.DBNull.Value, "an empty value should create a db null parameter");
+            ((SqlParameter)prms["@ParentRecordId"]).Value.Should().Be(System.DBNull.Value, "a null value should create a db null parameter");
+            ((SqlParameter)prms["@ChildRecordId"]).Value.Should().Be(System.DBNull.Value, "a null value should create a db null parameter");
+            ((SqlParameter)prms["@DataRecordId2"]).Value.Should().Be(System.DBNull.Value, "an empty value should create a db null parameter");
+            ((SqlParameter)prms["@ChildShard2"]).Value.Should().Be(System.DBNull.Value, "a null value should create a db null parameter");
+            ((SqlParameter)prms["@ParentRecord2Id"]).Value.Should().Be(System.DBNull.Value, "a null value should create a db null parameter");
+            ((SqlParameter)prms["@ChildRecord2Id"]).Value.Should().Be(System.DBNull.Value, "a null value should create a db null parameter");
+
+        }
+        [Fact]
 		public void ValidateOutParameterCreator()
 		{
 			var smv = new SqlMapModel()
@@ -354,10 +354,8 @@ namespace ArgentSea.Sql.Test
 				Modifier = ConsoleModifiers.Shift,
 				DayOfTheWeek = DayOfWeek.Saturday,
 				GarbageCollectorNotificationStatus = GCNotificationStatus.Succeeded,
-				//RecordKey = new ShardKey(new DataOrigin('9'), 33, int.MinValue),
-				//RecordChild = new ShardChild(new DataOrigin('A'), 34, 35, -1),
-				//RecordChild2 = null,
-				//RecordKeyTwo = null
+				//RecordKey = new ShardKey<byte, int>(new DataOrigin('9'), 33, int.MinValue),
+				//RecordChild = new ShardChild<byte, int, short>(new DataOrigin('A'), 34, 35, -1),
 			};
 			var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
 			var prms = new QueryParameterCollection();
@@ -366,95 +364,104 @@ namespace ArgentSea.Sql.Test
 
 			Assert.True(((SqlParameter)prms["@ArgentSeaTestDataId"]).SqlDbType == System.Data.SqlDbType.Int);
 			((SqlParameter)prms["@ArgentSeaTestDataId"]).SqlDbType.Should().Be(System.Data.SqlDbType.Int, "that is the correct data type");
-			((SqlParameter)prms["@ArgentSeaTestDataId"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@ArgentSeaTestDataId"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@Name"]).SqlDbType.Should().Be(System.Data.SqlDbType.NVarChar, "that is the correct data type");
 			((SqlParameter)prms["@Name"]).Size.Should().Be(255, "that is the max length");
-			((SqlParameter)prms["@Name"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@Name"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@LatinName"]).SqlDbType.Should().Be(System.Data.SqlDbType.VarChar, "that is the correct data type");
 			((SqlParameter)prms["@LatinName"]).Size.Should().Be(255, "that is the max length");
-			((SqlParameter)prms["@LatinName"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@LatinName"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@Iso3166"]).SqlDbType.Should().Be(System.Data.SqlDbType.NChar, "that is the correct data type");
 			((SqlParameter)prms["@Iso3166"]).Size.Should().Be(2, "that is the fixed length");
-			((SqlParameter)prms["@Iso3166"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@Iso3166"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@Iso639"]).SqlDbType.Should().Be(System.Data.SqlDbType.Char, "that is the correct data type");
 			((SqlParameter)prms["@Iso639"]).Size.Should().Be(2, "that is the fixed length");
-			((SqlParameter)prms["@Iso639"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@Iso639"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@BigCount"]).SqlDbType.Should().Be(System.Data.SqlDbType.BigInt, "that is the correct data type");
-			((SqlParameter)prms["@BigCount"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@BigCount"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@ValueCount"]).SqlDbType.Should().Be(System.Data.SqlDbType.Int, "that is the correct data type");
-			((SqlParameter)prms["@ValueCount"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@ValueCount"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@SmallCount"]).SqlDbType.Should().Be(System.Data.SqlDbType.SmallInt, "that is the correct data type");
-			((SqlParameter)prms["@SmallCount"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@SmallCount"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@ByteValue"]).SqlDbType.Should().Be(System.Data.SqlDbType.TinyInt, "that is the correct data type");
-			((SqlParameter)prms["@ByteValue"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@ByteValue"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@TrueFalse"]).SqlDbType.Should().Be(System.Data.SqlDbType.Bit, "that is the correct data type");
-			((SqlParameter)prms["@TrueFalse"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@TrueFalse"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@GuidValue"]).SqlDbType.Should().Be(System.Data.SqlDbType.UniqueIdentifier, "that is the correct data type");
-			((SqlParameter)prms["@GuidValue"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@GuidValue"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@GuidNull"]).SqlDbType.Should().Be(System.Data.SqlDbType.UniqueIdentifier, "that is the correct data type");
-			((SqlParameter)prms["@GuidNull"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@GuidNull"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@Birthday"]).SqlDbType.Should().Be(System.Data.SqlDbType.Date, "that is the correct data type");
-			((SqlParameter)prms["@Birthday"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@Birthday"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@RightNow"]).SqlDbType.Should().Be(System.Data.SqlDbType.DateTime, "that is the correct data type");
-			((SqlParameter)prms["@RightNow"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@RightNow"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@ExactlyNow"]).SqlDbType.Should().Be(System.Data.SqlDbType.DateTime2, "that is the correct data type");
-			((SqlParameter)prms["@ExactlyNow"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@ExactlyNow"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@NowElsewhere"]).SqlDbType.Should().Be(System.Data.SqlDbType.DateTimeOffset, "that is the correct data type");
-			((SqlParameter)prms["@NowElsewhere"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@NowElsewhere"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@WakeUp"]).SqlDbType.Should().Be(System.Data.SqlDbType.Time, "that is the correct data type");
-			((SqlParameter)prms["@WakeUp"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@WakeUp"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@Latitude"]).SqlDbType.Should().Be(System.Data.SqlDbType.Decimal, "that is the correct data type");
 			((SqlParameter)prms["@Latitude"]).Precision.Should().Be(9, "that is the specified precision");
 			((SqlParameter)prms["@Latitude"]).Scale.Should().Be(6, "that is the specified scale");
-			((SqlParameter)prms["@Latitude"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@Latitude"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@Longitude"]).SqlDbType.Should().Be(System.Data.SqlDbType.Float, "that is the correct data type");
-			((SqlParameter)prms["@Longitude"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@Longitude"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@Altitude"]).SqlDbType.Should().Be(System.Data.SqlDbType.Real, "that is the correct data type");
-			((SqlParameter)prms["@Altitude"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@Altitude"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@Ratio"]).SqlDbType.Should().Be(System.Data.SqlDbType.Float, "that is the correct data type");
-			((SqlParameter)prms["@Ratio"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@Ratio"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@Temperature"]).SqlDbType.Should().Be(System.Data.SqlDbType.Real, "that is the correct data type");
-			((SqlParameter)prms["@Temperature"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@Temperature"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@LongStory"]).SqlDbType.Should().Be(System.Data.SqlDbType.NVarChar, "that is the correct data type");
 			((SqlParameter)prms["@LongStory"]).Size.Should().Be(-1, "this is nvarchar(max)");
-			((SqlParameter)prms["@LongStory"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@LongStory"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@LatinStory"]).SqlDbType.Should().Be(System.Data.SqlDbType.VarChar, "that is the correct data type");
 			((SqlParameter)prms["@LatinStory"]).Size.Should().Be(-1, "this is varchar(max)");
-			((SqlParameter)prms["@LatinStory"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@LatinStory"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@TwoBits"]).SqlDbType.Should().Be(System.Data.SqlDbType.Binary, "that is the correct data type");
 			((SqlParameter)prms["@TwoBits"]).Size.Should().Be(2, "that is the fixed length");
-			((SqlParameter)prms["@TwoBits"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@TwoBits"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@MissingBits"]).SqlDbType.Should().Be(System.Data.SqlDbType.VarBinary, "that is the correct data type");
 			((SqlParameter)prms["@MissingBits"]).Size.Should().Be(12, "that is the max length");
-			((SqlParameter)prms["@MissingBits"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@MissingBits"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@Blob"]).SqlDbType.Should().Be(System.Data.SqlDbType.VarBinary, "that is the correct data type");
 			((SqlParameter)prms["@Blob"]).Size.Should().Be(-1, "this is varbinary(max)");
-			((SqlParameter)prms["@Blob"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@Blob"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@Price"]).SqlDbType.Should().Be(System.Data.SqlDbType.Money, "that is the correct data type");
-			((SqlParameter)prms["@Price"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@Price"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@Cost"]).SqlDbType.Should().Be(System.Data.SqlDbType.SmallMoney, "that is the correct data type");
-			((SqlParameter)prms["@Cost"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@Cost"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 
-			((SqlParameter)prms["@EnvironmentTarget"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@EnvironmentTarget"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@EnvironmentTarget"]).SqlDbType.Should().Be(System.Data.SqlDbType.VarChar, "that is the correct data type");
-			((SqlParameter)prms["@ConsoleColor"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@ConsoleColor"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@ConsoleColor"]).SqlDbType.Should().Be(System.Data.SqlDbType.SmallInt, "that is the correct data type");
-			((SqlParameter)prms["@ConsoleModifiers"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@ConsoleModifiers"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@ConsoleModifiers"]).SqlDbType.Should().Be(System.Data.SqlDbType.NVarChar, "that is the correct data type");
-			((SqlParameter)prms["@DayOfTheWeek"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@DayOfTheWeek"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@DayOfTheWeek"]).SqlDbType.Should().Be(System.Data.SqlDbType.TinyInt, "that is the correct data type");
-			((SqlParameter)prms["@GCNotificationStatus"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
+			((SqlParameter)prms["@GCNotificationStatus"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
 			((SqlParameter)prms["@GCNotificationStatus"]).SqlDbType.Should().Be(System.Data.SqlDbType.Char, "that is the correct data type");
-			//((SqlParameter)prms["@DataRecordId"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
-			////((SqlParameter)prms["@DataTimeStamp"]).Value.Should().Be(smv.RecordKey.TimeStamp, "that is the assigned value");
-			//((SqlParameter)prms["@ParentRecordId"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
-			//((SqlParameter)prms["@ChildRecordId"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
-			//((SqlParameter)prms["@DataRecordId2"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
-			//((SqlParameter)prms["@ChildShard2"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
-			//((SqlParameter)prms["@ParentRecord2Id"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
-			//((SqlParameter)prms["@ChildRecord2Id"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parmaeter");
-		}
-		[Fact]
+
+            //((SqlParameter)prms["@DataShard"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
+            //((SqlParameter)prms["@DataShard"]).SqlDbType.Should().Be(System.Data.SqlDbType.TinyInt, "that is the correct data type");
+            //((SqlParameter)prms["@DataRecordId"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
+            //((SqlParameter)prms["@DataRecordId"]).SqlDbType.Should().Be(System.Data.SqlDbType.Int, "that is the correct data type");
+
+            ////((SqlParameter)prms["@ChildShard"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
+            ////((SqlParameter)prms["@ChildShard"]).SqlDbType.Should().Be(System.Data.SqlDbType.TinyInt, "that is the correct data type");
+            //((SqlParameter)prms["@ParentRecordId"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
+            //((SqlParameter)prms["@ParentRecordId"]).SqlDbType.Should().Be(System.Data.SqlDbType.Int, "that is the correct data type");
+            //((SqlParameter)prms["@ChildRecordId"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
+            //((SqlParameter)prms["@ChildRecordId"]).SqlDbType.Should().Be(System.Data.SqlDbType.SmallInt, "that is the correct data type");
+
+            //((SqlParameter)prms["@DataRecordId2"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
+            //((SqlParameter)prms["@ChildShard2"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
+            //((SqlParameter)prms["@ParentRecord2Id"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
+            //((SqlParameter)prms["@ChildRecord2Id"]).Direction.Should().Be(System.Data.ParameterDirection.Output, "this should be an output parameter");
+        }
+        [Fact]
 		public void ValidateOutParameterReader()
 		{
 
@@ -497,19 +504,19 @@ namespace ArgentSea.Sql.Test
 			cmd.Parameters.Add(new SqlParameter("@DayOfTheWeek", System.Data.SqlDbType.TinyInt) { Value = (byte)DayOfWeek.Tuesday, Direction = System.Data.ParameterDirection.Output });
 			cmd.Parameters.Add(new SqlParameter("@GCNotificationStatus", System.Data.SqlDbType.Char) { Value = GCNotificationStatus.Failed.ToString(), Direction = System.Data.ParameterDirection.Output });
 
-			cmd.Parameters.Add(new SqlParameter("@DataShard", System.Data.SqlDbType.TinyInt) { Value = (byte)6, Direction = System.Data.ParameterDirection.Output });
-			cmd.Parameters.Add(new SqlParameter("@DataRecordId", System.Data.SqlDbType.Int) { Value = 4, Direction = System.Data.ParameterDirection.Output });
+			//cmd.Parameters.Add(new SqlParameter("@DataShard", System.Data.SqlDbType.TinyInt) { Value = (byte)6, Direction = System.Data.ParameterDirection.Output });
+			//cmd.Parameters.Add(new SqlParameter("@DataRecordId", System.Data.SqlDbType.Int) { Value = 4, Direction = System.Data.ParameterDirection.Output });
 
-			cmd.Parameters.Add(new SqlParameter("@ChildShard", System.Data.SqlDbType.TinyInt) { Value = (byte)15, Direction = System.Data.ParameterDirection.Output });
-			cmd.Parameters.Add(new SqlParameter("@ParentRecordId", System.Data.SqlDbType.Int) { Value = 5, Direction = System.Data.ParameterDirection.Output });
-			cmd.Parameters.Add(new SqlParameter("@ChildRecordId", System.Data.SqlDbType.SmallInt) { Value = (short)6, Direction = System.Data.ParameterDirection.Output });
+			//cmd.Parameters.Add(new SqlParameter("@ChildShard", System.Data.SqlDbType.TinyInt) { Value = (byte)15, Direction = System.Data.ParameterDirection.Output });
+			//cmd.Parameters.Add(new SqlParameter("@ParentRecordId", System.Data.SqlDbType.Int) { Value = 5, Direction = System.Data.ParameterDirection.Output });
+			//cmd.Parameters.Add(new SqlParameter("@ChildRecordId", System.Data.SqlDbType.SmallInt) { Value = (short)6, Direction = System.Data.ParameterDirection.Output });
 
-			//cmd.Parameters.Add(new SqlParameter("@DataShard2", System.Data.SqlDbType.TinyInt) { Value = (byte)17, Direction = System.Data.ParameterDirection.Output });
-			cmd.Parameters.Add(new SqlParameter("@DataRecordId2", System.Data.SqlDbType.BigInt) { Value = long.MaxValue, Direction = System.Data.ParameterDirection.Output });
+			////cmd.Parameters.Add(new SqlParameter("@DataShard2", System.Data.SqlDbType.TinyInt) { Value = (byte)17, Direction = System.Data.ParameterDirection.Output });
+			//cmd.Parameters.Add(new SqlParameter("@DataRecordId2", System.Data.SqlDbType.BigInt) { Value = long.MaxValue, Direction = System.Data.ParameterDirection.Output });
 
-			cmd.Parameters.Add(new SqlParameter("@ChildShard2", System.Data.SqlDbType.TinyInt) { Value = (byte)255, Direction = System.Data.ParameterDirection.Output });
-			cmd.Parameters.Add(new SqlParameter("@ParentRecord2Id", System.Data.SqlDbType.SmallInt) { Value = (short)12345, Direction = System.Data.ParameterDirection.Output });
-			cmd.Parameters.Add(new SqlParameter("@ChildRecord2Id", System.Data.SqlDbType.NVarChar, 255) { Value = "Test123", Direction = System.Data.ParameterDirection.Output });
+			//cmd.Parameters.Add(new SqlParameter("@ChildShard2", System.Data.SqlDbType.TinyInt) { Value = (byte)255, Direction = System.Data.ParameterDirection.Output });
+			//cmd.Parameters.Add(new SqlParameter("@ParentRecord2Id", System.Data.SqlDbType.SmallInt) { Value = (short)12345, Direction = System.Data.ParameterDirection.Output });
+			//cmd.Parameters.Add(new SqlParameter("@ChildRecord2Id", System.Data.SqlDbType.NVarChar, 255) { Value = "Test123", Direction = System.Data.ParameterDirection.Output });
 			/*
         [MapToShardKey('a', "DataShard", "DataRecordId", "DataTimeStamp")]
         public ShardKey RecordKey { get; set; } = ShardKey.Empty;
@@ -556,23 +563,23 @@ namespace ArgentSea.Sql.Test
 			result.DayOfTheWeek.Value.Should().Be(DayOfWeek.Tuesday, "that was the output parameter value");
 			result.GarbageCollectorNotificationStatus.Should().Be(GCNotificationStatus.Failed, "that was the output parameter value");
 
-			result.RecordKey.Value.Origin.SourceIndicator.Should().Be('x', "that is the data origin value");
-			result.RecordKey.Value.ShardId.Should().Be(6, "that was the output parameter value");
-			result.RecordKey.Value.RecordId.Should().Be(4, "that was the output parameter value");
+			//result.RecordKey.Value.Origin.SourceIndicator.Should().Be('x', "that is the data origin value");
+			//result.RecordKey.Value.ShardId.Should().Be(6, "that was the output parameter value");
+			//result.RecordKey.Value.RecordId.Should().Be(4, "that was the output parameter value");
 
-			result.RecordChild.Key.Origin.SourceIndicator.Should().Be('y', "that is the data origin value");
-			result.RecordChild.Key.ShardId.Should().Be(15, "that was the output parameter value");
-			result.RecordChild.Key.RecordId.Should().Be(5, "that was the output parameter value");
-			result.RecordChild.ChildId.Should().Be(6, "that was the output parameter value");
+			//result.RecordChild.Key.Origin.SourceIndicator.Should().Be('y', "that is the data origin value");
+			//result.RecordChild.Key.ShardId.Should().Be(15, "that was the output parameter value");
+			//result.RecordChild.Key.RecordId.Should().Be(5, "that was the output parameter value");
+			//result.RecordChild.ChildId.Should().Be(6, "that was the output parameter value");
 
-			result.DataShard2.Origin.SourceIndicator.Should().Be('A', "that is the data origin value");
-			result.DataShard2.ShardId.Should().Be(5, "that is the value of the current shard");
-			result.DataShard2.RecordId.Should().Be(long.MaxValue, "that is the record id");
+			//result.DataShard2.Origin.SourceIndicator.Should().Be('A', "that is the data origin value");
+			//result.DataShard2.ShardId.Should().Be(5, "that is the value of the current shard");
+			//result.DataShard2.RecordId.Should().Be(long.MaxValue, "that is the record id");
 
-			result.ChildShard2.Value.Origin.SourceIndicator.Should().Be('B', "that is the data origin value");
-			result.ChildShard2.Value.ShardId.Should().Be(255, "that is the value of the current shard");
-			result.ChildShard2.Value.RecordId.Should().Be(12345, "that is the record id");
-			result.ChildShard2.Value.ChildId.Should().Be("Test123", "that is the child id");
+			//result.ChildShard2.Value.Origin.SourceIndicator.Should().Be('B', "that is the data origin value");
+			//result.ChildShard2.Value.ShardId.Should().Be(255, "that is the value of the current shard");
+			//result.ChildShard2.Value.RecordId.Should().Be(12345, "that is the record id");
+			//result.ChildShard2.Value.ChildId.Should().Be("Test123", "that is the child id");
 
 		}
 		[Fact]
@@ -618,19 +625,19 @@ namespace ArgentSea.Sql.Test
 			prms.Add(new SqlParameter("@ConsoleModifiers", System.Data.SqlDbType.NVarChar) { Value = ConsoleModifiers.Shift.ToString(), Direction = System.Data.ParameterDirection.Output });
 			prms.Add(new SqlParameter("@DayOfTheWeek", System.Data.SqlDbType.TinyInt) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
 			prms.Add(new SqlParameter("@GCNotificationStatus", System.Data.SqlDbType.Char) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
-			//prms.Add(new SqlParameter("@DataShard", System.Data.SqlDbType.TinyInt) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
-			//prms.Add(new SqlParameter("@DataRecordId", System.Data.SqlDbType.Int) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
-			//prms.Add(new SqlParameter("@DataTimeStamp", System.Data.SqlDbType.Binary) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
-			//prms.Add(new SqlParameter("@ChildShard", System.Data.SqlDbType.TinyInt) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
-			//prms.Add(new SqlParameter("@ParentRecordId", System.Data.SqlDbType.Int) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
-			//prms.Add(new SqlParameter("@ChildRecordId", System.Data.SqlDbType.SmallInt) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
-			//prms.Add(new SqlParameter("@DataShard2", System.Data.SqlDbType.TinyInt) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
-			//prms.Add(new SqlParameter("@DataRecordId2", System.Data.SqlDbType.Int) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
-			//prms.Add(new SqlParameter("@ChildShard2", System.Data.SqlDbType.TinyInt) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
-			//prms.Add(new SqlParameter("@ParentRecord2Id", System.Data.SqlDbType.Int) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
-			//prms.Add(new SqlParameter("@ChildRecord2Id", System.Data.SqlDbType.SmallInt) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
+            prms.Add(new SqlParameter("@DataShard", System.Data.SqlDbType.TinyInt) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
+            prms.Add(new SqlParameter("@DataRecordId", System.Data.SqlDbType.Int) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
+            prms.Add(new SqlParameter("@DataTimeStamp", System.Data.SqlDbType.Binary) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
+            prms.Add(new SqlParameter("@ChildShard", System.Data.SqlDbType.TinyInt) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
+            prms.Add(new SqlParameter("@ParentRecordId", System.Data.SqlDbType.Int) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
+            prms.Add(new SqlParameter("@ChildRecordId", System.Data.SqlDbType.SmallInt) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
+            prms.Add(new SqlParameter("@DataShard2", System.Data.SqlDbType.TinyInt) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
+            prms.Add(new SqlParameter("@DataRecordId2", System.Data.SqlDbType.Int) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
+            prms.Add(new SqlParameter("@ChildShard2", System.Data.SqlDbType.TinyInt) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
+            prms.Add(new SqlParameter("@ParentRecord2Id", System.Data.SqlDbType.Int) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
+            prms.Add(new SqlParameter("@ChildRecord2Id", System.Data.SqlDbType.SmallInt) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
 
-			var result = Mapper.ReadOutParameters<SqlMapModel>(prms, dbLogger);
+            var result = Mapper.ReadOutParameters<byte, SqlMapModel>(prms, 16, dbLogger);
 
 			result.ArgentSeaTestDataId.Should().Be(11, "that was the output parameter value");
 			result.Name.Should().BeNull("the output parameter was set to DbNull");
@@ -666,18 +673,16 @@ namespace ArgentSea.Sql.Test
 			result.Modifier.Should().Be(ConsoleModifiers.Shift, "that was the output parameter value");
 			result.DayOfTheWeek.HasValue.Should().BeFalse("the output parameter was set to DbNull");
 			result.GarbageCollectorNotificationStatus.HasValue.Should().BeFalse("the output parameter was set to DbNull");
-			//result.RecordKey.DataOrigin.SourceIndicator.Should().Be('0', "that is the empty data origin value");
-			//result.RecordKey.ShardId.Should().Be(0, "that is the empty shardkey value");
-			//result.RecordKey.RecordID.Should().Be(0, "that is the empty shardkey value");
-			//result.RecordKey.TimeStamp.Should().BeNull("that is the empty shardkey value");
-			//result.RecordChild.Key.DataOrigin.SourceIndicator.Should().Be('0', "that is the empty data origin value");
-			//result.RecordChild.Key.ShardId.Should().Be(0, "that is the empty shardchild value");
-			//result.RecordChild.Key.RecordID.Should().Be(0, "that is the empty shardchild value");
-			//result.RecordChild.Key.TimeStamp.Should().BeNull("that is the empty shardchild value");
-			//result.RecordChild.ChildRecordId.Should().Be(0, "that is the empty shardchild value");
-			//result.RecordKeyTwo.HasValue.Should().BeFalse("the output parameters were set to DbNull");
-			//result.RecordChild2.HasValue.Should().BeFalse("the output parameters were set to DbNull");
-		}
+            //result.RecordKey.HasValue.Should().BeFalse("because the input arguments are dbNull");
+            //result.RecordChild.Origin.SourceIndicator.Should().Be('0', "that is the empty data origin value");
+            //result.RecordChild.Key.ShardId.Should().Be(0, "that is the empty shardchild value");
+            //result.RecordChild.Key.RecordId.Should().Be(0, "that is the empty shardchild value");
+            //result.RecordChild.ChildId.Should().Be(0, "that is the empty shardchild value");
+            //result.DataShard2.Origin.SourceIndicator.Should().Be('0', "that is the empty data origin value");
+            //result.DataShard2.ShardId.Should().Be(0, "that is the empty shardKey value");
+            //result.DataShard2.RecordId.Should().Be(0, "that is the empty shardKey value");
+            //result.ChildShard2.Should().BeNull("because the data values are dbNull");
+        }
 		[Fact]
 		public void ValidateSqlMetadataMapper()
 		{
@@ -716,12 +721,12 @@ namespace ArgentSea.Sql.Test
 				Color = ConsoleColor.Red,
 				Modifier = ConsoleModifiers.Shift,
 				DayOfTheWeek = DayOfWeek.Wednesday,
-				GarbageCollectorNotificationStatus = GCNotificationStatus.NotApplicable
-				//RecordKey = new ShardKey(new DataOrigin('?'), (byte)254, int.MaxValue),
-				//RecordChild = new ShardChild(new DataOrigin('!'), (byte)0, 35, short.MinValue),
-				//RecordKeyTwo = new Nullable<ShardKey>(new ShardKey(new DataOrigin('*'), (byte)0, 123)),
-				//RecordChild2 = new ShardChild(new DataOrigin('@'), (byte)200, 1234, (short)5678, new byte[] { 2, 3, 4, 5, 6, 7, 8, 9 })
-			};
+				GarbageCollectorNotificationStatus = GCNotificationStatus.NotApplicable,
+                RecordKey = new ShardKey<byte, int>(new DataOrigin('?'), (byte)254, int.MaxValue),
+                //RecordChild = new ShardChild<byte, int, short>(new DataOrigin('!'), (byte)0, 35, short.MinValue),
+                //DataShard2 = new ShardKey<byte, long>(new DataOrigin('*'), (byte)0, 123L),
+                //ChildShard2 = new Nullable<ShardChild<byte, short, string>>(new ShardChild<byte, short, string>(new DataOrigin('@'), (byte)200, (short)1234, "testing..."))
+            };
 			var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
 
 			var result = TvpMapper.ToTvpRecord<SqlMapModel>(smv, dbLogger);
@@ -775,17 +780,17 @@ namespace ArgentSea.Sql.Test
 			result.GetString(31).Should().Be(ConsoleModifiers.Shift.ToString(), "that was the value provided");
 			result.GetByte(32).Should().Be((byte)DayOfWeek.Wednesday, "that was the value provided");
 			result.GetString(33).Should().Be(GCNotificationStatus.NotApplicable.ToString(), "that was the value provided");
-			////result.GetByte(34).Should().Be((byte)254, "that was the value provided");
-			//result.GetInt32(34).Should().Be(int.MaxValue, "that was the value provided");
-			////result.GetByte(36).Should().Be((byte)0, "that was the value provided");
-			//result.GetInt32(35).Should().Be(35, "that was the value provided");
-			//result.GetInt16(36).Should().Be(short.MinValue, "that was the value provided");
-			//result.GetByte(37).Should().Be(0, "that was the value provided");
-			//result.GetInt32(38).Should().Be(123, "that was the value provided");
-			//result.GetByte(39).Should().Be((byte)200, "that was the value provided");
-			//result.GetInt32(40).Should().Be(1234, "that was the value provided");
-			//result.GetInt16(41).Should().Be((short)5678, "that was the value provided");
-		}
+            ////result.GetByte(34).Should().Be((byte)254, "that was the value provided");
+            //result.GetInt32(34).Should().Be(int.MaxValue, "that was the value provided");
+            ////result.GetByte(36).Should().Be((byte)0, "that was the value provided");
+            //result.GetInt32(35).Should().Be(35, "that was the value provided");
+            //result.GetInt16(36).Should().Be(short.MinValue, "that was the value provided");
+            //result.GetByte(37).Should().Be(0, "that was the value provided");
+            //result.GetInt32(38).Should().Be(123, "that was the value provided");
+            //result.GetByte(39).Should().Be((byte)200, "that was the value provided");
+            //result.GetInt32(40).Should().Be(1234, "that was the value provided");
+            //result.GetInt16(41).Should().Be((short)5678, "that was the value provided");
+        }
 		[Fact]
 		public void ValidateSqlMetadataNullMapper()
 		{
@@ -915,11 +920,10 @@ namespace ArgentSea.Sql.Test
 				Modifier = ConsoleModifiers.Control,
 				DayOfTheWeek = DayOfWeek.Sunday,
 				GarbageCollectorNotificationStatus = GCNotificationStatus.NotApplicable,
-				//RecordKey = new ShardKey(new DataOrigin('x'), 2, 1234),
-				//RecordChild = new ShardChild(new DataOrigin('y'), 3, 4567, (short)-23456),
-				//RecordKeyTwo = new ShardKey(new DataOrigin('z'), 32, -1234),
-				//RecordChild2 = new ShardChild(new DataOrigin('y'), 3, -4567, (short)-23456)
-
+				//RecordKey = new Nullable<ShardKey<byte, int>>(new ShardKey<byte, int>(new DataOrigin('x'), 2, 1234)),
+				//RecordChild = new ShardChild<byte, int, short>(new DataOrigin('y'), 3, 4567, (short)-23456),
+    //            DataShard2 = new ShardKey<byte, long>(new DataOrigin('z'), 32, -1234),
+    //            ChildShard2 = new ShardChild<byte, short, string>(new DataOrigin('y'), 3, -4567, "testing...")
 			};
 
 			var rdr = Substitute.For<System.Data.Common.DbDataReader>();
@@ -927,7 +931,9 @@ namespace ArgentSea.Sql.Test
 			rdr.Read().Returns(true, false);
 			rdr.IsClosed.Returns(false);
 			rdr.HasRows.Returns(true);
-			rdr.FieldCount.Returns(34);
+
+			rdr.FieldCount.Returns(43); //SET THIS IF YOU ADD COLUMNS!
+
 			rdr.GetFieldValue<int>(0).Returns(modelValues.ArgentSeaTestDataId);
 			rdr.GetFieldValue<string>(1).Returns(modelValues.Name);
 			rdr.GetString(1).Returns(modelValues.Name);
@@ -971,7 +977,19 @@ namespace ArgentSea.Sql.Test
 			rdr.GetFieldValue<byte>(32).Returns((byte)modelValues.DayOfTheWeek);
 			rdr.GetFieldValue<string>(33).Returns(modelValues.GarbageCollectorNotificationStatus.ToString());
 			rdr.GetString(33).Returns(modelValues.GarbageCollectorNotificationStatus.ToString());
-			rdr.IsDBNull(0).Returns(false);
+
+            //rdr.GetFieldValue<byte>(34).Returns(modelValues.RecordKey.Value.ShardId);
+            //rdr.GetFieldValue<int>(35).Returns(modelValues.RecordKey.Value.RecordId);
+            //rdr.GetFieldValue<byte>(36).Returns(modelValues.RecordChild.ShardId);
+            //rdr.GetFieldValue<int>(37).Returns(modelValues.RecordChild.RecordId);
+            //rdr.GetFieldValue<short>(38).Returns(modelValues.RecordChild.ChildId);
+            //rdr.GetFieldValue<long>(39).Returns(modelValues.DataShard2.RecordId);
+            //rdr.GetFieldValue<byte>(40).Returns(modelValues.ChildShard2.Value.ShardId);
+            //rdr.GetFieldValue<short>(41).Returns(modelValues.ChildShard2.Value.RecordId);
+            //rdr.GetFieldValue<string>(42).Returns(modelValues.ChildShard2.Value.ChildId);
+            //rdr.GetString(42).Returns(modelValues.ChildShard2.Value.ChildId);
+
+            rdr.IsDBNull(0).Returns(false);
 			rdr.IsDBNull(1).Returns(false);
 			rdr.IsDBNull(2).Returns(false);
 			rdr.IsDBNull(3).Returns(false);
@@ -1005,7 +1023,16 @@ namespace ArgentSea.Sql.Test
 			rdr.IsDBNull(31).Returns(false);
 			rdr.IsDBNull(32).Returns(false);
 			rdr.IsDBNull(33).Returns(false);
-			rdr.GetName(0).Returns("ArgentSeaTestDataId");
+            rdr.IsDBNull(34).Returns(false);
+            rdr.IsDBNull(35).Returns(false);
+            rdr.IsDBNull(36).Returns(false);
+            rdr.IsDBNull(37).Returns(false);
+            rdr.IsDBNull(38).Returns(false);
+            rdr.IsDBNull(39).Returns(false);
+            rdr.IsDBNull(40).Returns(false);
+            rdr.IsDBNull(41).Returns(false);
+            rdr.IsDBNull(42).Returns(false);
+            rdr.GetName(0).Returns("ArgentSeaTestDataId");
 			rdr.GetName(1).Returns("Name");
 			rdr.GetName(2).Returns("LatinName");
 			rdr.GetName(3).Returns("Iso3166");
@@ -1039,9 +1066,18 @@ namespace ArgentSea.Sql.Test
 			rdr.GetName(31).Returns("ConsoleModifiers");
 			rdr.GetName(32).Returns("DayOfTheWeek");
 			rdr.GetName(33).Returns("GCNotificationStatus");
+            rdr.GetName(34).Returns("DataShard");
+            rdr.GetName(35).Returns("DataRecordId");
+            rdr.GetName(36).Returns("ChildShard");
+            rdr.GetName(37).Returns("ParentRecordId");
+            rdr.GetName(38).Returns("ChildRecordId");
+            rdr.GetName(39).Returns("DataRecordId2");
+            rdr.GetName(40).Returns("ChildShard2");
+            rdr.GetName(41).Returns("ParentRecord2Id");
+            rdr.GetName(42).Returns("ChildRecord2Id");
 
-			var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-			var resultList = Mapper.FromDataReader<SqlMapModel>(rdr, dbLogger);
+            var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+			var resultList = Mapper.FromDataReader<byte, SqlMapModel>(32, rdr, dbLogger);
 			var result = resultList[0];
 			result.ArgentSeaTestDataId.Should().Be(modelValues.ArgentSeaTestDataId, "that is the source value");
 			result.Name.Should().Be(modelValues.Name, "that is the source value");
@@ -1077,50 +1113,64 @@ namespace ArgentSea.Sql.Test
 			result.Modifier.Should().Be(modelValues.Modifier, "that is the source value");
 			result.DayOfTheWeek.Should().Be(modelValues.DayOfTheWeek, "that is the source value");
 			result.GarbageCollectorNotificationStatus.Should().Be(modelValues.GarbageCollectorNotificationStatus, "that is the source value");
-		}
-		[Fact]
+            //result.RecordKey.HasValue.Should().BeTrue("because the row has values");
+            //result.RecordKey.Value.ShardId.Should().Be((byte)2, "because that is the shardId data value");
+            //result.RecordKey.Value.RecordId.Should().Be(1234, "because that is the recordId data value");
+            //result.RecordChild.ShardId.Should().Be((byte)3, "because that is the shardId data value");
+            //result.RecordChild.RecordId.Should().Be(4567, "because that is the recordId data value");
+            //result.RecordChild.ChildId.Should().Be((short)-23456, "because that is the childId data value");
+
+            //result.DataShard2.ShardId.Should().Be((byte)32, "because that is the shardId passed into the method call");
+            //result.DataShard2.RecordId.Should().Be(-1234, "because that is the recordId data value");
+            //result.ChildShard2.Value.ShardId.Should().Be((byte)3, "because that is the shardId data value");
+            //result.ChildShard2.Value.RecordId.Should().Be((short)-4567, "because that is the recordId data value");
+            //result.ChildShard2.Value.ChildId.Should().Be("testing...", "because that is the childId data value");
+
+
+        }
+        [Fact]
 		public void ValidateNullSqlDataReader()
 		{
-			var modelValues = new SqlMapModel()
-			{
-				ArgentSeaTestDataId = 1,
-				Name = null,
-				LatinName = null,
-				Iso3166 = null,
-				Iso639 = null,
-				BigCount = null,
-				ValueCount = null,
-				SmallCount = null,
-				ByteCount = null,
-				TrueFalse = null,
-				GuidValue = Guid.Empty,
-				GuidNull = null,
-				Birthday = null,
-				RightNow = null,
-				ExactlyNow = null,
-				NowElsewhere = null,
-				WakeUp = null,
-				Latitude = null,
-				Longitude = double.NaN,
-				Altitude = float.NaN,
-				Temperature = null,
-				Ratio = null,
-				LongStory = null,
-				LatinStory = null,
-				TwoBits = null,
-				MissingBits = null,
-				Blob = null,
-				Price = null,
-				Cost = null,
-				EnvTarget = EnvironmentVariableTarget.Machine,
-				Color = ConsoleColor.DarkMagenta,
-				Modifier = ConsoleModifiers.Shift,
-				DayOfTheWeek = DayOfWeek.Saturday,
-				GarbageCollectorNotificationStatus = GCNotificationStatus.Succeeded,
-				//RecordKey = new ShardKey(new DataOrigin('9'), 33, int.MinValue),
-				//RecordChild = new ShardChild(new DataOrigin('A'), 34, 35, -1),
-				//RecordChild2 = null,
-				//RecordKeyTwo = null
+            var modelValues = new SqlMapModel()
+            {
+                ArgentSeaTestDataId = 1,
+                Name = null,
+                LatinName = null,
+                Iso3166 = null,
+                Iso639 = null,
+                BigCount = null,
+                ValueCount = null,
+                SmallCount = null,
+                ByteCount = null,
+                TrueFalse = null,
+                GuidValue = Guid.Empty,
+                GuidNull = null,
+                Birthday = null,
+                RightNow = null,
+                ExactlyNow = null,
+                NowElsewhere = null,
+                WakeUp = null,
+                Latitude = null,
+                Longitude = double.NaN,
+                Altitude = float.NaN,
+                Temperature = null,
+                Ratio = null,
+                LongStory = null,
+                LatinStory = null,
+                TwoBits = null,
+                MissingBits = null,
+                Blob = null,
+                Price = null,
+                Cost = null,
+                EnvTarget = EnvironmentVariableTarget.Machine,
+                Color = ConsoleColor.DarkMagenta,
+                Modifier = ConsoleModifiers.Shift,
+                DayOfTheWeek = DayOfWeek.Saturday,
+                GarbageCollectorNotificationStatus = GCNotificationStatus.Succeeded,
+                //RecordKey = ShardKey<byte, int>.Empty,
+                //RecordChild = ShardChild<byte, int, short>.Empty,
+                //DataShard2 = ShardKey<byte, long>.Empty,
+                //ChildShard2 = ShardChild<byte, short, string>.Empty
 			};
 
 
@@ -1129,7 +1179,7 @@ namespace ArgentSea.Sql.Test
 			rdr.Read().Returns(true, false);
 			rdr.IsClosed.Returns(false);
 			rdr.HasRows.Returns(true);
-			rdr.FieldCount.Returns(34);
+			rdr.FieldCount.Returns(43);
 			rdr.GetFieldValue<int>(0).Returns(modelValues.ArgentSeaTestDataId);
 			rdr.GetFieldValue<Guid>(10).Returns(modelValues.GuidValue);
 			rdr.GetFieldValue<double>(18).Returns(modelValues.Longitude);
@@ -1141,7 +1191,18 @@ namespace ArgentSea.Sql.Test
 			rdr.GetFieldValue<byte>(32).Returns((byte)modelValues.DayOfTheWeek);
 			rdr.GetFieldValue<string>(33).Returns(modelValues.GarbageCollectorNotificationStatus.ToString());
 			rdr.GetString(33).Returns(modelValues.GarbageCollectorNotificationStatus.ToString());
-			rdr.IsDBNull(0).Returns(false);
+            //rdr.GetFieldValue<byte>(34).Returns(modelValues.RecordKey.Value.ShardId);
+            //rdr.GetFieldValue<int>(35).Returns(modelValues.RecordKey.Value.RecordId);
+            //rdr.GetFieldValue<byte>(36).Returns(modelValues.RecordChild.ShardId);
+            //rdr.GetFieldValue<int>(37).Returns(modelValues.RecordChild.RecordId);
+            //rdr.GetFieldValue<short>(38).Returns(modelValues.RecordChild.ChildId);
+            //rdr.GetFieldValue<long>(39).Returns(modelValues.DataShard2.RecordId);
+            //rdr.GetFieldValue<byte>(40).Returns(modelValues.ChildShard2.Value.ShardId);
+            //rdr.GetFieldValue<short>(41).Returns(modelValues.ChildShard2.Value.RecordId);
+            //rdr.GetFieldValue<string>(42).Returns(modelValues.ChildShard2.Value.ChildId);
+            //rdr.GetString(42).Returns(modelValues.ChildShard2.Value.ChildId);
+
+            rdr.IsDBNull(0).Returns(false);
 			rdr.IsDBNull(1).Returns(true);
 			rdr.IsDBNull(2).Returns(true);
 			rdr.IsDBNull(3).Returns(true);
@@ -1170,12 +1231,21 @@ namespace ArgentSea.Sql.Test
 			rdr.IsDBNull(26).Returns(true);
 			rdr.IsDBNull(27).Returns(true);
 			rdr.IsDBNull(28).Returns(true);
-			rdr.IsDBNull(29).Returns(false);
-			rdr.IsDBNull(30).Returns(false);
-			rdr.IsDBNull(31).Returns(false);
-			rdr.IsDBNull(32).Returns(false);
-			rdr.IsDBNull(33).Returns(false);
-			rdr.GetName(0).Returns("ArgentSeaTestDataId");
+			rdr.IsDBNull(29).Returns(true);
+			rdr.IsDBNull(30).Returns(true);
+			rdr.IsDBNull(31).Returns(true);
+			rdr.IsDBNull(32).Returns(true);
+			rdr.IsDBNull(33).Returns(true);
+            rdr.IsDBNull(34).Returns(true);
+            rdr.IsDBNull(35).Returns(true);
+            rdr.IsDBNull(36).Returns(true);
+            rdr.IsDBNull(37).Returns(true);
+            rdr.IsDBNull(38).Returns(true);
+            rdr.IsDBNull(39).Returns(true);
+            rdr.IsDBNull(40).Returns(true);
+            rdr.IsDBNull(41).Returns(true);
+            rdr.IsDBNull(42).Returns(true);
+            rdr.GetName(0).Returns("ArgentSeaTestDataId");
 			rdr.GetName(1).Returns("Name");
 			rdr.GetName(2).Returns("LatinName");
 			rdr.GetName(3).Returns("Iso3166");
@@ -1209,10 +1279,21 @@ namespace ArgentSea.Sql.Test
 			rdr.GetName(31).Returns("ConsoleModifiers");
 			rdr.GetName(32).Returns("DayOfTheWeek");
 			rdr.GetName(33).Returns("GCNotificationStatus");
+            rdr.GetName(34).Returns("DataShard");
+            rdr.GetName(35).Returns("DataRecordId");
+            rdr.GetName(36).Returns("ChildShard");
+            rdr.GetName(37).Returns("ParentRecordId");
+            rdr.GetName(38).Returns("ChildRecordId");
+            rdr.GetName(39).Returns("DataRecordId2");
+            rdr.GetName(40).Returns("ChildShard2");
+            rdr.GetName(41).Returns("ParentRecord2Id");
+            rdr.GetName(42).Returns("ChildRecord2Id");
 
-			var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-			var resultList = Mapper.FromDataReader<SqlMapModel>(rdr, dbLogger);
-			var result = resultList[0];
+            var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+
+            var resultList = Mapper.FromDataReader<byte, SqlMapModel>(200, rdr, dbLogger);
+
+            var result = resultList[0];
 			result.ArgentSeaTestDataId.Should().Be(modelValues.ArgentSeaTestDataId, "that is the source value");
 			result.Name.Should().BeNull("the reader value is DbNull");
 			result.LatinName.Should().BeNull("the reader value is DbNull");
@@ -1245,8 +1326,12 @@ namespace ArgentSea.Sql.Test
 			result.EnvTarget.Should().Be(modelValues.EnvTarget, "that is the source value");
 			result.Color.Should().Be(modelValues.Color, "that is the source value");
 			result.Modifier.Should().Be(modelValues.Modifier, "that is the source value");
-			result.DayOfTheWeek.Should().Be(modelValues.DayOfTheWeek, "that is the source value");
-			result.GarbageCollectorNotificationStatus.Should().Be(modelValues.GarbageCollectorNotificationStatus, "that is the source value");
+			result.DayOfTheWeek.Should().BeNull("the reader value is DbNull");
+			result.GarbageCollectorNotificationStatus.Should().BeNull("the reader value is DbNull");
+            //result.RecordKey.Should().BeNull("the input values are null");
+            //result.RecordChild.Should().Be(ShardChild<byte, int, short>.Empty, "the result should be empty");
+            //result.DataShard2.Should().Be(ShardKey<byte, long>.Empty, "the result should be empty");
+            //result.ChildShard2.Should().BeNull("the input values are null");
 		}
 	}
 }

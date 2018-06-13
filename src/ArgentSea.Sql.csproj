@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Data.SqlClient" Version="4.4.3" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ArgentSea.Shared\src\ArgentSea.csproj" />
+    <ProjectReference Include="..\..\ArgentSea.Shared\src\ArgentSea.csproj" />
   </ItemGroup>
 
 </Project>

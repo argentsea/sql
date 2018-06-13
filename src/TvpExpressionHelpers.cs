@@ -13,7 +13,7 @@ namespace ArgentSea.Sql
 {
     public static class TvpExpressionHelpers
     {
-        public static void TvpStringExpressionBuilder(string parameterName, SqlDbType sqlType, int length, ParameterExpression expRecord, MemberExpression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
+        public static void TvpStringExpressionBuilder(string parameterName, SqlDbType sqlType, int length, ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
         {
             var dataName = ToFieldName(parameterName);
             if (parameterNames.Add(dataName))
@@ -57,7 +57,7 @@ namespace ArgentSea.Sql
         }
 
         //int, short, byte, enum
-        public static void TvpEnumXIntExpressionBuilder(string parameterName, SqlDbType sqlType, string methodName, Type baseType, ParameterExpression expRecord, MemberExpression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
+        public static void TvpEnumXIntExpressionBuilder(string parameterName, SqlDbType sqlType, string methodName, Type baseType, ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
         {
             var dataName = ToFieldName(parameterName);
             if (parameterNames.Add(dataName))
@@ -150,7 +150,7 @@ namespace ArgentSea.Sql
             return false;
         }
 
-        public static void TvpGuidFloatingPointExpressionBuilder(string parameterName, SqlDbType sqlType, string methodName, Type baseType, ParameterExpression expRecord, MemberExpression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
+        public static void TvpGuidFloatingPointExpressionBuilder(string parameterName, SqlDbType sqlType, string methodName, Type baseType, ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
         {
             var dataName = ToFieldName(parameterName);
             if (parameterNames.Add(dataName))

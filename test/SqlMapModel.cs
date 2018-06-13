@@ -109,30 +109,30 @@ namespace ArgentSea.Sql.Test
 		[MapToSqlChar("GCNotificationStatus", 16, 1033)]
 		public GCNotificationStatus? GarbageCollectorNotificationStatus { get; set; }
 
-		[MapShardKey('x', "DataShard", "DataRecordId")]
-		[MapToSqlTinyInt("DataShard")]
-		[MapToSqlInt("DataRecordId")]
-		public ShardKey<byte, int>? RecordKey { get; set; } = ShardKey<byte, int>.Empty;
+        [MapShardKey('x', "DataShard", "DataRecordId")]
+        [MapToSqlTinyInt("DataShard")]
+        [MapToSqlInt("DataRecordId")]
+        public ShardKey<byte, int>? RecordKey { get; set; } = ShardKey<byte, int>.Empty;
 
-		[MapShardChild('y', "ChildShard", "ParentRecordId", "ChildRecordId")]
-		[MapToSqlTinyInt("ChildShard")]
-		[MapToSqlInt("ParentRecordId")]
-		[MapToSqlSmallInt("ChildRecordId")]
-		public ShardChild<byte, int, short> RecordChild { get; set; } = ShardChild<byte, int, short>.Empty;
-
-
-		[MapShardKey('A', "@DataRecordId2")]
-		[MapToSqlBigInt("@DataRecordId2")]
-		public ShardKey<byte, long> DataShard2 { get; set; } = new ShardKey<byte, long>('A', 123, 54321);
-
-		[MapShardChild('B', "ChildShard2", "ParentRecord2Id", "ChildRecord2Id")]
-		[MapToSqlTinyInt("ChildShard2")]
-		[MapToSqlSmallInt("ParentRecord2Id")]
-		[MapToSqlNVarChar("ChildRecord2Id", 255)]
-		public ShardChild<byte, short, string>? ChildShard2 { get; set; } = null;
+        [MapShardChild('y', "ChildShard", "ParentRecordId", "ChildRecordId")]
+        [MapToSqlTinyInt("ChildShard")]
+        [MapToSqlInt("ParentRecordId")]
+        [MapToSqlSmallInt("ChildRecordId")]
+        public ShardChild<byte, int, short> RecordChild { get; set; } = ShardChild<byte, int, short>.Empty;
 
 
+        [MapShardKey('A', "@DataRecordId2")]
+        [MapToSqlBigInt("@DataRecordId2")]
+        public ShardKey<byte, long> DataShard2 { get; set; } = new ShardKey<byte, long>('A', 123, 54321);
 
-	}
+        [MapShardChild('B', "ChildShard2", "ParentRecord2Id", "ChildRecord2Id")]
+        [MapToSqlTinyInt("ChildShard2")]
+        [MapToSqlSmallInt("ParentRecord2Id")]
+        [MapToSqlNVarChar("ChildRecord2Id", 255)]
+        public ShardChild<byte, short, string>? ChildShard2 { get; set; } = null;
+
+
+
+    }
 }
 
