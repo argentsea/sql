@@ -11,8 +11,9 @@ using ArgentSea;
 
 namespace ArgentSea.Sql
 {
-
-	//[AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = false)]
+    /// <summary>
+    /// This abstract class is a SQL-specific implementation of the ParameterMapAttribute class.
+    /// </summary>
 	public abstract class SqlParameterMapAttribute : ParameterMapAttribute
     {
         //public SqlParameterMapAttribute(string parameterName, SqlDbType sqlType): base(TvpExpressionHelpers.ToParameterName(parameterName), (int)sqlType)
@@ -27,6 +28,9 @@ namespace ArgentSea.Sql
     }
 
     #region String parameters
+    /// <summary>
+    /// This attribute maps a model property to/from a SQL NVarChar parameter or column.
+    /// </summary>
     public class MapToSqlNVarCharAttribute : SqlParameterMapAttribute
     {
         /// <summary>
@@ -67,6 +71,9 @@ namespace ArgentSea.Sql
         public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
     }
 
+    /// <summary>
+    /// This attribute maps a model property to/from a SQL NChar parameter or column.
+    /// </summary>
     public class MapToSqlNCharAttribute : SqlParameterMapAttribute
     {
         /// <summary>
@@ -108,6 +115,9 @@ namespace ArgentSea.Sql
         public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
     }
 
+    /// <summary>
+    /// This attributes maps a model property to/from a SQL VarChar parameter or column.
+    /// </summary>
     public class MapToSqlVarCharAttribute : SqlParameterMapAttribute
     {
         /// <summary>
@@ -152,6 +162,10 @@ namespace ArgentSea.Sql
 
         public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
     }
+
+    /// <summary>
+    /// This attribute maps a model property to/from a SQL Char parameter or column.
+    /// </summary>
     public class MapToSqlCharAttribute : SqlParameterMapAttribute
     {
         /// <summary>
@@ -199,6 +213,10 @@ namespace ArgentSea.Sql
     }
     #endregion
     #region Number expSprocParameters
+
+    /// <summary>
+    /// This attribute maps a model property to/from a SQL BigInt parameter or column.
+    /// </summary>
     public class MapToSqlBigIntAttribute : SqlParameterMapAttribute
     {
         /// <summary>
@@ -242,6 +260,10 @@ namespace ArgentSea.Sql
 
         public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
     }
+
+    /// <summary>
+    /// This attribute maps a model property to/from a SQL Int parameter or column.
+    /// </summary>
     public class MapToSqlIntAttribute : SqlParameterMapAttribute
     {
         /// <summary>
@@ -281,6 +303,10 @@ namespace ArgentSea.Sql
 
         public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
     }
+
+    /// <summary>
+    /// This attribute maps a model property to/from a SQL SmallInt parameter or column.
+    /// </summary>
     public class MapToSqlSmallIntAttribute : SqlParameterMapAttribute
     {
         /// <summary>
@@ -320,6 +346,10 @@ namespace ArgentSea.Sql
 
         public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
     }
+
+    /// <summary>
+    /// This attribute maps a model property to/from a SQL TinyInt parameter or column.
+    /// </summary>
     public class MapToSqlTinyIntAttribute : SqlParameterMapAttribute
     {
         /// <summary>
@@ -359,6 +389,10 @@ namespace ArgentSea.Sql
 
         public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
     }
+
+    /// <summary>
+    /// This attribute maps a model property to/from a SQL Bit parameter or column.
+    /// </summary>
     public class MapToSqlBitAttribute : SqlParameterMapAttribute
     {
         /// <summary>
@@ -397,6 +431,10 @@ namespace ArgentSea.Sql
         public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
 
     }
+
+    /// <summary>
+    /// This attribute maps a model property to/from a SQL Decimal parameter or column.
+    /// </summary>
     public class MapToSqlDecimalAttribute : SqlParameterMapAttribute
     {
         /// <summary>
@@ -473,6 +511,10 @@ namespace ArgentSea.Sql
 
         public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
     }
+
+    /// <summary>
+    /// This attribute maps a model property to/from a SQL Money parameter or column.
+    /// </summary>
     public class MapToSqlMoneyAttribute : SqlParameterMapAttribute
     {
         /// <summary>
@@ -510,6 +552,10 @@ namespace ArgentSea.Sql
 
         public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
     }
+
+    /// <summary>
+    /// This attribute maps a model property to/from a SQL SmallMoney parameter or column.
+    /// </summary>
     public class MapToSqlSmallMoneyAttribute : SqlParameterMapAttribute
     {
         /// <summary>
@@ -547,6 +593,10 @@ namespace ArgentSea.Sql
 
         public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
     }
+
+    /// <summary>
+    /// This attribute maps a model property to/from a SQL Float parameter or column.
+    /// </summary>
     public class MapToSqlFloatAttribute : SqlParameterMapAttribute
     {
         /// <summary>
@@ -585,6 +635,10 @@ namespace ArgentSea.Sql
 
         public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
     }
+
+    /// <summary>
+    /// This attribute maps a model property to/from a SQL Real parameter or column.
+    /// </summary>
     public class MapToSqlRealAttribute : SqlParameterMapAttribute
     {
         /// <summary>
@@ -625,6 +679,9 @@ namespace ArgentSea.Sql
     }
     #endregion
     #region Temporal parameters
+    /// <summary>
+    /// This attribute maps a model property to/from a SQL DateTime parameter or column.
+    /// </summary>
     public class MapToSqlDateTimeAttribute : SqlParameterMapAttribute
     {
         /// <summary>
@@ -662,6 +719,10 @@ namespace ArgentSea.Sql
 
         public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
     }
+
+    /// <summary>
+    /// This attribute maps a model property to/from a SQL DateTime2 parameter or column.
+    /// </summary>
     public class MapToSqlDateTime2Attribute : SqlParameterMapAttribute
     {
         /// <summary>
@@ -699,6 +760,10 @@ namespace ArgentSea.Sql
 
         public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
     }
+
+    /// <summary>
+    /// This attribute maps a model property to/from a SQL Date parameter or column.
+    /// </summary>
     public class MapToSqlDateAttribute : SqlParameterMapAttribute
     {
         /// <summary>
@@ -736,6 +801,10 @@ namespace ArgentSea.Sql
 
         public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
     }
+
+    /// <summary>
+    /// This attribute maps a model property to/from a SQL Time parameter or column.
+    /// </summary>
     public class MapToSqlTimeAttribute : SqlParameterMapAttribute
     {
         /// <summary>
@@ -773,6 +842,10 @@ namespace ArgentSea.Sql
 
         public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
     }
+
+    /// <summary>
+    /// This attribute maps a model property to/from a SQL DateTimeOffset parameter or column.
+    /// </summary>
     public class MapToSqlDateTimeOffsetAttribute : SqlParameterMapAttribute
     {
         /// <summary>
@@ -812,6 +885,9 @@ namespace ArgentSea.Sql
     }
     #endregion
     #region Other parameters
+    /// <summary>
+    /// This attribute maps a model property to/from a SQL VarBinary parameter or column.
+    /// </summary>
     public class MapToSqlVarBinaryAttribute : SqlParameterMapAttribute
     {
         /// <summary>
@@ -851,18 +927,28 @@ namespace ArgentSea.Sql
 
         public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
     }
+
     /// <summary>
-    /// Map this property to the specified fixed-size Binary database column.
+    /// This attribute maps a model property to/from a SQL Binary parameter or column.
     /// </summary>
-    /// <param name="parameterName">The name of the parameter or column that contains the value. The system will automatically add or remove the prefix '@' as needed.</param>
-    /// <param name="length">The size of the binary value.</param>
     public class MapToSqlBinaryAttribute : SqlParameterMapAttribute
     {
+        /// <summary>
+        /// Map this property to the specified fixed-size Binary database column.
+        /// </summary>
+        /// <param name="parameterName">The name of the parameter or column that contains the value. The system will automatically add or remove the prefix '@' as needed.</param>
+        /// <param name="length">The size of the binary value.</param>
         public MapToSqlBinaryAttribute(string parameterName, int length) : base(parameterName, SqlDbType.Binary)
         {
             this.Length = length;
         }
-		public MapToSqlBinaryAttribute(string parameterName, int length, bool isRequired) : base(parameterName, SqlDbType.Binary, isRequired)
+        /// <summary>
+        /// Map this property to the specified fixed-size Binary database column.
+        /// </summary>
+        /// <param name="parameterName">The name of the parameter or column that contains the value. The system will automatically add or remove the prefix '@' as needed.</param>
+        /// <param name="length">The size of the binary value.</param>
+        /// <param name="isRequired">When true, set the entire model instance to null if the parameter or column is db null.</param>
+        public MapToSqlBinaryAttribute(string parameterName, int length, bool isRequired) : base(parameterName, SqlDbType.Binary, isRequired)
 		{
 			this.Length = length;
 		}
@@ -890,6 +976,10 @@ namespace ArgentSea.Sql
 
         public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
     }
+
+    /// <summary>
+    /// This attribute maps a model property to/from a SQL UniqueIdentifier parameter or column.
+    /// </summary>
     public class MapToSqlUniqueIdentifierAttribute : SqlParameterMapAttribute
     {
 		/// <summary>

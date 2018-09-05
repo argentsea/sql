@@ -13,6 +13,9 @@ using System.Linq;
 
 namespace ArgentSea.Sql
 {
+    /// <summary>
+    /// This class adds the ability to map model properties to SQL table-valued parameters.
+    /// </summary>
     public class TvpMapper
     {
         private static ConcurrentDictionary<Type, Delegate> _setTvpParamCache = new ConcurrentDictionary<Type, Delegate>();
@@ -229,14 +232,13 @@ namespace ArgentSea.Sql
             }
         }
 
+        /// <summary>
         /// Converts an object instance to a SqlMetaData instance.
         /// To convert an object list to an table-value input parameter, use: var prm = lst.ConvertAll(x => MapToTableParameterRecord(x));
         /// </summary>
-        /// <typeparam name="TShard">The type of the shardId.</typeparam>
         /// <typeparam name="TModel">The type of the model object. The "MapTo" attributes are used to create the Sql metadata and columns. The object property order become the column order.</typeparam>
-        /// <param name="shardId">The Id of the executing shard.</param>
         /// <param name="model">An object model instance. The property values are provided as table row values.</param>
-        /// <param name="ignoreFields">A lists of colums that should not be created. Entries should not start with '@'.</param>
+        /// <param name="logger"></param>
         /// <returns>A SqlMetaData object. A list of these can be used as a Sql table-valued parameter.</returns>
         public static SqlDataRecord ToTvpRecord<TModel>(TModel model, ILogger logger) where TModel : class
         {

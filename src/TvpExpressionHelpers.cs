@@ -11,7 +11,7 @@ using Microsoft.SqlServer.Server;
 
 namespace ArgentSea.Sql
 {
-    public static class TvpExpressionHelpers
+    internal static class TvpExpressionHelpers
     {
         public static void TvpStringExpressionBuilder(string parameterName, SqlDbType sqlType, int length, ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
         {

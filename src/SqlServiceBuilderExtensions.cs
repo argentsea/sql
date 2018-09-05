@@ -7,13 +7,11 @@ using ArgentSea.Sql;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-
+    /// <summary>
+    /// This static class adds the injectable SQL data services into the services collection.
+    /// </summary>
     public static class SqlServiceBuilderExtensions
     {
-		private const string cResilienceOptionName = "ResilienceConfig";
-		private const string cSecurityOptionName = "SecurityConfig";
-		private const string cDataOptionName = "SqlConfig";
-
 		/// <summary>
 		/// Loads configuration into injectable Options and the DbDataStores service. This overload does not load ShardSets.  ILogger service should have already be created.
 		/// </summary>
@@ -25,15 +23,10 @@ namespace Microsoft.Extensions.DependencyInjection
             IConfiguration config
             ) 
         {
-			//services.Configure<DataResilienceOptions>(cResilienceOptionName, config);
-			//services.Configure<DataSecurityOptions>(cSecurityOptionName, config);
-			//services.Configure<SqlDbConnectionOptions>(cDataOptionName, config);
-
 			// even if these configs are already set by another provider, this will just overwrite with the same values.
 			services.Configure<DataResilienceOptions>(config);
 			services.Configure<DataSecurityOptions>(config);
 			services.Configure<SqlDbConnectionOptions>(config);
-			//services.AddSingleton<DbDataStores<SqlDbConnectionOptions>, DbDataStores<SqlDbConnectionOptions>>();
 			services.AddSingleton<SqlDatabases>();
 			return services;
         }

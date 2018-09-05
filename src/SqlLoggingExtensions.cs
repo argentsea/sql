@@ -7,6 +7,9 @@ using System.Globalization;
 
 namespace ArgentSea.Sql
 {
+    /// <summary>
+    /// This static class provides the logging extension methods for handling table-valued parameter (TVP) mapping.
+    /// </summary>
     public static class SqlLoggingExtensions
     {
 		public enum SqlEventIdentifier

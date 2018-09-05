@@ -4,9 +4,14 @@ using System.Text;
 
 namespace ArgentSea.Sql
 {
+    /// <summary>
+    /// This options class contains the shard dataset configuration information.
+    /// </summary>
+    /// <typeparam name="TShard"></typeparam>
     public class SqlShardConnectionOptions<TShard> : IShardDataConfigurationOptions<TShard>
-	{
-		public IShardConnectionsConfiguration<TShard>[] ShardSetsInternal { get => SqlShardSets; }
+        where TShard : IComparable
+    {
+        public IShardConnectionsConfiguration<TShard>[] ShardSetsInternal { get => SqlShardSets; }
 		public SqlShardConnectionsConfiguration[] SqlShardSets { get; set; }
 
 		public class SqlShardConnectionsConfiguration: IShardConnectionsConfiguration<TShard>

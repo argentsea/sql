@@ -7,6 +7,9 @@ using System.Data.SqlClient;
 
 namespace ArgentSea.Sql
 {
+    /// <summary>
+    /// This class is a provider-specific resouce to enable provider-neutral code to execute. It is unlikely that you would reference this in consumer code.
+    /// </summary>
     public class DataProviderServiceFactory: IDataProviderServiceFactory
     {
         public bool GetIsErrorTransient(Exception exception)

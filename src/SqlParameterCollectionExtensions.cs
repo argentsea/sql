@@ -9,9 +9,11 @@ using Microsoft.Extensions.Logging;
 
 namespace ArgentSea.Sql
 {
+    /// <summary>
+    /// This class adds extension methods which simplify setting SQL parameter values from .NET types.
+    /// </summary>
     public static class SqlParameterCollectionExtensions
     {
-
         private static string NormalizeSqlParameterName(string parameterName)
         {
             if (!parameterName.StartsWith("@"))

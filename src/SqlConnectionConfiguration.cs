@@ -9,6 +9,11 @@ using System.Data.SqlClient;
 
 namespace ArgentSea.Sql
 {
+    /// <summary>
+    /// This class represents is a (non-sharded) database connection.
+    /// Note that the SecurityKey must match a defined key in the DataSecurityOptions; likewise, a DataResilienceKey (if defined) must match as key in the DataResilienceOptions array.
+    /// If the DataResilienceKey is not defined, a default data resilience strategy will be used.
+    /// </summary>
     public class SqlConnectionConfiguration : IConnectionConfiguration
     {
 
@@ -26,6 +31,9 @@ namespace ArgentSea.Sql
                 this.csb.Password = security.Password;
                 this.csb.IntegratedSecurity = false;
             }
+            this.csb.ConnectRetryCount = 0;
+            this.csb.ConnectRetryInterval = 10; //cannot be zero
+            this.csb.ConnectTimeout = 2;
         }
 
         public string ConnectionDescription
