@@ -1,7 +1,7 @@
 ﻿{
 	"DataResilienceStrategies": [
 		{
-			"DataResilienceKey": "local",
+			"ResilienceKey": "local",
 			"RetryCount": 5,
 			"RetryInterval": 10,
 			"RetryLengthening": "Fibonacci",
@@ -9,7 +9,7 @@
 			"CircuitBreakerTestInterval": 25
 		},
     {
-      "DataResilienceKey": "remote",
+      "ResilienceKey": "remote",
       "RetryCount": 6,
       "RetryInterval": 11,
       "RetryLengthening": "HalfSquare",
@@ -34,7 +34,7 @@
 			"DatabaseKey": "MainDb",
       "DataConnection": {
         "SecurityKey": "One",
-        "DataResilienceKey": "remote",
+        "ResilienceKey": "remote",
         "ApplicationIntent": "ReadOnly",
         "ApplicationName": "MyApp",
         "ConnectRetryCount": 11,
@@ -63,7 +63,7 @@
 			"DatabaseKey": "OtherDb",
       "DataConnection": {
         "SecurityKey": "Two",
-        "DataResilienceKey": "remote",
+        "ResilienceKey": "remote",
         "ApplicationIntent": "ReadWrite",
         "ApplicationName": "MyOtherApp",
         "ConnectRetryCount": 12,
@@ -91,13 +91,13 @@
 	],
 "SqlShardSets": [
 	{
-		"ShardSetKey": "Set1",
+		"ShardSetName": "Set1",
 		"Shards": [
 			{
 				"ShardId": 0,
         "ReadConnection": {
           "SecurityKey": "One",
-          "DataResilienceKey": "local",
+          "ResilienceKey": "local",
           "ApplicationIntent": "ReadOnly",
           "ApplicationName": "MyOtherApp",
           "ConnectRetryCount": 12,
@@ -123,7 +123,7 @@
         },
         "WriteConnection": {
           "SecurityKey": "One",
-          "DataResilienceKey": "local",
+          "ResilienceKey": "local",
           "ApplicationIntent": "ReadWrite",
           "ApplicationName": "MyOtherApp",
           "ConnectRetryCount": 12,
@@ -152,7 +152,7 @@
 				"ShardId": 1,
         "ReadConnection": {
           "SecurityKey": "One",
-          "DataResilienceKey": "local",
+          "ResilienceKey": "local",
           "ApplicationIntent": "ReadOnly",
           "ApplicationName": "MyOtherApp",
           "ConnectRetryCount": 12,
@@ -178,7 +178,7 @@
         },
         "WriteConnection": {
           "SecurityKey": "One",
-          "DataResilienceKey": "local",
+          "ResilienceKey": "local",
           "ApplicationIntent": "ReadWrite",
           "ApplicationName": "MyOtherApp",
           "ConnectRetryCount": 12,
@@ -206,13 +206,13 @@
 		]
 	},
 		{
-			"ShardSetKey": "Set2",
+			"ShardSetName": "Set2",
 			"Shards": [
 				{
 					"ShardId": 0,
           "ReadConnection": {
             "SecurityKey": "Two",
-            "DataResilienceKey": "remote",
+            "ResilienceKey": "remote",
             "ApplicationIntent": "ReadOnly",
             "ApplicationName": "MyOtherApp",
             "ConnectRetryCount": 12,
@@ -238,7 +238,7 @@
           },
           "WriteConnection": {
             "SecurityKey": "Two",
-            "DataResilienceKey": "remote",
+            "ResilienceKey": "remote",
             "ApplicationIntent": "ReadWrite",
             "ApplicationName": "MyOtherApp",
             "ConnectRetryCount": 12,
@@ -267,7 +267,7 @@
 					"ShardId": 1,
           "ReadConnection": {
             "SecurityKey": "Two",
-            "DataResilienceKey": "remote",
+            "ResilienceKey": "remote",
             "ApplicationIntent": "ReadOnly",
             "ApplicationName": "MyOtherApp",
             "ConnectRetryCount": 12,
@@ -293,7 +293,7 @@
           },
           "WriteConnection": {
             "SecurityKey": "Two",
-            "DataResilienceKey": "remote",
+            "ResilienceKey": "remote",
             "ApplicationIntent": "ReadWrite",
             "ApplicationName": "MyOtherApp",
             "ConnectRetryCount": 12,

@@ -40,8 +40,8 @@ namespace ArgentSea.Sql.Test
 
 			var resilienceData = resilienceOptions.Value;
 			resilienceData.DataResilienceStrategies.Length.Should().Be(2, "there are two strategies defined in configuration file");
-			resilienceData.DataResilienceStrategies[0].DataResilienceKey.Should().Be("local", "that is the first key in the configuration file");
-			resilienceData.DataResilienceStrategies[1].DataResilienceKey.Should().Be("remote", "that is the second key in the configuration file");
+			resilienceData.DataResilienceStrategies[0].ResilienceKey.Should().Be("local", "that is the first key in the configuration file");
+			resilienceData.DataResilienceStrategies[1].ResilienceKey.Should().Be("remote", "that is the second key in the configuration file");
 
 			var sqlDbData = sqlDbOptions.Value;
 			sqlDbData.SqlDbConnections.Length.Should().Be(2, "two conections are defined in the configuration file.");
