@@ -15,7 +15,7 @@ namespace ArgentSea.Sql
     /// Note that the SecurityKey must match a defined key in the DataSecurityOptions; likewise, a ResilienceKey (if defined) must match as key in the DataResilienceOptions array.
     /// If the ResilienceKey is not defined, a default data resilience strategy will be used.
     /// </summary>
-    public class SqlConnectionConfiguration : DataConnectionConfiguration
+    public class SqlConnectionConfiguration : DataConnectionConfigurationBase
     {
          
         private readonly SqlConnectionStringBuilder _csb = new SqlConnectionStringBuilder();

@@ -4,6 +4,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
 	  <!-- Required in both test/product projects. This is a temporary workaround for https://github.com/Microsoft/vstest/issues/800 -->
 	  <DebugType>Full</DebugType>
+	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	  <PackageProjectUrl>http://www.argentsea.com</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>

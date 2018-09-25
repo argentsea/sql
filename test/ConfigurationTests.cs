@@ -71,25 +71,25 @@ namespace ArgentSea.Sql.Test
 			var securityOptions = serviceProvider.GetService<IOptions<DataSecurityOptions>>();
 			var sqlDbOptions = serviceProvider.GetService<IOptions<SqlDbConnectionOptions>>();
 			var sqlShardOptions = serviceProvider.GetService<IOptions<SqlShardConnectionOptions<byte>>>();
-			var dbLogger = NSubstitute.Substitute.For<Microsoft.Extensions.Logging.ILogger<ArgentSea.DbDataStores<SqlDbConnectionOptions>>>();
+			var dbLogger = NSubstitute.Substitute.For<Microsoft.Extensions.Logging.ILogger<ArgentSea.DatabasesBase<SqlDbConnectionOptions>>>();
 
-			var dbService = new DbDataStores<SqlDbConnectionOptions>(sqlDbOptions, securityOptions, resilienceOptions, new DataProviderServiceFactory(), dbLogger);
-			dbService.DbConnections.Count.Should().Be(2, "two connections are defined in the configuration file");
+			var dbService = new DatabasesBase<SqlDbConnectionOptions>(sqlDbOptions, securityOptions, resilienceOptions, new DataProviderServiceFactory(), dbLogger);
+			dbService.Count.Should().Be(2, "two connections are defined in the configuration file");
 
-			var shardLogger = NSubstitute.Substitute.For<Microsoft.Extensions.Logging.ILogger<ArgentSea.ShardDataStores<byte, SqlShardConnectionOptions<byte>>>>();
+			var shardLogger = NSubstitute.Substitute.For<Microsoft.Extensions.Logging.ILogger<ArgentSea.ShardSetsBase<byte, SqlShardConnectionOptions<byte>>>>();
 
-			var shardService = new ShardDataStores<byte, SqlShardConnectionOptions<byte>>(sqlShardOptions, securityOptions, resilienceOptions, new DataProviderServiceFactory(), shardLogger);
-			shardService.ShardSets.Count.Should().Be(2, "two shard sets are defined in the configuration file");
-			shardService.ShardSets["Set1"].Count.Should().Be(2, "the configuration file has two shard connections defined on shard set Set1");
-			shardService.ShardSets["Set2"].Count.Should().Be(2, "the configuration file has two shard connections defined on shard set Set2");
-			shardService.ShardSets["Set1"][0].ReadConnection.ConnectionString.Should().Contain("webUser", "the configuration file specifies this credential key");
-			//shardService.ShardSets["Set1"][0].WriteConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
-			//shardService.ShardSets["Set1"][1].ReadConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
-			//shardService.ShardSets["Set1"][1].WriteConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
-			shardService.ShardSets["Set2"][0].ReadConnection.ConnectionString.Should().Contain("Integrated Security=True", "the configuration file specifies this credential key");
-			//shardService.ShardSets["Set2"][0].WriteConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
-			//shardService.ShardSets["Set2"][1].ReadConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
-			//shardService.ShardSets["Set2"][1].WriteConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
+			var shardService = new ShardSetsBase<byte, SqlShardConnectionOptions<byte>>(sqlShardOptions, securityOptions, resilienceOptions, new DataProviderServiceFactory(), shardLogger);
+			shardService.Count.Should().Be(2, "two shard sets are defined in the configuration file");
+			shardService["Set1"].Count.Should().Be(2, "the configuration file has two shard connections defined on shard set Set1");
+			shardService["Set2"].Count.Should().Be(2, "the configuration file has two shard connections defined on shard set Set2");
+			shardService["Set1"][0].ReadConnection.ConnectionString.Should().Contain("webUser", "the configuration file specifies this credential key");
+			//shardService["Set1"][0].WriteConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
+			//shardService["Set1"][1].ReadConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
+			//shardService["Set1"][1].WriteConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
+			shardService["Set2"][0].ReadConnection.ConnectionString.Should().Contain("Integrated Security=True", "the configuration file specifies this credential key");
+			//shardService["Set2"][0].WriteConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
+			//shardService["Set2"][1].ReadConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
+			//shardService["Set2"][1].WriteConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
 		}
 	}
 }

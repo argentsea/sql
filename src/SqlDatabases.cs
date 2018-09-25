@@ -6,7 +6,7 @@ namespace ArgentSea.Sql
     /// <summary>
     /// This class manages the non-sharded SQL database connections.
     /// </summary>
-	public class SqlDatabases : DbDataStores<SqlDbConnectionOptions>
+	public class SqlDatabases : DatabasesBase<SqlDbConnectionOptions>
 	{
 		public SqlDatabases(
 			IOptions<SqlDbConnectionOptions> configOptions,

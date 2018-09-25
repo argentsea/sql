@@ -8,7 +8,7 @@ namespace ArgentSea.Sql
     /// This options class contains the shard dataset configuration information.
     /// </summary>
     /// <typeparam name="TShard"></typeparam>
-    public class SqlShardConnectionOptions<TShard> : IShardDataConfigurationOptions<TShard>
+    public class SqlShardConnectionOptions<TShard> : IShardSetConfigurationOptions<TShard>
         where TShard : IComparable
     {
         public IShardConnectionsConfiguration<TShard>[] ShardSetsInternal { get => SqlShardSets; }

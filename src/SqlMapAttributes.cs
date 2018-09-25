@@ -14,7 +14,7 @@ namespace ArgentSea.Sql
     /// <summary>
     /// This abstract class is a SQL-specific implementation of the ParameterMapAttribute class.
     /// </summary>
-	public abstract class SqlParameterMapAttribute : ParameterMapAttribute
+	public abstract class SqlParameterMapAttribute : ParameterMapAttributeBase
     {
         //public SqlParameterMapAttribute(string parameterName, SqlDbType sqlType): base(TvpExpressionHelpers.ToParameterName(parameterName), (int)sqlType)
         public SqlParameterMapAttribute(string parameterName, SqlDbType sqlType) : base(parameterName, (int)sqlType)

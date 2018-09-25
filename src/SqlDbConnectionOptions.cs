@@ -23,14 +23,14 @@ namespace ArgentSea.Sql
     /// Note that the SecurityKey must match a defined key in the DataSecurityOptions; likewise, a ResilienceKey (if defined) must match a key in the DataResilienceOptions array.
     ///</example>
     /// </summary>
-    public class SqlDbConnectionOptions : IDbDataConfigurationOptions
+    public class SqlDbConnectionOptions : IDatabaseConfigurationOptions
 	{
 		public SqlDbConnectionConfiguration[] SqlDbConnections { get; set; }
 
-        public IDbConnectionConfiguration[] DbConnectionsInternal { get => SqlDbConnections; }
+        public IDatabaseConnectionConfiguration[] DbConnectionsInternal { get => SqlDbConnections; }
 
 	}
-	public class SqlDbConnectionConfiguration : IDbConnectionConfiguration
+	public class SqlDbConnectionConfiguration : IDatabaseConnectionConfiguration
 	{
 		public string DatabaseKey { get; set; }
 		
