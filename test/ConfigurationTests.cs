@@ -71,15 +71,17 @@ namespace ArgentSea.Sql.Test
 			var securityOptions = serviceProvider.GetService<IOptions<DataSecurityOptions>>();
 			var sqlDbOptions = serviceProvider.GetService<IOptions<SqlDbConnectionOptions>>();
 			var sqlShardOptions = serviceProvider.GetService<IOptions<SqlShardConnectionOptions<byte>>>();
-			var dbLogger = NSubstitute.Substitute.For<Microsoft.Extensions.Logging.ILogger<ArgentSea.DatabasesBase<SqlDbConnectionOptions>>>();
+			var dbLogger = NSubstitute.Substitute.For<Microsoft.Extensions.Logging.ILogger<SqlDatabases>>();
 
-			var dbService = new DatabasesBase<SqlDbConnectionOptions>(sqlDbOptions, securityOptions, resilienceOptions, new DataProviderServiceFactory(), dbLogger);
+			var dbService = new SqlDatabases(sqlDbOptions, securityOptions, resilienceOptions, dbLogger);
 			dbService.Count.Should().Be(2, "two connections are defined in the configuration file");
 
-			var shardLogger = NSubstitute.Substitute.For<Microsoft.Extensions.Logging.ILogger<ArgentSea.ShardSetsBase<byte, SqlShardConnectionOptions<byte>>>>();
+			var shardLogger = NSubstitute.Substitute.For<Microsoft.Extensions.Logging.ILogger<ArgentSea.Sql.SqlShardSets<byte>>>();
 
-			var shardService = new ShardSetsBase<byte, SqlShardConnectionOptions<byte>>(sqlShardOptions, securityOptions, resilienceOptions, new DataProviderServiceFactory(), shardLogger);
-			shardService.Count.Should().Be(2, "two shard sets are defined in the configuration file");
+            //var shardService = new ShardSetsBase<byte, SqlShardConnectionOptions<byte>>(sqlShardOptions, securityOptions, resilienceOptions, new DataProviderServiceFactory(), shardLogger);
+            var shardService = new ArgentSea.Sql.SqlShardSets<byte>(sqlShardOptions, securityOptions, resilienceOptions, shardLogger);
+
+            shardService.Count.Should().Be(2, "two shard sets are defined in the configuration file");
 			shardService["Set1"].Count.Should().Be(2, "the configuration file has two shard connections defined on shard set Set1");
 			shardService["Set2"].Count.Should().Be(2, "the configuration file has two shard connections defined on shard set Set2");
 			shardService["Set1"][0].ReadConnection.ConnectionString.Should().Contain("webUser", "the configuration file specifies this credential key");
