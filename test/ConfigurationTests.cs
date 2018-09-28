@@ -84,11 +84,11 @@ namespace ArgentSea.Sql.Test
             shardService.Count.Should().Be(2, "two shard sets are defined in the configuration file");
 			shardService["Set1"].Count.Should().Be(2, "the configuration file has two shard connections defined on shard set Set1");
 			shardService["Set2"].Count.Should().Be(2, "the configuration file has two shard connections defined on shard set Set2");
-			shardService["Set1"][0].ReadConnection.ConnectionString.Should().Contain("webUser", "the configuration file specifies this credential key");
+			shardService["Set1"][0].Read.ConnectionString.Should().Contain("webUser", "the configuration file specifies this credential key");
 			//shardService["Set1"][0].WriteConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
 			//shardService["Set1"][1].ReadConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
 			//shardService["Set1"][1].WriteConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
-			shardService["Set2"][0].ReadConnection.ConnectionString.Should().Contain("Integrated Security=True", "the configuration file specifies this credential key");
+			shardService["Set2"][0].Read.ConnectionString.Should().Contain("Integrated Security=True", "the configuration file specifies this credential key");
 			//shardService["Set2"][0].WriteConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
 			//shardService["Set2"][1].ReadConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
 			//shardService["Set2"][1].WriteConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
