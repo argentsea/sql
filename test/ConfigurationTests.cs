@@ -64,9 +64,9 @@ namespace ArgentSea.Sql.Test
 			services.AddOptions();
 
 			services.AddLogging();
-			services.AddSqlServices<byte>(config);
+            services.AddSqlServices<byte>(config);
 
-			var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
 			var resilienceOptions = serviceProvider.GetService<IOptions<DataResilienceOptions>>();
 			var securityOptions = serviceProvider.GetService<IOptions<DataSecurityOptions>>();
 			var sqlDbOptions = serviceProvider.GetService<IOptions<SqlDbConnectionOptions>>();

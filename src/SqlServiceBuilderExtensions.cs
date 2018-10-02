@@ -46,7 +46,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddSqlServices(config);
 			//services.Configure<SqlShardConnectionOptions<TShard>>(cDataOptionName, config);
 			services.Configure<SqlShardConnectionOptions<TShard>>(config);
-			services.AddSingleton<ShardSetsBase<TShard, SqlShardConnectionOptions<TShard>>, ShardSetsBase<TShard, SqlShardConnectionOptions<TShard>>>();
+			services.AddSingleton<ShardSetsBase<TShard, SqlShardConnectionOptions<TShard>>, SqlShardSets<TShard>>();
 			return services;
 		}
 	}

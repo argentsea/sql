@@ -1077,7 +1077,7 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(42).Returns("ChildRecord2Id");
 
             var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-			var resultList = Mapper.FromDataReader<byte, SqlMapModel>(32, rdr, dbLogger);
+			var resultList = Mapper.MapToList<byte, SqlMapModel>(rdr, 32, dbLogger);
 			var result = resultList[0];
 			result.ArgentSeaTestDataId.Should().Be(modelValues.ArgentSeaTestDataId, "that is the source value");
 			result.Name.Should().Be(modelValues.Name, "that is the source value");
@@ -1291,7 +1291,7 @@ namespace ArgentSea.Sql.Test
 
             var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
 
-            var resultList = Mapper.FromDataReader<byte, SqlMapModel>(200, rdr, dbLogger);
+            var resultList = Mapper.MapToList<byte, SqlMapModel>(rdr, 200, dbLogger);
 
             var result = resultList[0];
 			result.ArgentSeaTestDataId.Should().Be(modelValues.ArgentSeaTestDataId, "that is the source value");
