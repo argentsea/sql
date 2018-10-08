@@ -133,30 +133,39 @@ namespace ArgentSea.Sql
         //    return parameterName;
         //}
 
-        public void SetParameters(DbCommand cmd, DbParameterCollection parameters)
+        public void SetParameters(DbCommand cmd, DbParameterCollection parameters, Dictionary<string, object> parameterValues)
         {
             for (var i = 0; i < parameters.Count; i++)
             {
-                var prm = (SqlParameter)parameters[i];
-                cmd.Parameters.Add(new SqlParameter()
+                var prmSource = (SqlParameter)parameters[i];
+
+                var prmTarget = new SqlParameter()
                 {
-                    CompareInfo = prm.CompareInfo,
-                    DbType = prm.DbType,
-                    Direction = prm.Direction,
-                    IsNullable = prm.IsNullable,
-                    LocaleId = prm.LocaleId,
-                    Offset = prm.Offset,
-                    ParameterName = prm.ParameterName,
-                    Precision = prm.Precision,
-                    Scale = prm.Scale,
-                    Size = prm.Size,
-                    SourceColumn = prm.SourceColumn,
-                    SourceColumnNullMapping = prm.SourceColumnNullMapping,
-                    SqlDbType = prm.SqlDbType,
-                    SqlValue = prm.SqlValue,
-                    TypeName = prm.TypeName,
-                    Value = prm.Value
-                });
+                    CompareInfo = prmSource.CompareInfo,
+                    DbType = prmSource.DbType,
+                    Direction = prmSource.Direction,
+                    IsNullable = prmSource.IsNullable,
+                    LocaleId = prmSource.LocaleId,
+                    Offset = prmSource.Offset,
+                    ParameterName = prmSource.ParameterName,
+                    Precision = prmSource.Precision,
+                    Scale = prmSource.Scale,
+                    Size = prmSource.Size,
+                    SourceColumn = prmSource.SourceColumn,
+                    SourceColumnNullMapping = prmSource.SourceColumnNullMapping,
+                    SqlDbType = prmSource.SqlDbType,
+                    SqlValue = prmSource.SqlValue,
+                    TypeName = prmSource.TypeName,
+                    Value = prmSource.Value
+                };
+                if (!(parameterValues is null))
+                {
+                    if (parameterValues.TryGetValue(prmTarget.ParameterName, out var prmValue))
+                    {
+                        prmTarget.Value = prmValue;
+                    }
+                }
+                cmd.Parameters.Add(prmTarget);
             }
         }
 
