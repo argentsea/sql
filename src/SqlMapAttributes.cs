@@ -52,13 +52,13 @@ namespace ArgentSea.Sql
             => candidateType.IsEnum || candidateType == typeof(string) || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && Nullable.GetUnderlyingType(candidateType).IsEnum);
 
         protected override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.InParameterStringExpressionBuilder(this.ParameterName, this.Length, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlNVarCharInParameter), null, expressions, expSprocParameters, expIgnoreParameters, parameterNames, expProperty, propertyType, expLogger, logger);
+            => ExpressionHelpers.InParameterStringExpressionBuilder(this.ParameterName, this.Length, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlNVarCharInputParameter), null, expressions, expSprocParameters, expIgnoreParameters, parameterNames, expProperty, propertyType, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => TvpExpressionHelpers.TvpStringExpressionBuilder(this.ColumnName, (SqlDbType)this.SqlType, this.Length, expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlNVarCharOutParameter), Expression.Constant(this.Length, typeof(int)), null, parameterNames, expIgnoreParameters, logger);
+            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlNVarCharOutputParameter), Expression.Constant(this.Length, typeof(int)), null, parameterNames, expIgnoreParameters, logger);
 
         protected override void AppendReadOutParameterExpressions(Expression expProperty, IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expPrm, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReadOutParameterStringExpressions(this.ParameterName, typeof(DbParameterExtensions), nameof(DbParameterExtensions.GetString), expProperty, expressions, expSprocParameters, expPrm, propertyType, expLogger, logger);
@@ -95,14 +95,14 @@ namespace ArgentSea.Sql
             => candidateType.IsEnum || candidateType == typeof(string) || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && Nullable.GetUnderlyingType(candidateType).IsEnum);
 
         protected override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.InParameterStringExpressionBuilder(this.ParameterName, this.Length, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlNCharInParameter), null, expressions, expSprocParameters, expIgnoreParameters, parameterNames, expProperty, propertyType, expLogger, logger);
+            => ExpressionHelpers.InParameterStringExpressionBuilder(this.ParameterName, this.Length, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlNCharInputParameter), null, expressions, expSprocParameters, expIgnoreParameters, parameterNames, expProperty, propertyType, expLogger, logger);
 
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => TvpExpressionHelpers.TvpStringExpressionBuilder(this.ColumnName, (SqlDbType)this.SqlType, this.Length, expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlNCharOutParameter), Expression.Constant(this.Length, typeof(int)), null, parameterNames, expIgnoreParameters, logger);
+            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlNCharOutputParameter), Expression.Constant(this.Length, typeof(int)), null, parameterNames, expIgnoreParameters, logger);
 
         protected override void AppendReadOutParameterExpressions(Expression expProperty, IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expPrm, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReadOutParameterStringExpressions(this.ParameterName, typeof(DbParameterExtensions), nameof(DbParameterExtensions.GetString), expProperty, expressions, expSprocParameters, expPrm, propertyType, expLogger, logger);
@@ -144,13 +144,13 @@ namespace ArgentSea.Sql
             => candidateType.IsEnum || candidateType == typeof(string) || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && Nullable.GetUnderlyingType(candidateType).IsEnum);
 
         protected override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.InParameterStringExpressionBuilder(this.ParameterName, this.Length, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlVarCharInParameter), Expression.Constant(this.LocaleId, typeof(int)), expressions, expSprocParameters, expIgnoreParameters, parameterNames, expProperty, propertyType, expLogger, logger);
+            => ExpressionHelpers.InParameterStringExpressionBuilder(this.ParameterName, this.Length, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlVarCharInputParameter), Expression.Constant(this.LocaleId, typeof(int)), expressions, expSprocParameters, expIgnoreParameters, parameterNames, expProperty, propertyType, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => TvpExpressionHelpers.TvpStringExpressionBuilder(this.ColumnName, (SqlDbType)this.SqlType, this.Length, expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlVarCharOutParameter), Expression.Constant(this.Length, typeof(int)), Expression.Constant(this.LocaleId, typeof(int)), parameterNames, expIgnoreParameters, logger);
+            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlVarCharOutputParameter), Expression.Constant(this.Length, typeof(int)), Expression.Constant(this.LocaleId, typeof(int)), parameterNames, expIgnoreParameters, logger);
 
         protected override void AppendReadOutParameterExpressions(Expression expProperty, IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expPrm, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReadOutParameterStringExpressions(this.ParameterName, typeof(DbParameterExtensions), nameof(DbParameterExtensions.GetString), expProperty, expressions, expSprocParameters, expPrm, propertyType, expLogger, logger);
@@ -192,14 +192,14 @@ namespace ArgentSea.Sql
             => candidateType.IsEnum || candidateType == typeof(string) || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && Nullable.GetUnderlyingType(candidateType).IsEnum);
 
         protected override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.InParameterStringExpressionBuilder(this.ParameterName, this.Length, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlCharInParameter), Expression.Constant(this.LocaleId, typeof(int)), expressions, expSprocParameters, expIgnoreParameters, parameterNames, expProperty, propertyType, expLogger, logger);
+            => ExpressionHelpers.InParameterStringExpressionBuilder(this.ParameterName, this.Length, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlCharInputParameter), Expression.Constant(this.LocaleId, typeof(int)), expressions, expSprocParameters, expIgnoreParameters, parameterNames, expProperty, propertyType, expLogger, logger);
 
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => TvpExpressionHelpers.TvpStringExpressionBuilder(this.ColumnName, (SqlDbType)this.SqlType, this.Length, expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlCharOutParameter), Expression.Constant(this.Length, typeof(int)), Expression.Constant(this.LocaleId, typeof(int)), parameterNames, expIgnoreParameters, logger);
+            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlCharOutputParameter), Expression.Constant(this.Length, typeof(int)), Expression.Constant(this.LocaleId, typeof(int)), parameterNames, expIgnoreParameters, logger);
 
         protected override void AppendReadOutParameterExpressions(Expression expProperty, IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expPrm, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReadOutParameterStringExpressions(this.ParameterName, typeof(DbParameterExtensions), nameof(DbParameterExtensions.GetString), expProperty, expressions, expSprocParameters, expPrm, propertyType, expLogger, logger);
@@ -238,7 +238,7 @@ namespace ArgentSea.Sql
 			|| (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && Nullable.GetUnderlyingType(candidateType) == typeof(long));
 
         protected override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
-			=> ExpressionHelpers.InParameterEnumXIntExpressionBuilder(this.ParameterName, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlBigIntInParameter), typeof(long?), expressions, expSprocParameters, expIgnoreParameters, parameterNames, expProperty, propertyType, expLogger, logger);
+			=> ExpressionHelpers.InParameterEnumXIntExpressionBuilder(this.ParameterName, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlBigIntInputParameter), typeof(long?), expressions, expSprocParameters, expIgnoreParameters, parameterNames, expProperty, propertyType, expLogger, logger);
 		//=> ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlBigIntInParameter), null, null, parameterNames, expLogger, logger);
 
 		protected internal override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
@@ -246,7 +246,7 @@ namespace ArgentSea.Sql
 		//=> TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ColumnName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetInt64), typeof(long), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
 		protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, ParameterExpression expLogger, ILogger logger)
-			=> ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlBigIntOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
+			=> ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlBigIntOutputParameter), null, null, parameterNames, expIgnoreParameters, logger);
 
         protected override void AppendReadOutParameterExpressions(Expression expProperty, IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expPrm, Type propertyType, ParameterExpression expLogger, ILogger logger)
 			=> ExpressionHelpers.ReadOutParameterEnumXIntExpressions(this.ParameterName, typeof(DbParameterExtensions), nameof(DbParameterExtensions.GetLong), nameof(DbParameterExtensions.GetNullableLong), expProperty, expressions, expSprocParameters, expPrm, propertyType, expLogger, logger);
@@ -285,13 +285,13 @@ namespace ArgentSea.Sql
             || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && (Nullable.GetUnderlyingType(candidateType) == typeof(int) || Nullable.GetUnderlyingType(candidateType).IsEnum));
 
         protected override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.InParameterEnumXIntExpressionBuilder(this.ParameterName, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlIntInParameter), typeof(int?), expressions, expSprocParameters, expIgnoreParameters, parameterNames, expProperty, propertyType, expLogger, logger);
+            => ExpressionHelpers.InParameterEnumXIntExpressionBuilder(this.ParameterName, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlIntInputParameter), typeof(int?), expressions, expSprocParameters, expIgnoreParameters, parameterNames, expProperty, propertyType, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => TvpExpressionHelpers.TvpEnumXIntExpressionBuilder(this.ColumnName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetInt32), typeof(int), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlIntOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
+            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlIntOutputParameter), null, null, parameterNames, expIgnoreParameters, logger);
 
         protected override void AppendReadOutParameterExpressions(Expression expProperty, IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expPrm, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReadOutParameterEnumXIntExpressions(this.ParameterName, typeof(DbParameterExtensions), nameof(DbParameterExtensions.GetInteger), nameof(DbParameterExtensions.GetNullableInteger), expProperty, expressions, expSprocParameters, expPrm, propertyType, expLogger, logger);
@@ -328,13 +328,13 @@ namespace ArgentSea.Sql
             || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && (Nullable.GetUnderlyingType(candidateType) == typeof(short) || Nullable.GetUnderlyingType(candidateType).IsEnum));
 
         protected override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.InParameterEnumXIntExpressionBuilder(this.ParameterName, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlSmallIntInParameter), typeof(short?), expressions, expSprocParameters, expIgnoreParameters, parameterNames, expProperty, propertyType, expLogger, logger);
+            => ExpressionHelpers.InParameterEnumXIntExpressionBuilder(this.ParameterName, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlSmallIntInputParameter), typeof(short?), expressions, expSprocParameters, expIgnoreParameters, parameterNames, expProperty, propertyType, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => TvpExpressionHelpers.TvpEnumXIntExpressionBuilder(this.ColumnName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetInt16), typeof(short), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlSmallIntOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
+            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlSmallIntOutputParameter), null, null, parameterNames, expIgnoreParameters, logger);
 
         protected override void AppendReadOutParameterExpressions(Expression expProperty, IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expPrm, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReadOutParameterEnumXIntExpressions(this.ParameterName, typeof(DbParameterExtensions), nameof(DbParameterExtensions.GetShort), nameof(DbParameterExtensions.GetNullableShort), expProperty, expressions, expSprocParameters, expPrm, propertyType, expLogger, logger);
@@ -371,13 +371,13 @@ namespace ArgentSea.Sql
             || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && (Nullable.GetUnderlyingType(candidateType) == typeof(byte) || Nullable.GetUnderlyingType(candidateType).IsEnum));
 
         protected override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.InParameterEnumXIntExpressionBuilder(this.ParameterName, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlTinyIntInParameter), typeof(byte?), expressions, expSprocParameters, expIgnoreParameters, parameterNames, expProperty, propertyType, expLogger, logger);
+            => ExpressionHelpers.InParameterEnumXIntExpressionBuilder(this.ParameterName, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlTinyIntInputParameter), typeof(byte?), expressions, expSprocParameters, expIgnoreParameters, parameterNames, expProperty, propertyType, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => TvpExpressionHelpers.TvpEnumXIntExpressionBuilder(this.ColumnName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetByte), typeof(byte), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlTinyIntOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
+            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlTinyIntOutputParameter), null, null, parameterNames, expIgnoreParameters, logger);
 
         protected override void AppendReadOutParameterExpressions(Expression expProperty, IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expPrm, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReadOutParameterEnumXIntExpressions(this.ParameterName, typeof(DbParameterExtensions), nameof(DbParameterExtensions.GetByte), nameof(DbParameterExtensions.GetNullableByte), expProperty, expressions, expSprocParameters, expPrm, propertyType, expLogger, logger);
@@ -412,13 +412,13 @@ namespace ArgentSea.Sql
             => candidateType == typeof(bool) || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && Nullable.GetUnderlyingType(candidateType) == typeof(bool));
 
         protected override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlBitInParameter), null, null, parameterNames, expLogger, logger);
+            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlBitInputParameter), null, null, parameterNames, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ColumnName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetBoolean), typeof(bool), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlBitOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
+            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlBitOutputParameter), null, null, parameterNames, expIgnoreParameters, logger);
 
         protected override void AppendReadOutParameterExpressions(Expression expProperty, IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expPrm, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReadOutParameterSimpleValueExpressions(this.ParameterName, typeof(DbParameterExtensions), nameof(DbParameterExtensions.GetBoolean), nameof(DbParameterExtensions.GetNullableBoolean), expProperty, expressions, expSprocParameters, expPrm, propertyType, expLogger, logger);
@@ -462,7 +462,7 @@ namespace ArgentSea.Sql
             => candidateType == typeof(decimal) || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && Nullable.GetUnderlyingType(candidateType) == typeof(decimal));
 
         protected override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDecimalInParameter), Expression.Constant(this.Precision, typeof(byte)), Expression.Constant(this.Scale, typeof(byte)), parameterNames, expLogger, logger);
+            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDecimalInputParameter), Expression.Constant(this.Precision, typeof(byte)), Expression.Constant(this.Scale, typeof(byte)), parameterNames, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
         {
@@ -498,7 +498,7 @@ namespace ArgentSea.Sql
         }
 
 		protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDecimalOutParameter), Expression.Constant(this.Precision, typeof(byte)), Expression.Constant(this.Scale, typeof(byte)), parameterNames, expIgnoreParameters, logger);
+            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDecimalOutputParameter), Expression.Constant(this.Precision, typeof(byte)), Expression.Constant(this.Scale, typeof(byte)), parameterNames, expIgnoreParameters, logger);
 
 
         protected override void AppendReadOutParameterExpressions(Expression expProperty, IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expPrm, Type propertyType, ParameterExpression expLogger, ILogger logger)
@@ -534,13 +534,13 @@ namespace ArgentSea.Sql
             => candidateType == typeof(decimal) || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && Nullable.GetUnderlyingType(candidateType) == typeof(decimal));
 
         protected override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlMoneyInParameter), null, null, parameterNames, expLogger, logger);
+            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlMoneyInputParameter), null, null, parameterNames, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ColumnName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetDecimal), typeof(decimal), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlMoneyOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
+            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlMoneyOutputParameter), null, null, parameterNames, expIgnoreParameters, logger);
 
         protected override void AppendReadOutParameterExpressions(Expression expProperty, IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expPrm, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReadOutParameterSimpleValueExpressions(this.ParameterName, typeof(DbParameterExtensions), nameof(DbParameterExtensions.GetDecimal), nameof(DbParameterExtensions.GetNullableDecimal), expProperty, expressions, expSprocParameters, expPrm, propertyType, expLogger, logger);
@@ -575,13 +575,13 @@ namespace ArgentSea.Sql
             => candidateType == typeof(decimal) || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && Nullable.GetUnderlyingType(candidateType) == typeof(decimal));
 
         protected override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlSmallMoneyInParameter), null, null, parameterNames, expLogger, logger);
+            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlSmallMoneyInputParameter), null, null, parameterNames, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ColumnName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetDecimal), typeof(decimal), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlSmallMoneyOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
+            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlSmallMoneyOutputParameter), null, null, parameterNames, expIgnoreParameters, logger);
 
         protected override void AppendReadOutParameterExpressions(Expression expProperty, IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expPrm, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReadOutParameterSimpleValueExpressions(this.ParameterName, typeof(DbParameterExtensions), nameof(DbParameterExtensions.GetDecimal), nameof(DbParameterExtensions.GetNullableDecimal), expProperty, expressions, expSprocParameters, expPrm, propertyType, expLogger, logger);
@@ -616,14 +616,14 @@ namespace ArgentSea.Sql
             => candidateType == typeof(double) || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && Nullable.GetUnderlyingType(candidateType) == typeof(double));
 
         protected override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlFloatInParameter), null, null, parameterNames, expLogger, logger);
+            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlFloatInputParameter), null, null, parameterNames, expLogger, logger);
 
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => TvpExpressionHelpers.TvpGuidFloatingPointExpressionBuilder(this.ColumnName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetDouble), typeof(double), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlFloatOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
+            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlFloatOutputParameter), null, null, parameterNames, expIgnoreParameters, logger);
 
         protected override void AppendReadOutParameterExpressions(Expression expProperty, IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expPrm, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReadOutParameterSimpleValueExpressions(this.ParameterName, typeof(DbParameterExtensions), nameof(DbParameterExtensions.GetDouble), nameof(DbParameterExtensions.GetNullableDouble), expProperty, expressions, expSprocParameters, expPrm, propertyType, expLogger, logger);
@@ -658,14 +658,14 @@ namespace ArgentSea.Sql
             => candidateType == typeof(float) || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && Nullable.GetUnderlyingType(candidateType) == typeof(float));
 
         protected override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlRealInParameter), null, null, parameterNames, expLogger, logger);
+            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlRealInputParameter), null, null, parameterNames, expLogger, logger);
 
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => TvpExpressionHelpers.TvpGuidFloatingPointExpressionBuilder(this.ColumnName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetFloat), typeof(float), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlRealOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
+            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlRealOutputParameter), null, null, parameterNames, expIgnoreParameters, logger);
 
         protected override void AppendReadOutParameterExpressions(Expression expProperty, IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expPrm, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReadOutParameterSimpleValueExpressions(this.ParameterName, typeof(DbParameterExtensions), nameof(DbParameterExtensions.GetFloat), nameof(DbParameterExtensions.GetNullableFloat), expProperty, expressions, expSprocParameters, expPrm, propertyType, expLogger, logger);
@@ -701,13 +701,13 @@ namespace ArgentSea.Sql
             => candidateType == typeof(DateTime) || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && Nullable.GetUnderlyingType(candidateType) == typeof(DateTime));
 
         protected override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateTimeInParameter), null, null, parameterNames, expLogger, logger);
+            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateTimeInputParameter), null, null, parameterNames, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ColumnName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetDateTime), typeof(DateTime), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateTimeOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
+            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateTimeOutputParameter), null, null, parameterNames, expIgnoreParameters, logger);
 
         protected override void AppendReadOutParameterExpressions(Expression expProperty, IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expPrm, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReadOutParameterSimpleValueExpressions(this.ParameterName, typeof(DbParameterExtensions), nameof(DbParameterExtensions.GetDateTime), nameof(DbParameterExtensions.GetNullableDateTime), expProperty, expressions, expSprocParameters, expPrm, propertyType, expLogger, logger);
@@ -742,13 +742,13 @@ namespace ArgentSea.Sql
             => candidateType == typeof(DateTime) || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && Nullable.GetUnderlyingType(candidateType) == typeof(DateTime));
 
         protected override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateTime2InParameter), null, null, parameterNames, expLogger, logger);
+            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateTime2InputParameter), null, null, parameterNames, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ColumnName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetDateTime), typeof(DateTime), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateTime2OutParameter), null, null, parameterNames, expIgnoreParameters, logger);
+            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateTime2OutputParameter), null, null, parameterNames, expIgnoreParameters, logger);
 
         protected override void AppendReadOutParameterExpressions(Expression expProperty, IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expPrm, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReadOutParameterSimpleValueExpressions(this.ParameterName, typeof(DbParameterExtensions), nameof(DbParameterExtensions.GetDateTime), nameof(DbParameterExtensions.GetNullableDateTime), expProperty, expressions, expSprocParameters, expPrm, propertyType, expLogger, logger);
@@ -783,13 +783,13 @@ namespace ArgentSea.Sql
             => candidateType == typeof(DateTime) || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && Nullable.GetUnderlyingType(candidateType) == typeof(DateTime));
 
         protected override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateInParameter), null, null, parameterNames, expLogger, logger);
+            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateInputParameter), null, null, parameterNames, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ColumnName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetDateTime), typeof(DateTime), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
+            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateOutputParameter), null, null, parameterNames, expIgnoreParameters, logger);
 
         protected override void AppendReadOutParameterExpressions(Expression expProperty, IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expPrm, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReadOutParameterSimpleValueExpressions(this.ParameterName, typeof(DbParameterExtensions), nameof(DbParameterExtensions.GetDateTime), nameof(DbParameterExtensions.GetNullableDateTime), expProperty, expressions, expSprocParameters, expPrm, propertyType, expLogger, logger);
@@ -824,13 +824,13 @@ namespace ArgentSea.Sql
             => candidateType == typeof(TimeSpan) || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && Nullable.GetUnderlyingType(candidateType) == typeof(TimeSpan));
 
         protected override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlTimeInParameter), null, null, parameterNames, expLogger, logger);
+            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlTimeInputParameter), null, null, parameterNames, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ColumnName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetTimeSpan), typeof(TimeSpan), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlTimeOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
+            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlTimeOutputParameter), null, null, parameterNames, expIgnoreParameters, logger);
 
         protected override void AppendReadOutParameterExpressions(Expression expProperty, IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expPrm, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReadOutParameterSimpleValueExpressions(this.ParameterName, typeof(DbParameterExtensions), nameof(DbParameterExtensions.GetTimeSpan), nameof(DbParameterExtensions.GetNullableTimeSpan), expProperty, expressions, expSprocParameters, expPrm, propertyType, expLogger, logger);
@@ -865,13 +865,13 @@ namespace ArgentSea.Sql
             => candidateType == typeof(DateTimeOffset) || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && Nullable.GetUnderlyingType(candidateType) == typeof(DateTimeOffset));
 
         protected override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateTimeOffsetInParameter), null, null, parameterNames, expLogger, logger);
+            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateTimeOffsetInputParameter), null, null, parameterNames, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ColumnName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetDateTimeOffset), typeof(DateTimeOffset), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateTimeOffsetOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
+            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateTimeOffsetOutputParameter), null, null, parameterNames, expIgnoreParameters, logger);
 
         protected override void AppendReadOutParameterExpressions(Expression expProperty, IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expPrm, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReadOutParameterSimpleValueExpressions(this.ParameterName, typeof(DbParameterExtensions), nameof(DbParameterExtensions.GetDateTimeOffset), nameof(DbParameterExtensions.GetNullableDateTimeOffset), expProperty, expressions, expSprocParameters, expPrm, propertyType, expLogger, logger);
@@ -909,13 +909,13 @@ namespace ArgentSea.Sql
             => candidateType == typeof(byte[]);
 
         protected override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlVarBinaryInParameter), Expression.Constant(this.Length, typeof(int)), null, parameterNames, expLogger, logger);
+            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlVarBinaryInputParameter), Expression.Constant(this.Length, typeof(int)), null, parameterNames, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
         => TvpExpressionHelpers.TvpBinaryExpressionBuilder(this.ColumnName, (SqlDbType)this.SqlType, this.Length, expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlVarBinaryOutParameter), Expression.Constant(this.Length, typeof(int)), null, parameterNames, expIgnoreParameters, logger);
+            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlVarBinaryOutputParameter), Expression.Constant(this.Length, typeof(int)), null, parameterNames, expIgnoreParameters, logger);
 
         protected override void AppendReadOutParameterExpressions(Expression expProperty, IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expPrm, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReadOutParameterBinaryExpressions(this.ParameterName, typeof(DbParameterExtensions), nameof(DbParameterExtensions.GetBytes), expProperty, expressions, expSprocParameters, expPrm, propertyType, expLogger, logger);
@@ -958,13 +958,13 @@ namespace ArgentSea.Sql
             => candidateType == typeof(byte[]);
 
         protected override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlBinaryInParameter), Expression.Constant(this.Length, typeof(int)), null, parameterNames, expLogger, logger);
+            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlBinaryInputParameter), Expression.Constant(this.Length, typeof(int)), null, parameterNames, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
         => TvpExpressionHelpers.TvpBinaryExpressionBuilder(this.ColumnName, (SqlDbType)this.SqlType, this.Length, expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlBinaryOutParameter), Expression.Constant(this.Length, typeof(int)), null, parameterNames, expIgnoreParameters, logger);
+            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlBinaryOutputParameter), Expression.Constant(this.Length, typeof(int)), null, parameterNames, expIgnoreParameters, logger);
 
         protected override void AppendReadOutParameterExpressions(Expression expProperty, IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expPrm, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReadOutParameterBinaryExpressions(this.ParameterName, typeof(DbParameterExtensions), nameof(DbParameterExtensions.GetBytes), expProperty, expressions, expSprocParameters, expPrm, propertyType, expLogger, logger);
@@ -999,14 +999,14 @@ namespace ArgentSea.Sql
             => candidateType == typeof(Guid) || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && Nullable.GetUnderlyingType(candidateType) == typeof(Guid));
 
         protected override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlUniqueIdentifierInParameter), null, null, parameterNames, expLogger, logger);
+            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlUniqueIdentifierInputParameter), null, null, parameterNames, expLogger, logger);
 
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => TvpExpressionHelpers.TvpGuidFloatingPointExpressionBuilder(this.ColumnName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetGuid), typeof(Guid), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlUniqueIdentifierOutParameter), null, null, parameterNames, expIgnoreParameters, logger);
+            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlUniqueIdentifierOutputParameter), null, null, parameterNames, expIgnoreParameters, logger);
 
         protected override void AppendReadOutParameterExpressions(Expression expProperty, IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expPrm, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReadOutParameterSimpleValueExpressions(this.ParameterName, typeof(DbParameterExtensions), nameof(DbParameterExtensions.GetGuid), nameof(DbParameterExtensions.GetNullableGuid), expProperty, expressions, expSprocParameters, expPrm, propertyType, expLogger, logger);

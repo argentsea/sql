@@ -35,7 +35,7 @@ namespace ArgentSea.Sql
 		/// For nvarchar(max) parameters, specify -1. 
 		/// Setting the value correctly will help avoid plan cache pollution (when not using stored procedures) and minimize memory buffer allocations.</param>
 		/// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-		public static DbParameterCollection AddSqlNVarCharInParameter(this DbParameterCollection prms, string parameterName, string value, int maxLength)
+		public static DbParameterCollection AddSqlNVarCharInputParameter(this DbParameterCollection prms, string parameterName, string value, int maxLength)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.NVarChar, maxLength)
             {
@@ -52,7 +52,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="length">Specifies the number of characters in the string. If the original string value is smaller than this length, the returned value will be padded with spaces.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlNVarCharOutParameter(this DbParameterCollection prms, string parameterName, int maxLength)
+        public static DbParameterCollection AddSqlNVarCharOutputParameter(this DbParameterCollection prms, string parameterName, int maxLength)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.NVarChar, maxLength)
             {
@@ -70,7 +70,7 @@ namespace ArgentSea.Sql
         /// <param name="value">An empty string will be saved as a zero-length string; a null string will be saved as a database null value.</param>
         /// <param name="length">Specifies the number of characters in the string. If the original string value is smaller than this length, the returned value will be padded with spaces.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlNCharInParameter(this DbParameterCollection prms, string parameterName, string value, int length)
+        public static DbParameterCollection AddSqlNCharInputParameter(this DbParameterCollection prms, string parameterName, string value, int length)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.NChar, length)
             {
@@ -87,7 +87,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="length">Specifies the number of characters in the string. If the original string value is smaller than this length, the returned value will be padded with spaces.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlNCharOutParameter(this DbParameterCollection prms, string parameterName, int length)
+        public static DbParameterCollection AddSqlNCharOutputParameter(this DbParameterCollection prms, string parameterName, int length)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.NChar, length)
             {
@@ -108,7 +108,7 @@ namespace ArgentSea.Sql
         /// Setting the value correctly will help avoid plan cache pollution (when not using stored procedures) and minimize memory buffer allocations.</param>
         /// <param name="localeId">Specify the code page for ANSI conversions. For example, the value 1033 is U.S. English.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlVarCharInParameter(this DbParameterCollection prms, string parameterName, string value, int maxLength, int localeId)
+        public static DbParameterCollection AddSqlVarCharInputParameter(this DbParameterCollection prms, string parameterName, string value, int maxLength, int localeId)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.VarChar, maxLength)
             {
@@ -129,7 +129,7 @@ namespace ArgentSea.Sql
         /// Setting the value correctly will help avoid plan cache pollution (when not using stored procedures) and minimize memory buffer allocations.</param>
         /// <param name="localeId">Specify the code page for ANSI conversions. For example, the value 1033 is U.S. English.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlVarCharOutParameter(this DbParameterCollection prms, string parameterName, int maxLength, int localeId)
+        public static DbParameterCollection AddSqlVarCharOutputParameter(this DbParameterCollection prms, string parameterName, int maxLength, int localeId)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.VarChar, maxLength)
             {
@@ -149,7 +149,7 @@ namespace ArgentSea.Sql
         /// <param name="value">An empty string will be saved as a zero-length string; a null string will be saved as a database null value.</param>
         /// <param name="localeId">Specify the code page for ANSI conversions. For example, the value 1033 is U.S. English.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlCharInParameter(this DbParameterCollection prms, string parameterName, string value, int length, int localeId)
+        public static DbParameterCollection AddSqlCharInputParameter(this DbParameterCollection prms, string parameterName, string value, int length, int localeId)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Char, length)
             {
@@ -168,7 +168,7 @@ namespace ArgentSea.Sql
         /// <param name="length">Specifies the number of characters in the string. If the original string value is smaller than this length, the returned value will be padded with spaces.</param>
         /// <param name="localeId">Specify the code page for ANSI conversions. For example, the value 1033 is U.S. English.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlCharOutParameter(this DbParameterCollection prms, string parameterName, int length, int localeId)
+        public static DbParameterCollection AddSqlCharOutputParameter(this DbParameterCollection prms, string parameterName, int length, int localeId)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Char, length)
             {
@@ -189,7 +189,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A 64-bit signed integer value.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlBigIntInParameter(this DbParameterCollection prms, string parameterName, long value)
+        public static DbParameterCollection AddSqlBigIntInputParameter(this DbParameterCollection prms, string parameterName, long value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.BigInt)
             {
@@ -206,7 +206,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A 64-bit signed integer value or null.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlBigIntInParameter(this DbParameterCollection prms, string parameterName, long? value)
+        public static DbParameterCollection AddSqlBigIntInputParameter(this DbParameterCollection prms, string parameterName, long? value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.BigInt)
             {
@@ -222,7 +222,7 @@ namespace ArgentSea.Sql
         /// <param name="prms">The existing parameter collection to which this output parameter should be added.</param>
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlBigIntOutParameter(this DbParameterCollection prms, string parameterName)
+        public static DbParameterCollection AddSqlBigIntOutputParameter(this DbParameterCollection prms, string parameterName)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.BigInt)
             {
@@ -239,7 +239,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A 32-bit signed integer value.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlIntInParameter(this DbParameterCollection prms, string parameterName, int value)
+        public static DbParameterCollection AddSqlIntInputParameter(this DbParameterCollection prms, string parameterName, int value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Int)
             {
@@ -256,7 +256,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A 32-bit signed integer value or null.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlIntInParameter(this DbParameterCollection prms, string parameterName, int? value)
+        public static DbParameterCollection AddSqlIntInputParameter(this DbParameterCollection prms, string parameterName, int? value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Int)
             {
@@ -272,7 +272,7 @@ namespace ArgentSea.Sql
         /// <param name="prms">The existing parameter collection to which this output parameter should be added.</param>
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlIntOutParameter(this DbParameterCollection prms, string parameterName)
+        public static DbParameterCollection AddSqlIntOutputParameter(this DbParameterCollection prms, string parameterName)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Int)
             {
@@ -290,7 +290,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A 16-bit signed integer value.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlSmallIntInParameter(this DbParameterCollection prms, string parameterName, short value)
+        public static DbParameterCollection AddSqlSmallIntInputParameter(this DbParameterCollection prms, string parameterName, short value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.SmallInt)
             {
@@ -307,7 +307,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A 16-bit signed integer value or null.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlSmallIntInParameter(this DbParameterCollection prms, string parameterName, short? value)
+        public static DbParameterCollection AddSqlSmallIntInputParameter(this DbParameterCollection prms, string parameterName, short? value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.SmallInt)
             {
@@ -323,7 +323,7 @@ namespace ArgentSea.Sql
         /// <param name="prms">The existing parameter collection to which this output parameter should be added.</param>
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlSmallIntOutParameter(this DbParameterCollection prms, string parameterName)
+        public static DbParameterCollection AddSqlSmallIntOutputParameter(this DbParameterCollection prms, string parameterName)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.SmallInt)
             {
@@ -340,7 +340,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">An unsigned 8-bit integer value.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlTinyIntInParameter(this DbParameterCollection prms, string parameterName, byte value)
+        public static DbParameterCollection AddSqlTinyIntInputParameter(this DbParameterCollection prms, string parameterName, byte value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.TinyInt)
             {
@@ -357,7 +357,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">An unsigned 8-bit integer value or null.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlTinyIntInParameter(this DbParameterCollection prms, string parameterName, byte? value)
+        public static DbParameterCollection AddSqlTinyIntInputParameter(this DbParameterCollection prms, string parameterName, byte? value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.TinyInt)
             {
@@ -373,7 +373,7 @@ namespace ArgentSea.Sql
         /// <param name="prms">The existing parameter collection to which this output parameter should be added.</param>
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlTinyIntOutParameter(this DbParameterCollection prms, string parameterName)
+        public static DbParameterCollection AddSqlTinyIntOutputParameter(this DbParameterCollection prms, string parameterName)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.TinyInt)
             {
@@ -391,7 +391,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A 64-bit floating-point value.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlFloatInParameter(this DbParameterCollection prms, string parameterName, double value)
+        public static DbParameterCollection AddSqlFloatInputParameter(this DbParameterCollection prms, string parameterName, double value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Float)
             {
@@ -408,7 +408,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A 64-bit floating-point value or null.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlFloatInParameter(this DbParameterCollection prms, string parameterName, double? value)
+        public static DbParameterCollection AddSqlFloatInputParameter(this DbParameterCollection prms, string parameterName, double? value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Float)
             {
@@ -424,7 +424,7 @@ namespace ArgentSea.Sql
         /// <param name="prms">The existing parameter collection to which this output parameter should be added.</param>
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlFloatOutParameter(this DbParameterCollection prms, string parameterName)
+        public static DbParameterCollection AddSqlFloatOutputParameter(this DbParameterCollection prms, string parameterName)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Float)
             {
@@ -441,7 +441,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A 32-bit floating point value (float).</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlRealInParameter(this DbParameterCollection prms, string parameterName, float value)
+        public static DbParameterCollection AddSqlRealInputParameter(this DbParameterCollection prms, string parameterName, float value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Real)
             {
@@ -458,7 +458,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A 32-bit floating point value (float) or null.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlRealInParameter(this DbParameterCollection prms, string parameterName, float? value)
+        public static DbParameterCollection AddSqlRealInputParameter(this DbParameterCollection prms, string parameterName, float? value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Real)
             {
@@ -474,7 +474,7 @@ namespace ArgentSea.Sql
         /// <param name="prms">The existing parameter collection to which this output parameter should be added.</param>
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlRealOutParameter(this DbParameterCollection prms, string parameterName)
+        public static DbParameterCollection AddSqlRealOutputParameter(this DbParameterCollection prms, string parameterName)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Real)
             {
@@ -491,7 +491,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A boolean value.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlBitInParameter(this DbParameterCollection prms, string parameterName, bool value)
+        public static DbParameterCollection AddSqlBitInputParameter(this DbParameterCollection prms, string parameterName, bool value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Bit)
             {
@@ -508,7 +508,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A boolean value or null.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlBitInParameter(this DbParameterCollection prms, string parameterName, bool? value)
+        public static DbParameterCollection AddSqlBitInputParameter(this DbParameterCollection prms, string parameterName, bool? value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Bit)
             {
@@ -524,7 +524,7 @@ namespace ArgentSea.Sql
         /// <param name="prms">The existing parameter collection to which this output parameter should be added.</param>
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlBitOutParameter(this DbParameterCollection prms, string parameterName)
+        public static DbParameterCollection AddSqlBitOutputParameter(this DbParameterCollection prms, string parameterName)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Bit)
             {
@@ -541,7 +541,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A decmial value .</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlDecimalInParameter(this DbParameterCollection prms, string parameterName, decimal value, byte precision, byte scale)
+        public static DbParameterCollection AddSqlDecimalInputParameter(this DbParameterCollection prms, string parameterName, decimal value, byte precision, byte scale)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Decimal)
             {
@@ -560,7 +560,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A decmial value or null.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlDecimalInParameter(this DbParameterCollection prms, string parameterName, decimal? value, byte precision, byte scale)
+        public static DbParameterCollection AddSqlDecimalInputParameter(this DbParameterCollection prms, string parameterName, decimal? value, byte precision, byte scale)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Decimal)
             {
@@ -580,7 +580,7 @@ namespace ArgentSea.Sql
         /// <param name="precision">Specifies the maximum number of digits used to store the number (inclusive of both sides of the decimal point).</param>
         /// <param name="scale">Specifies the number of digits used in the fractional portion of the number (i.e. digits to the right of the decimal point).</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlDecimalOutParameter(this DbParameterCollection prms, string parameterName, byte precision, byte scale)
+        public static DbParameterCollection AddSqlDecimalOutputParameter(this DbParameterCollection prms, string parameterName, byte precision, byte scale)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Decimal)
             {
@@ -599,7 +599,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A decmial value .</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlMoneyInParameter(this DbParameterCollection prms, string parameterName, decimal value)
+        public static DbParameterCollection AddSqlMoneyInputParameter(this DbParameterCollection prms, string parameterName, decimal value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Money)
             {
@@ -616,7 +616,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A decmial value or null.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlMoneyInParameter(this DbParameterCollection prms, string parameterName, decimal? value)
+        public static DbParameterCollection AddSqlMoneyInputParameter(this DbParameterCollection prms, string parameterName, decimal? value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Money)
             {
@@ -634,7 +634,7 @@ namespace ArgentSea.Sql
         /// <param name="precision">Specifies the maximum number of digits used to store the number (inclusive of both sides of the decimal point).</param>
         /// <param name="scale">Specifies the number of digits used in the fractional portion of the number (i.e. digits to the right of the decimal point).</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlMoneyOutParameter(this DbParameterCollection prms, string parameterName)
+        public static DbParameterCollection AddSqlMoneyOutputParameter(this DbParameterCollection prms, string parameterName)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Money)
             {
@@ -651,7 +651,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A decmial value .</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlSmallMoneyInParameter(this DbParameterCollection prms, string parameterName, decimal value)
+        public static DbParameterCollection AddSqlSmallMoneyInputParameter(this DbParameterCollection prms, string parameterName, decimal value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.SmallMoney)
             {
@@ -668,7 +668,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A decmial value or null.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlSmallMoneyInParameter(this DbParameterCollection prms, string parameterName, decimal? value)
+        public static DbParameterCollection AddSqlSmallMoneyInputParameter(this DbParameterCollection prms, string parameterName, decimal? value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.SmallMoney)
             {
@@ -686,7 +686,7 @@ namespace ArgentSea.Sql
         /// <param name="precision">Specifies the maximum number of digits used to store the number (inclusive of both sides of the decimal point).</param>
         /// <param name="scale">Specifies the number of digits used in the fractional portion of the number (i.e. digits to the right of the decimal point).</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlSmallMoneyOutParameter(this DbParameterCollection prms, string parameterName)
+        public static DbParameterCollection AddSqlSmallMoneyOutputParameter(this DbParameterCollection prms, string parameterName)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.SmallMoney)
             {
@@ -706,7 +706,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A DateTime value.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlDateInParameter(this DbParameterCollection prms, string parameterName, DateTime value)
+        public static DbParameterCollection AddSqlDateInputParameter(this DbParameterCollection prms, string parameterName, DateTime value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Date)
             {
@@ -723,7 +723,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A DateTime value or null.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlDateInParameter(this DbParameterCollection prms, string parameterName, DateTime? value)
+        public static DbParameterCollection AddSqlDateInputParameter(this DbParameterCollection prms, string parameterName, DateTime? value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Date)
             {
@@ -739,7 +739,7 @@ namespace ArgentSea.Sql
         /// <param name="prms">The existing parameter collection to which this output parameter should be added.</param>
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlDateOutParameter(this DbParameterCollection prms, string parameterName)
+        public static DbParameterCollection AddSqlDateOutputParameter(this DbParameterCollection prms, string parameterName)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Date)
             {
@@ -756,7 +756,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A date and time value .</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlDateTimeInParameter(this DbParameterCollection prms, string parameterName, DateTime value)
+        public static DbParameterCollection AddSqlDateTimeInputParameter(this DbParameterCollection prms, string parameterName, DateTime value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.DateTime)
             {
@@ -773,7 +773,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A date and time value or null.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlDateTimeInParameter(this DbParameterCollection prms, string parameterName, DateTime? value)
+        public static DbParameterCollection AddSqlDateTimeInputParameter(this DbParameterCollection prms, string parameterName, DateTime? value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.DateTime)
             {
@@ -789,7 +789,7 @@ namespace ArgentSea.Sql
         /// <param name="prms">The existing parameter collection to which this output parameter should be added.</param>
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlDateTimeOutParameter(this DbParameterCollection prms, string parameterName)
+        public static DbParameterCollection AddSqlDateTimeOutputParameter(this DbParameterCollection prms, string parameterName)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.DateTime)
             {
@@ -806,7 +806,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A date and time value .</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlDateTime2InParameter(this DbParameterCollection prms, string parameterName, DateTime value)
+        public static DbParameterCollection AddSqlDateTime2InputParameter(this DbParameterCollection prms, string parameterName, DateTime value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.DateTime2)
             {
@@ -823,7 +823,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A date and time value or null.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlDateTime2InParameter(this DbParameterCollection prms, string parameterName, DateTime? value)
+        public static DbParameterCollection AddSqlDateTime2InputParameter(this DbParameterCollection prms, string parameterName, DateTime? value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.DateTime2)
             {
@@ -839,7 +839,7 @@ namespace ArgentSea.Sql
         /// <param name="prms">The existing parameter collection to which this output parameter should be added.</param>
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlDateTime2OutParameter(this DbParameterCollection prms, string parameterName)
+        public static DbParameterCollection AddSqlDateTime2OutputParameter(this DbParameterCollection prms, string parameterName)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.DateTime2)
             {
@@ -856,7 +856,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A time value .</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlTimeInParameter(this DbParameterCollection prms, string parameterName, TimeSpan value)
+        public static DbParameterCollection AddSqlTimeInputParameter(this DbParameterCollection prms, string parameterName, TimeSpan value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Time)
             {
@@ -873,7 +873,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A time value or null.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlTimeInParameter(this DbParameterCollection prms, string parameterName, TimeSpan? value)
+        public static DbParameterCollection AddSqlTimeInputParameter(this DbParameterCollection prms, string parameterName, TimeSpan? value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Time)
             {
@@ -889,7 +889,7 @@ namespace ArgentSea.Sql
         /// <param name="prms">The existing parameter collection to which this output parameter should be added.</param>
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlTimeOutParameter(this DbParameterCollection prms, string parameterName)
+        public static DbParameterCollection AddSqlTimeOutputParameter(this DbParameterCollection prms, string parameterName)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Time)
             {
@@ -906,7 +906,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A DateTimeOffset value.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlDateTimeOffsetInParameter(this DbParameterCollection prms, string parameterName, DateTimeOffset value)
+        public static DbParameterCollection AddSqlDateTimeOffsetInputParameter(this DbParameterCollection prms, string parameterName, DateTimeOffset value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.DateTimeOffset)
             {
@@ -923,7 +923,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A DateTimeOffset value or null.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlDateTimeOffsetInParameter(this DbParameterCollection prms, string parameterName, DateTimeOffset? value)
+        public static DbParameterCollection AddSqlDateTimeOffsetInputParameter(this DbParameterCollection prms, string parameterName, DateTimeOffset? value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.DateTimeOffset)
             {
@@ -939,7 +939,7 @@ namespace ArgentSea.Sql
         /// <param name="prms">The existing parameter collection to which this output parameter should be added.</param>
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlDateTimeOffsetOutParameter(this DbParameterCollection prms, string parameterName)
+        public static DbParameterCollection AddSqlDateTimeOffsetOutputParameter(this DbParameterCollection prms, string parameterName)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.DateTimeOffset)
             {
@@ -958,7 +958,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A Guid value. Will convert Guild.Empty to DBNull.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlUniqueIdentifierInParameter(this DbParameterCollection prms, string parameterName, Guid value)
+        public static DbParameterCollection AddSqlUniqueIdentifierInputParameter(this DbParameterCollection prms, string parameterName, Guid value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.UniqueIdentifier)
             {
@@ -974,7 +974,7 @@ namespace ArgentSea.Sql
         /// <param name="prms">The existing parameter collection to which this parameter should be added.</param>
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlUniqueIdentifierInParameter(this DbParameterCollection prms, string parameterName, Guid? value)
+        public static DbParameterCollection AddSqlUniqueIdentifierInputParameter(this DbParameterCollection prms, string parameterName, Guid? value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.UniqueIdentifier)
             {
@@ -990,7 +990,7 @@ namespace ArgentSea.Sql
         /// <param name="prms">The existing parameter collection to which this output parameter should be added.</param>
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlUniqueIdentifierOutParameter(this DbParameterCollection prms, string parameterName)
+        public static DbParameterCollection AddSqlUniqueIdentifierOutputParameter(this DbParameterCollection prms, string parameterName)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.UniqueIdentifier)
             {
@@ -1008,7 +1008,7 @@ namespace ArgentSea.Sql
         /// <param name="value">An array of bytes, or null.</param>
         /// <param name="length">The maximum allowable number of bytes in the database column. Use -1 for varbinary(max).</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlVarBinaryInParameter(this DbParameterCollection prms, string parameterName, byte[] value, int length)
+        public static DbParameterCollection AddSqlVarBinaryInputParameter(this DbParameterCollection prms, string parameterName, byte[] value, int length)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.VarBinary, length)
             {
@@ -1025,7 +1025,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="length">The maximum allowable number of bytes in the database column. Use -1 for varbinary(max).</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlVarBinaryOutParameter(this DbParameterCollection prms, string parameterName, int length)
+        public static DbParameterCollection AddSqlVarBinaryOutputParameter(this DbParameterCollection prms, string parameterName, int length)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.VarBinary, length)
             {
@@ -1043,7 +1043,7 @@ namespace ArgentSea.Sql
         /// <param name="value">An array of bytes, or null.</param>
         /// <param name="length">The fixed number of bytes in the database column.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlBinaryInParameter(this DbParameterCollection prms, string parameterName, byte[] value, int length)
+        public static DbParameterCollection AddSqlBinaryInputParameter(this DbParameterCollection prms, string parameterName, byte[] value, int length)
 		{
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Binary, length)
             {
@@ -1060,7 +1060,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="length">The fixed number of bytes in the database column.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlBinaryOutParameter(this DbParameterCollection prms, string parameterName, int length)
+        public static DbParameterCollection AddSqlBinaryOutputParameter(this DbParameterCollection prms, string parameterName, int length)
 		{
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Binary, length)
             {

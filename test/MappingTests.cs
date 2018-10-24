@@ -57,7 +57,7 @@ namespace ArgentSea.Sql.Test
 			var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
 			var prms = new QueryParameterCollection();
 
-			prms.MapToInParameters<SqlMapModel>(smv, dbLogger);
+			prms.CreateInputParameters<SqlMapModel>(smv, dbLogger);
 
 			Assert.True(((SqlParameter)prms["@ArgentSeaTestDataId"]).SqlDbType == System.Data.SqlDbType.Int);
 			((SqlParameter)prms["@ArgentSeaTestDataId"]).SqlDbType.Should().Be(System.Data.SqlDbType.Int, "that is the correct data type");
@@ -194,7 +194,7 @@ namespace ArgentSea.Sql.Test
 			var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
 			var prms = new QueryParameterCollection();
 
-			prms.MapToInParameters<SqlMapModel>(smv, dbLogger);
+			prms.CreateInputParameters<SqlMapModel>(smv, dbLogger);
 			Assert.True(((SqlParameter)prms["@ArgentSeaTestDataId"]).SqlDbType == System.Data.SqlDbType.Int);
 			((SqlParameter)prms["@ArgentSeaTestDataId"]).SqlDbType.Should().Be(System.Data.SqlDbType.Int, "that is the correct data type");
 			((SqlParameter)prms["@ArgentSeaTestDataId"]).Value.Should().Be(smv.ArgentSeaTestDataId, "that is the assigned value");
@@ -360,7 +360,7 @@ namespace ArgentSea.Sql.Test
 			var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
 			var prms = new QueryParameterCollection();
 
-			prms.MapToOutParameters(typeof(SqlMapModel), dbLogger);
+			prms.CreateOutputParameters(typeof(SqlMapModel), dbLogger);
 
 			Assert.True(((SqlParameter)prms["@ArgentSeaTestDataId"]).SqlDbType == System.Data.SqlDbType.Int);
 			((SqlParameter)prms["@ArgentSeaTestDataId"]).SqlDbType.Should().Be(System.Data.SqlDbType.Int, "that is the correct data type");
@@ -526,7 +526,7 @@ namespace ArgentSea.Sql.Test
 			//var dbLogger = new Microsoft.Extensions.Logging.Console.ConsoleLogger("one";
 			var dbLogger2 = new Microsoft.Extensions.Logging.LoggerFactory();
 			var dbLogger = dbLogger2.CreateLogger("");
-			var result = cmd.Parameters.ReadOutParameters<byte, SqlMapModel>((byte)5, dbLogger);
+			var result = cmd.Parameters.ToModel<byte, SqlMapModel>((byte)5, dbLogger);
 			result.ArgentSeaTestDataId.Should().Be(10, "that was the output parameter value");
 			result.Name.Should().Be("Test2", "that was the output parameter value");
 			result.LatinName.Should().Be("Test3", "that was the output parameter value");
@@ -637,7 +637,7 @@ namespace ArgentSea.Sql.Test
             prms.Add(new SqlParameter("@ParentRecord2Id", System.Data.SqlDbType.Int) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
             prms.Add(new SqlParameter("@ChildRecord2Id", System.Data.SqlDbType.SmallInt) { Value = System.DBNull.Value, Direction = System.Data.ParameterDirection.Output });
 
-            var result = Mapper.ReadOutParameters<byte, SqlMapModel>(prms, 16, dbLogger);
+            var result = Mapper.ToModel<byte, SqlMapModel>(prms, 16, dbLogger);
 
 			result.ArgentSeaTestDataId.Should().Be(11, "that was the output parameter value");
 			result.Name.Should().BeNull("the output parameter was set to DbNull");
@@ -1077,7 +1077,7 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(42).Returns("ChildRecord2Id");
 
             var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-			var resultList = Mapper.MapToList<byte, SqlMapModel>(rdr, 32, dbLogger);
+			var resultList = Mapper.ToList<byte, SqlMapModel>(rdr, 32, dbLogger);
 			var result = resultList[0];
 			result.ArgentSeaTestDataId.Should().Be(modelValues.ArgentSeaTestDataId, "that is the source value");
 			result.Name.Should().Be(modelValues.Name, "that is the source value");
@@ -1291,7 +1291,7 @@ namespace ArgentSea.Sql.Test
 
             var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
 
-            var resultList = Mapper.MapToList<byte, SqlMapModel>(rdr, 200, dbLogger);
+            var resultList = Mapper.ToList<byte, SqlMapModel>(rdr, 200, dbLogger);
 
             var result = resultList[0];
 			result.ArgentSeaTestDataId.Should().Be(modelValues.ArgentSeaTestDataId, "that is the source value");
