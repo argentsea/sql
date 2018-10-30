@@ -46,6 +46,7 @@ namespace ArgentSea.Sql
                     }
                 }
                 _connectionString = _csb.ToString();
+                hasConnectionPropertyChanged = false;
             }
             return _connectionString;
         }
