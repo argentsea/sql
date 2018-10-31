@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿// © John Hicks. All rights reserved. Licensed under the MIT license.
+// See the LICENSE file in the repository root for more information.
+
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace ArgentSea.Sql
