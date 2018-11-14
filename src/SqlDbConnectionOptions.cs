@@ -15,8 +15,9 @@ namespace ArgentSea.Sql
     ///   "SqlDbConnections": [
     ///   {
     ///     "DatabaseKey": "MyDatabase",
-    ///     "SecurityKey": "SecKey1",
     ///     "DataConnection": {
+    ///       "UserName": "webUser",
+    ///       "Password": "pwd1234",
     ///       "DataSource": "localhost",
     ///       "InitialCatalog": "MyDb"
     ///       }
@@ -37,7 +38,7 @@ namespace ArgentSea.Sql
 	{
 		public string DatabaseKey { get; set; }
 		
-		public IConnectionConfiguration DataConnectionInternal { get => DataConnection; }
+		public IDataConnection DataConnectionInternal { get => DataConnection; }
 
         public SqlConnectionConfiguration DataConnection { get; set; }
 	}

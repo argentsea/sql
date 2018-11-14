@@ -13,10 +13,9 @@ namespace ArgentSea.Sql
 	{
 		public SqlDatabases(
 			IOptions<SqlDbConnectionOptions> configOptions,
-			IOptions<DataSecurityOptions> securityOptions,
-			IOptions<DataResilienceOptions> resilienceStrategiesOptions,
-			ILogger<SqlDatabases> logger
-			) : base(configOptions, securityOptions, resilienceStrategiesOptions, (IDataProviderServiceFactory)new DataProviderServiceFactory(), logger)
+            IOptions<SqlGlobalPropertiesOptions> globalOptions,
+            ILogger<SqlDatabases> logger
+			) : base(configOptions, (IDataProviderServiceFactory)new DataProviderServiceFactory(), globalOptions?.Value, logger)
 		{
 
 		}

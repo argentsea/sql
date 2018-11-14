@@ -9,22 +9,6 @@ using Microsoft.Extensions.Options;
 namespace ArgentSea.Sql
 {
     /// <summary>
-    /// A collection of ShardSets (with a byte shardId type).
-    /// </summary>
-    public class SqlShardSets : ArgentSea.ShardSetsBase<byte, SqlShardConnectionOptions<byte>>
-    {
-        public SqlShardSets(
-            IOptions<SqlShardConnectionOptions<byte>> configOptions,
-            IOptions<DataSecurityOptions> securityOptions,
-            IOptions<DataResilienceOptions> resilienceStrategiesOptions,
-            ILogger<SqlShardSets<byte>> logger
-            ) : base(configOptions, securityOptions, resilienceStrategiesOptions, new DataProviderServiceFactory(), logger)
-        {
-
-        }
-    }
-
-    /// <summary>
     /// A collection of ShardSets.
     /// </summary>
     /// <typeparam name="TShard">The type of the shardId index value.</typeparam>
@@ -32,10 +16,9 @@ namespace ArgentSea.Sql
 	{
 		public SqlShardSets(
 			IOptions<SqlShardConnectionOptions<TShard>> configOptions,
-			IOptions<DataSecurityOptions> securityOptions,
-			IOptions<DataResilienceOptions> resilienceStrategiesOptions,
+			IOptions<SqlGlobalPropertiesOptions> globalOptions,
 			ILogger<SqlShardSets<TShard>> logger
-			) : base(configOptions, securityOptions, resilienceStrategiesOptions, new DataProviderServiceFactory(), logger)
+			) : base(configOptions, new DataProviderServiceFactory(), globalOptions?.Value, logger)
 		{
 
 		}

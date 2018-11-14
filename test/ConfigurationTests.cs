@@ -21,34 +21,24 @@ namespace ArgentSea.Sql.Test
 			var config = bldr.Build();
 			var services = new ServiceCollection();
 			services.AddOptions();
-			//services.AddSqlDbConfiguration(config);
-			services.Configure<DataResilienceOptions>(config);
-			services.Configure<DataSecurityOptions>(config);
+
+			services.Configure<SqlGlobalPropertiesOptions>(config.GetSection("SqlGlobalSettings"));
 			services.Configure<SqlDbConnectionOptions>(config);
 			services.Configure<SqlShardConnectionOptions<int>>(config);
 
 			var serviceProvider = services.BuildServiceProvider();
 
-			var resilienceOptions = serviceProvider.GetService<IOptions<DataResilienceOptions>>();
-			var securityOptions = serviceProvider.GetService<IOptions<DataSecurityOptions>>();
+			var globalOptions = serviceProvider.GetService<IOptions<SqlGlobalPropertiesOptions>>();
 			var sqlDbOptions = serviceProvider.GetService<IOptions<SqlDbConnectionOptions>>();
 			var sqlShardOptions = serviceProvider.GetService<IOptions<SqlShardConnectionOptions<int>>>();
 
-			var securityData = securityOptions.Value;
-			securityData.Credentials[0].SecurityKey.Should().Be("One", "that is the first value set in the configurationsettings.json configuration file");
-			securityData.Credentials[1].SecurityKey.Should().Be("Two", "that is the second value set in the configurationsettings.json configuration file");
-
-			var resilienceData = resilienceOptions.Value;
-			resilienceData.DataResilienceStrategies.Length.Should().Be(2, "there are two strategies defined in configuration file");
-			resilienceData.DataResilienceStrategies[0].ResilienceKey.Should().Be("local", "that is the first key in the configuration file");
-			resilienceData.DataResilienceStrategies[1].ResilienceKey.Should().Be("remote", "that is the second key in the configuration file");
+			var globalData = globalOptions.Value;
+            globalData.RetryCount.Should().Be(15, "that is the first value set in the configurationsettings.json configuration file");
 
 			var sqlDbData = sqlDbOptions.Value;
 			sqlDbData.SqlDbConnections.Length.Should().Be(2, "two conections are defined in the configuration file.");
-
-			sqlDbData.SqlDbConnections.Length.Should().Be(2, "two Db conections are defined in the configuration file.");
-			sqlDbData.SqlDbConnections[0].DataConnection.GetConnectionString().Should().Contain("MyServer", "the servername should be in the connection string.");
-			sqlDbData.SqlDbConnections[1].DataConnection.GetConnectionString().Should().Contain("dbName2", "the database name should be in the connection string.");
+            sqlDbData.SqlDbConnections[0].DataConnection.GetConnectionString().Should().Contain("MyApp", "the the application name should be inherited from a the global value");
+            sqlDbData.SqlDbConnections[1].DataConnection.GetConnectionString().Should().Contain("MyOtherApp", "the the application name should be inherited from a the global value");
 
 			var sqlShardData = sqlShardOptions.Value;
 			sqlShardData.SqlShardSets.Length.Should().Be(2, "there are two shard sets defined");
@@ -67,31 +57,24 @@ namespace ArgentSea.Sql.Test
             services.AddSqlServices<byte>(config);
 
             var serviceProvider = services.BuildServiceProvider();
-			var resilienceOptions = serviceProvider.GetService<IOptions<DataResilienceOptions>>();
-			var securityOptions = serviceProvider.GetService<IOptions<DataSecurityOptions>>();
+            var globalOptions = serviceProvider.GetService<IOptions<SqlGlobalPropertiesOptions>>();
 			var sqlDbOptions = serviceProvider.GetService<IOptions<SqlDbConnectionOptions>>();
 			var sqlShardOptions = serviceProvider.GetService<IOptions<SqlShardConnectionOptions<byte>>>();
 			var dbLogger = NSubstitute.Substitute.For<Microsoft.Extensions.Logging.ILogger<SqlDatabases>>();
 
-			var dbService = new SqlDatabases(sqlDbOptions, securityOptions, resilienceOptions, dbLogger);
+			var dbService = new SqlDatabases(sqlDbOptions, globalOptions, dbLogger);
 			dbService.Count.Should().Be(2, "two connections are defined in the configuration file");
 
 			var shardLogger = NSubstitute.Substitute.For<Microsoft.Extensions.Logging.ILogger<ArgentSea.Sql.SqlShardSets<byte>>>();
 
             //var shardService = new ShardSetsBase<byte, SqlShardConnectionOptions<byte>>(sqlShardOptions, securityOptions, resilienceOptions, new DataProviderServiceFactory(), shardLogger);
-            var shardService = new ArgentSea.Sql.SqlShardSets<byte>(sqlShardOptions, securityOptions, resilienceOptions, shardLogger);
+            var shardService = new ArgentSea.Sql.SqlShardSets<byte>(sqlShardOptions, globalOptions, shardLogger);
 
             shardService.Count.Should().Be(2, "two shard sets are defined in the configuration file");
-			shardService["Set1"].Count.Should().Be(2, "the configuration file has two shard connections defined on shard set Set1");
-			shardService["Set2"].Count.Should().Be(2, "the configuration file has two shard connections defined on shard set Set2");
-			shardService["Set1"][0].Read.ConnectionString.Should().Contain("webUser", "the configuration file specifies this credential key");
-			//shardService["Set1"][0].WriteConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
-			//shardService["Set1"][1].ReadConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
-			//shardService["Set1"][1].WriteConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
-			shardService["Set2"][0].Read.ConnectionString.Should().Contain("Integrated Security=True", "the configuration file specifies this credential key");
-			//shardService["Set2"][0].WriteConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
-			//shardService["Set2"][1].ReadConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
-			//shardService["Set2"][1].WriteConnection.ConnectionString.Should().Contain("", "the configuration file specifies this credential key");
+			shardService["Inherited"].Count.Should().Be(2, "the configuration file has two shard connections defined on shard set Set1");
+			shardService["Explicit"].Count.Should().Be(2, "the configuration file has two shard connections defined on shard set Set2");
+			shardService["Inherited"][0].Read.ConnectionString.Should().Contain("MyMirror", "the global configuration metadata specifies this failover partner");
+			shardService["Explicit"][0].Read.ConnectionString.Should().Contain("rorriMyM", "the configuration file specifies this failover partner");
 		}
 	}
 }

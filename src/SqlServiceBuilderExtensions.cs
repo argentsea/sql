@@ -26,9 +26,8 @@ namespace Microsoft.Extensions.DependencyInjection
             IConfiguration config
             ) 
         {
-			// even if these configs are already set by another provider, this will just overwrite with the same values.
-			services.Configure<DataResilienceOptions>(config);
-			services.Configure<DataSecurityOptions>(config);
+            // even if these configs are already set by another provider, this will just overwrite with the same values.
+            services.Configure<SqlGlobalPropertiesOptions>(config.GetSection("SqlGlobalSettings"));
 			services.Configure<SqlDbConnectionOptions>(config);
 			services.AddSingleton<SqlDatabases>();
 			return services;
@@ -47,7 +46,6 @@ namespace Microsoft.Extensions.DependencyInjection
 			) where TShard: IComparable
 		{
 			services.AddSqlServices(config);
-			//services.Configure<SqlShardConnectionOptions<TShard>>(cDataOptionName, config);
 			services.Configure<SqlShardConnectionOptions<TShard>>(config);
 			services.AddSingleton<ShardSetsBase<TShard, SqlShardConnectionOptions<TShard>>, SqlShardSets<TShard>>();
 			return services;

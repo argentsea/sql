@@ -1,354 +1,179 @@
 ﻿// © John Hicks. All rights reserved. Licensed under the MIT license.
 // See the LICENSE file in the repository root for more information.
 
-using System;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.Text;
-using ArgentSea;
-using System.Collections;
 using System.Data.SqlClient;
-using System.Collections.Immutable;
-using Microsoft.Extensions.Options;
 
 namespace ArgentSea.Sql
 {
     /// <summary>
-    /// This class represents is a (non-sharded) database connection.
-    /// Note that the SecurityKey must match a defined key in the DataSecurityOptions; likewise, a ResilienceKey (if defined) must match as key in the DataResilienceOptions array.
-    /// If the ResilienceKey is not defined, a default data resilience strategy will be used.
+    /// This class represents a single database connection — a database connection or a shard instance read or write connection.
     /// </summary>
-    public class SqlConnectionConfiguration : DataConnectionConfigurationBase
+    public class SqlConnectionConfiguration : SqlConnectionPropertiesBase, IDataConnection
     {
-         
-        private readonly SqlConnectionStringBuilder _csb = new SqlConnectionStringBuilder();
+        private readonly SqlConnectionStringBuilder _csb;
         private string _connectionString = null;
+        private SqlConnectionPropertiesBase _globalProperties = null;
+        private SqlConnectionPropertiesBase _shardSetProperties = null;
+        private SqlConnectionPropertiesBase _shardProperties = null;
 
-        public override string ConnectionDescription
+        private const int DefaultConnectTimeout = 5;
+
+        public SqlConnectionConfiguration()
         {
-            get => $"database {this._csb.InitialCatalog} on server {this._csb.DataSource}";
+            _csb = new SqlConnectionStringBuilder();
+            _csb.ConnectTimeout = DefaultConnectTimeout;
+
+       }
+
+        private void SetProperties(DataConnectionConfigurationBase properties)
+        {
+            if (!(properties.Password is null))
+            {
+                _csb.Password = properties.Password;
+            }
+            if (!(properties.UserName is null))
+            {
+                _csb.UserID = properties.UserName;
+            }
+            if (!(properties.WindowsAuth is null))
+            {
+                _csb.IntegratedSecurity = properties.WindowsAuth.Value;
+            }
+            var props = (SqlConnectionPropertiesBase)properties;
+            if (!(props.ApplicationIntent is null))
+            {
+                _csb.ApplicationIntent = props.ApplicationIntent.Value;
+            }
+            if (!(props.ApplicationName is null))
+            {
+                _csb.ApplicationName = props.ApplicationName;
+            }
+            //if (!(props.ConnectRetryCount is null))
+            //{
+            //    _csb.ConnectRetryCount = props.ConnectRetryCount.Value;
+            //}
+            //if (!(props.ConnectRetryInterval is null))
+            //{
+            //    _csb.ConnectRetryInterval = props.ConnectRetryInterval.Value;
+            //}
+            if (!(props.ConnectTimeout is null))
+            {
+                _csb.ConnectTimeout = props.ConnectTimeout.Value;
+            }
+            if (!(props.CurrentLanguage is null))
+            {
+                _csb.CurrentLanguage = props.CurrentLanguage;
+            }
+            if (!(props.DataSource is null))
+            {
+                _csb.DataSource = props.DataSource;
+            }
+            if (!(props.Encrypt is null))
+            {
+                _csb.Encrypt = props.Encrypt.Value;
+            }
+            if (!(props.FailoverPartner is null))
+            {
+                _csb.FailoverPartner = props.FailoverPartner;
+            }
+            if (!(props.InitialCatalog is null))
+            {
+                _csb.InitialCatalog = props.InitialCatalog;
+            }
+            if (!(props.LoadBalanceTimeout is null))
+            {
+                _csb.LoadBalanceTimeout = props.LoadBalanceTimeout.Value;
+            }
+            if (!(props.MaxPoolSize is null))
+            {
+                _csb.MaxPoolSize = props.MaxPoolSize.Value;
+            }
+            if (!(props.MinPoolSize is null))
+            {
+                _csb.MinPoolSize = props.MinPoolSize.Value;
+            }
+            if (!(props.MultipleActiveResultSets is null))
+            {
+                _csb.MultipleActiveResultSets = props.MultipleActiveResultSets.Value;
+            }
+            if (!(props.MultiSubnetFailover is null))
+            {
+                _csb.MultiSubnetFailover = props.MultiSubnetFailover.Value;
+            }
+            if (!(props.PacketSize is null))
+            {
+                _csb.PacketSize = props.PacketSize.Value;
+            }
+            if (!(props.PersistSecurityInfo is null))
+            {
+                _csb.PersistSecurityInfo = props.PersistSecurityInfo.Value;
+            }
+            if (!(props.Pooling is null))
+            {
+                _csb.Pooling = props.Pooling.Value;
+            }
+            if (!(props.Replication is null))
+            {
+                _csb.Replication = props.Replication.Value;
+            }
+            if (!(props.TrustServerCertificate is null))
+            {
+                _csb.TrustServerCertificate = props.TrustServerCertificate.Value;
+            }
+            if (!(props.TypeSystemVersion is null))
+            {
+                _csb.TypeSystemVersion = props.TypeSystemVersion;
+            }
+            if (!(props.UserInstance is null))
+            {
+                _csb.UserInstance = props.UserInstance.Value;
+            }
+            if (!(props.WorkstationID is null))
+            {
+                _csb.WorkstationID = props.WorkstationID;
+            }
         }
 
-        public override string GetConnectionString()
+        public string GetConnectionString()
         {
-            if (hasConnectionPropertyChanged && string.IsNullOrEmpty(_connectionString))
+            if (string.IsNullOrEmpty(_connectionString))
             {
-
-                var security = base.GetSecurityConfiguration();
-                if (!(security is null))
+                if (!(_globalProperties is null))
                 {
-                    if (security.WindowsAuth)
-                    {
-                        this._csb.IntegratedSecurity = true;
-                    }
-                    else
-                    {
-                        this._csb.UserID = security.UserName;
-                        this._csb.Password = security.Password;
-                        this._csb.IntegratedSecurity = false;
-                    }
+                    SetProperties(_globalProperties);
                 }
+                if (!(_shardSetProperties is null))
+                {
+                    SetProperties(_shardSetProperties);
+                }
+                if (!(_shardProperties is null))
+                {
+                    SetProperties(_shardProperties);
+                }
+                SetProperties(this);
                 _connectionString = _csb.ToString();
-                hasConnectionPropertyChanged = false;
             }
             return _connectionString;
         }
 
-        /// <summary>
-        /// Declares the application workload type when connecting to a database in an SQL Server Availability Group.
-        /// </summary>
-        public ApplicationIntent ApplicationIntent
+        public void SetAmbientConfiguration(DataConnectionConfigurationBase globalProperties, DataConnectionConfigurationBase shardSetProperties, DataConnectionConfigurationBase shardProperties)
         {
-            get => this._csb.ApplicationIntent;
-            set
-            {
-                hasConnectionPropertyChanged = true;
-                this._csb.ApplicationIntent = value;
-            }
-        }
-        
-        /// <summary>
-        /// The optional application name parameter to be sent to the backend during connection initiation.
-        /// </summary>
-        public string ApplicationName
-        {
-            get => this._csb.ApplicationName;
-            set
-            {
-                hasConnectionPropertyChanged = true;
-                this._csb.ApplicationName = value;
-            }
-        }
-        /// <summary>
-        /// The number of reconnections attempted after identifying that there was an idle connection failure. This must be an integer between 0 and 255. Default is 1. Set to 0 to disable reconnecting on idle connection failures.
-        /// </summary>
-        public int ConnectRetryCount
-        {
-            get => this._csb.ConnectRetryCount;
-            set
-            {
-                hasConnectionPropertyChanged = true;
-                this._csb.ConnectRetryCount = value;
-            }
-        }
-        /// <summary>
-        /// Amount of time (in seconds) between each reconnection attempt after identifying that there was an idle connection failure. This must be an integer between 1 and 60. The default is 10 seconds.
-        /// </summary>
-        public int ConnectRetryInterval
-        {
-            get => this._csb.ConnectRetryInterval;
-            set
-            {
-                hasConnectionPropertyChanged = true;
-                this._csb.ConnectRetryInterval = value;
-            }
-        }
-        /// <summary>
-        /// Gets or sets the length of time (in seconds) to wait for a connection to the server before terminating the attempt and generating an error.
-        /// </summary>
-        public int ConnectTimeout
-        {
-            get => this._csb.ConnectTimeout;
-            set
-            {
-                hasConnectionPropertyChanged = true;
-                this._csb.ConnectTimeout = value;
-            }
-        }
-        /// <summary>
-        /// Gets or sets the SQL Server Language record name.
-        /// </summary>
-        public string CurrentLanguage
-        {
-            get => this._csb.CurrentLanguage;
-            set
-            {
-                hasConnectionPropertyChanged = true;
-                this._csb.CurrentLanguage = value;
-            }
-        }
-        /// <summary>
-        /// Gets or sets the name or network address of the instance of SQL Server to connect to.
-        /// </summary>
-        public string DataSource
-        {
-            get => this._csb.DataSource;
-            set
-            {
-                hasConnectionPropertyChanged = true;
-                this._csb.DataSource = value;
-            }
-        }
-        /// <summary>
-        /// Gets or sets a Boolean value that indicates whether SQL Server uses SSL encryption for all data sent between the client and server if the server has a certificate installed.
-        /// </summary>
-        public bool Encrypt
-        {
-            get => this._csb.Encrypt;
-            set
-            {
-                hasConnectionPropertyChanged = true;
-                this._csb.Encrypt = value;
-            }
-        }
-        /// <summary>
-        /// Gets or sets the name or address of the partner server to connect to if the primary server is down.
-        /// </summary>
-        public string FailoverPartner
-        {
-            get => this._csb.FailoverPartner;
-            set
-            {
-                hasConnectionPropertyChanged = true;
-                this._csb.FailoverPartner = value;
-            }
-        }
-        /// <summary>
-        /// Gets or sets the name of the database associated with the connection.
-        /// </summary>
-        public string InitialCatalog
-        {
-            get => this._csb.InitialCatalog;
-            set
-            {
-                hasConnectionPropertyChanged = true;
-                this._csb.InitialCatalog = value;
-            }
-        }
-        /// <summary>
-        /// Gets or sets the minimum time, in seconds, for the connection to live in the connection pool before being destroyed.
-        /// </summary>
-        public int LoadBalanceTimeout
-        {
-            get => this._csb.LoadBalanceTimeout;
-            set
-            {
-                hasConnectionPropertyChanged = true;
-                this._csb.LoadBalanceTimeout = value;
-            }
-        }
-        /// <summary>
-        /// Gets or sets the maximum number of connections allowed in the connection pool for this specific connection string.
-        /// </summary>
-        public int MaxPoolSize
-        {
-            get => this._csb.MaxPoolSize;
-            set
-            {
-                hasConnectionPropertyChanged = true;
-                this._csb.MaxPoolSize = value;
-            }
-        }
-        /// <summary>
-        /// Gets or sets the minimum number of connections allowed in the connection pool for this specific connection string.
-        /// </summary>
-        public int MinPoolSize
-        {
-            get => this._csb.MinPoolSize;
-            set
-            {
-                hasConnectionPropertyChanged = true;
-                this._csb.MinPoolSize = value;
-            }
-        }
-        /// <summary>
-        /// When true, an application can maintain multiple active result sets (MARS). When false, an application must process or cancel all result sets from one batch before it can execute any other batch on that connection.
-        /// </summary>
-        public bool MultipleActiveResultSets
-        {
-            get => this._csb.MultipleActiveResultSets;
-            set
-            {
-                hasConnectionPropertyChanged = true;
-                this._csb.MultipleActiveResultSets = value;
-            }
-        }
-        /// <summary>
-        /// If your application is connecting to an AlwaysOn availability group (AG) on different subnets, setting MultiSubnetFailover=true provides faster detection of and connection to the (currently) active server.
-        /// </summary>
-        public bool MultiSubnetFailover
-        {
-            get => this._csb.MultiSubnetFailover;
-            set
-            {
-                hasConnectionPropertyChanged = true;
-                this._csb.MultiSubnetFailover = value;
-            }
-        }
-        /// <summary>
-        /// Gets or sets the size in bytes of the network packets used to communicate with an instance of SQL Server.
-        /// </summary>
-        public int PacketSize
-        {
-            get => this._csb.PacketSize;
-            set
-            {
-                hasConnectionPropertyChanged = true;
-                this._csb.PacketSize = value;
-            }
-        }
-        /// <summary>
-        /// Gets or sets a Boolean value that indicates if security-sensitive information, such as the password, is not returned as part of the connection if the connection is open or has ever been in an open state.
-        /// </summary>
-        public bool PersistSecurityInfo
-        {
-            get => this._csb.PersistSecurityInfo;
-            set
-            {
-                hasConnectionPropertyChanged = true;
-                this._csb.PersistSecurityInfo = value;
-            }
-        }
-        /// <summary>
-        /// Gets or sets a Boolean value that indicates whether the connection will be pooled or explicitly opened every time that the connection is requested.
-        /// </summary>
-        public bool Pooling
-        {
-            get => this._csb.Pooling;
-            set
-            {
-                hasConnectionPropertyChanged = true;
-                this._csb.Pooling = value;
-            }
-        }
-        /// <summary>
-        /// Gets or sets a Boolean value that indicates whether replication is supported using the connection.
-        /// </summary>
-        public bool Replication
-        {
-            get => this._csb.Replication;
-            set => this._csb.Replication = value;
-        }
-        /// <summary>
-        /// Gets or sets a value that indicates whether the channel will be encrypted while bypassing walking the certificate chain to validate trust.
-        /// </summary>
-        public bool TrustServerCertificate
-        {
-            get => this._csb.TrustServerCertificate;
-            set
-            {
-                hasConnectionPropertyChanged = true;
-                this._csb.TrustServerCertificate = value;
-            }
-        }
-        /// <summary>
-        /// Gets or sets a string value that indicates the type system the application expects.
-        /// </summary>
-        public string TypeSystemVersion
-        {
-            get => this._csb.TypeSystemVersion;
-            set
-            {
-                hasConnectionPropertyChanged = true;
-                this._csb.TypeSystemVersion = value;
-            }
-        }
-        /// <summary>
-        /// Gets or sets the name of the workstation connecting to SQL Server.
-        /// </summary>
-        public string WorkstationID
-        {
-            get => this._csb.WorkstationID;
-            set
-            {
-                hasConnectionPropertyChanged = true;
-                this._csb.WorkstationID = value;
-            }
+            _globalProperties = globalProperties as SqlConnectionPropertiesBase;
+            _shardSetProperties = shardSetProperties as SqlConnectionPropertiesBase;
+            _shardProperties = shardProperties as SqlConnectionPropertiesBase;
         }
 
+        public string ConnectionDescription
+        {
+            get => $"database {this._csb.InitialCatalog} on server {this._csb.DataSource}";
+        }
 
-
-		/* Commented out, as one these causes an Access Violation, and they are not otherwise used:
-		/// <summary>
-		/// Gets or sets the value associated with the specified key.
-		/// </summary>
-		public object this[string key]
-		{
-			get => this.csb[key];
-			set => this.csb[key] = value;
-		}
-
-		/// <summary>
-		/// Gets an ICollection{string} containing the keys of this configuration.
-		/// </summary>
-		public ICollection<string> Keys
-		{
-			get => this.Keys;
-		}
-
-		/// <summary>
-		/// Gets an ICollection{string} containing the values in this configuration.
-		/// </summary>
-		public ICollection Values
-		{
-			get => this.csb.Values;
-		}
-		*/
-		/// <summary>
-		/// Adds an item to the configuration
-		/// </summary>
-		/// <param name="item"></param>
-		public void Add(KeyValuePair<string, object> item)
+        /// <summary>
+        /// Adds an item to the configuration
+        /// </summary>
+        /// <param name="item"></param>
+        public void Add(KeyValuePair<string, object> item)
 		{
 			this._csb.Add(item.Key, item.Value);
 		}
@@ -380,5 +205,5 @@ namespace ArgentSea.Sql
 		{
 			return this._csb.TryGetValue(key, out value);
 		}
-	}
+    }
 }
