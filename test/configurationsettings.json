@@ -12,20 +12,18 @@
     {
       "DataSource": "10.10.25.1",
       "DatabaseKey": "MainDb",
-      "DataConnection": {
-        "DataSource": "10.10.25.2",
-        "InitialCatalog": "MainDb"
+      "InitialCatalog": "MainDb",
+      "WriteConnection": {
+        "DataSource": "10.10.25.5"
       }
     },
     {
       "DatabaseKey": "OtherDb",
-      "DataConnection": {
-        "ApplicationName": "MyOtherApp",
-        "ConnectTimeout": 20,
-        "CurrentLanguage": "English",
-        "DataSource": "MyOtherServer",
-        "InitialCatalog": "OtherDb"
-      }
+      "ApplicationName": "MyOtherApp",
+      "ConnectTimeout": 20,
+      "CurrentLanguage": "English",
+      "DataSource": "MyOtherServer",
+      "InitialCatalog": "OtherDb"
     }
   ],
   "SqlShardSets": [

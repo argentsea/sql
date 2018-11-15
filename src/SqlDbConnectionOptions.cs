@@ -34,12 +34,13 @@ namespace ArgentSea.Sql
         public IDatabaseConnectionConfiguration[] DbConnectionsInternal { get => SqlDbConnections; }
 
 	}
-	public class SqlDbConnectionConfiguration : IDatabaseConnectionConfiguration
-	{
+	public class SqlDbConnectionConfiguration : SqlConnectionPropertiesBase, IDatabaseConnectionConfiguration
+    {
 		public string DatabaseKey { get; set; }
-		
-		public IDataConnection DataConnectionInternal { get => DataConnection; }
 
-        public SqlConnectionConfiguration DataConnection { get; set; }
-	}
+        public IDataConnection ReadConnectionInternal { get => ReadConnection; }
+        public IDataConnection WriteConnectionInternal { get => WriteConnection; }
+        public SqlConnectionConfiguration ReadConnection { get; set; } = new SqlConnectionConfiguration();
+        public SqlConnectionConfiguration WriteConnection { get; set; } = new SqlConnectionConfiguration();
+    }
 }

@@ -37,13 +37,17 @@ namespace ArgentSea.Sql.Test
 
 			var sqlDbData = sqlDbOptions.Value;
             sqlDbData.SqlDbConnections.Length.Should().Be(2, "two conections are defined in the configuration file.");
-            sqlDbData.SqlDbConnections[0].DataConnectionInternal.SetAmbientConfiguration(globalData, null, null);
-            sqlDbData.SqlDbConnections[1].DataConnectionInternal.SetAmbientConfiguration(globalData, null, null);
+            sqlDbData.SqlDbConnections[0].ReadConnectionInternal.SetAmbientConfiguration(globalData, null, sqlDbData.SqlDbConnections[0]);
+            sqlDbData.SqlDbConnections[0].WriteConnectionInternal.SetAmbientConfiguration(globalData, null, sqlDbData.SqlDbConnections[0]);
+            sqlDbData.SqlDbConnections[1].ReadConnectionInternal.SetAmbientConfiguration(globalData, null, sqlDbData.SqlDbConnections[1]);
+            sqlDbData.SqlDbConnections[1].WriteConnectionInternal.SetAmbientConfiguration(globalData, null, sqlDbData.SqlDbConnections[1]);
 
-            sqlDbData.SqlDbConnections[0].DataConnection.GetConnectionString().Should().Be("Data Source=10.10.25.2;Initial Catalog=MainDb;Connect Timeout=5;Type System Version=\"SQL Server 2012\";Application Name=MyApp", "this is the value inherited from global configuration settings");
-            sqlDbData.SqlDbConnections[1].DataConnection.GetConnectionString().Should().Be("Data Source=MyOtherServer;Initial Catalog=OtherDb;Connect Timeout=20;Type System Version=\"SQL Server 2012\";Application Name=MyOtherApp;Current Language=English", "this is the value inherited from global configuratoin settings");
+            sqlDbData.SqlDbConnections[0].ReadConnection.GetConnectionString().Should().Be("Data Source=10.10.25.1;Initial Catalog=MainDb;Connect Timeout=5;Type System Version=\"SQL Server 2012\";Application Name=MyApp", "this is the value inherited from global configuration settings");
+            sqlDbData.SqlDbConnections[0].WriteConnection.GetConnectionString().Should().Be("Data Source=10.10.25.5;Initial Catalog=MainDb;Connect Timeout=5;Type System Version=\"SQL Server 2012\";Application Name=MyApp", "this is the value inherited from global configuration settings");
+            sqlDbData.SqlDbConnections[1].ReadConnection.GetConnectionString().Should().Be("Data Source=MyOtherServer;Initial Catalog=OtherDb;Connect Timeout=20;Type System Version=\"SQL Server 2012\";Application Name=MyOtherApp;Current Language=English");
+            sqlDbData.SqlDbConnections[1].WriteConnection.GetConnectionString().Should().Be("Data Source=MyOtherServer;Initial Catalog=OtherDb;Connect Timeout=20;Type System Version=\"SQL Server 2012\";Application Name=MyOtherApp;Current Language=English", "this is the value inherited from global configuration settings");
 
-			var sqlShardData = sqlShardOptions.Value;
+            var sqlShardData = sqlShardOptions.Value;
 			sqlShardData.SqlShardSets.Length.Should().Be(2, "there are two shard sets defined");
 		}
 		[Fact]
@@ -67,8 +71,9 @@ namespace ArgentSea.Sql.Test
 
 			var dbService = new SqlDatabases(sqlDbOptions, globalOptions, dbLogger);
 			dbService.Count.Should().Be(2, "two connections are defined in the configuration file");
-            dbService["MainDb"].ConnectionString.Should().Be("Data Source=10.10.25.2;Initial Catalog=MainDb;Connect Timeout=5;Type System Version=\"SQL Server 2012\";Application Name=MyApp", "this is the value inherited from global configuratoin settings");
-            dbService["OtherDb"].ConnectionString.Should().Be("Data Source=MyOtherServer;Initial Catalog=OtherDb;Connect Timeout=20;Type System Version=\"SQL Server 2012\";Application Name=MyOtherApp;Current Language=English", "this is the value inherited from global configuratoin settings");
+            dbService["MainDb"].Read.ConnectionString.Should().Be("Data Source=10.10.25.1;Initial Catalog=MainDb;Connect Timeout=5;Type System Version=\"SQL Server 2012\";Application Name=MyApp", "this is the value inherited from global configuratoin settings");
+            dbService["MainDb"].Write.ConnectionString.Should().Be("Data Source=10.10.25.5;Initial Catalog=MainDb;Connect Timeout=5;Type System Version=\"SQL Server 2012\";Application Name=MyApp", "this is the value inherited from global configuratoin settings");
+            dbService["OtherDb"].Read.ConnectionString.Should().Be("Data Source=MyOtherServer;Initial Catalog=OtherDb;Connect Timeout=20;Type System Version=\"SQL Server 2012\";Application Name=MyOtherApp;Current Language=English", "this is the value inherited from global configuratoin settings");
             var shardLogger = NSubstitute.Substitute.For<Microsoft.Extensions.Logging.ILogger<ArgentSea.Sql.SqlShardSets<byte>>>();
 
             var shardService = new ArgentSea.Sql.SqlShardSets<byte>(sqlShardOptions, globalOptions, shardLogger);

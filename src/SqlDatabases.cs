@@ -15,7 +15,7 @@ namespace ArgentSea.Sql
 			IOptions<SqlDbConnectionOptions> configOptions,
             IOptions<SqlGlobalPropertiesOptions> globalOptions,
             ILogger<SqlDatabases> logger
-			) : base(configOptions, (IDataProviderServiceFactory)new DataProviderServiceFactory(), globalOptions?.Value, logger)
+			) : base(configOptions, new DataProviderServiceFactory(), globalOptions?.Value, logger)
 		{
 
 		}
