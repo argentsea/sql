@@ -17,12 +17,13 @@ namespace ArgentSea.Sql
         private SqlConnectionPropertiesBase _shardSetProperties = null;
         private SqlConnectionPropertiesBase _shardProperties = null;
 
-        private const int DefaultConnectTimeout = 5;
+        private const int DefaultConnectTimeout = 2;
 
         public SqlConnectionConfiguration()
         {
             _csb = new SqlConnectionStringBuilder();
             _csb.ConnectTimeout = DefaultConnectTimeout;
+            _csb.ConnectRetryCount = 0;
 
        }
 
