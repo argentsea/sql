@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.ComponentModel;
 
 namespace ArgentSea.Sql
 {
@@ -17,7 +18,7 @@ namespace ArgentSea.Sql
         private SqlConnectionPropertiesBase _shardSetProperties = null;
         private SqlConnectionPropertiesBase _shardProperties = null;
 
-        private const int DefaultConnectTimeout = 2;
+        private const int DefaultConnectTimeout = 5; //minimum recommended value per https://docs.microsoft.com/en-us/sql/database-engine/database-mirroring/connect-clients-to-a-database-mirroring-session-sql-server?view=sql-server-2017#RetryAlgorithm
 
         public SqlConnectionConfiguration()
         {
@@ -26,6 +27,11 @@ namespace ArgentSea.Sql
             _csb.ConnectRetryCount = 0;
 
        }
+
+        private void HandlePropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            _connectionString = null;
+        }
 
         private void SetProperties(DataConnectionConfigurationBase properties)
         {
@@ -163,6 +169,19 @@ namespace ArgentSea.Sql
             _globalProperties = globalProperties as SqlConnectionPropertiesBase;
             _shardSetProperties = shardSetProperties as SqlConnectionPropertiesBase;
             _shardProperties = shardProperties as SqlConnectionPropertiesBase;
+
+            if (!(_globalProperties is null))
+            {
+                _globalProperties.PropertyChanged += HandlePropertyChanged;
+            }
+            if (!(_shardSetProperties is null))
+            {
+                _shardSetProperties.PropertyChanged += HandlePropertyChanged;
+            }
+            if (!(_shardProperties is null))
+            {
+                _shardProperties.PropertyChanged += HandlePropertyChanged;
+            }
         }
 
         public string ConnectionDescription
