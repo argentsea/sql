@@ -20,6 +20,7 @@ namespace ArgentSea.Sql
 		public class SqlShardConnectionsConfiguration: SqlConnectionPropertiesBase, IShardSetConnectionsConfiguration<TShard>
 		{
 			public string ShardSetName { get; set; }
+            public TShard DefaultShardId { get; set; }
 			public IShardConnectionConfiguration<TShard>[] ShardsInternal { get => Shards; }
 			public SqlShardConnectionConfiguration[] Shards { get; set; }
         }
