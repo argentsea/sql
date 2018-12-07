@@ -360,7 +360,7 @@ namespace ArgentSea.Sql.Test
 			var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
 			var prms = new QueryParameterCollection();
 
-			prms.CreateOutputParameters(typeof(SqlMapModel), dbLogger);
+			prms.CreateOutputParameters<SqlMapModel>(dbLogger);
 
 			Assert.True(((SqlParameter)prms["@ArgentSeaTestDataId"]).SqlDbType == System.Data.SqlDbType.Int);
 			((SqlParameter)prms["@ArgentSeaTestDataId"]).SqlDbType.Should().Be(System.Data.SqlDbType.Int, "that is the correct data type");
