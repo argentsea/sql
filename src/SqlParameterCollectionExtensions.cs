@@ -1092,6 +1092,29 @@ namespace ArgentSea.Sql
             prms.Add(prm);
             return prms;
         }
+        /// <summary>
+        /// Creates a parameter for providing a user-defined table to a stored procedure.
+        /// </summary>
+        /// <param name="prms">The existing parameter collection to which this parameter should be added.</param>
+        /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
+        /// <param name="value">A list of SqlDataRecord objects containing the table contents.</param>
+        /// <param name="length">The fixed number of bytes in the database column.</param>
+        /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
+        public static DbParameterCollection AddSqlTableValuedParameter<TModel>(this DbParameterCollection prms, string parameterName, IEnumerable<TModel> values, ILogger logger) where TModel: class, new()
+        {
+            var tvp = new List<SqlDataRecord>();
+            foreach (var val in values)
+            {
+                tvp.Add(TvpMapper.ToTvpRecord<TModel>(val, logger));
+            }
+            var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Structured)
+            {
+                Value = tvp,
+                Direction = ParameterDirection.Input
+            };
+            prms.Add(prm);
+            return prms;
+        }
 
         #endregion
     }

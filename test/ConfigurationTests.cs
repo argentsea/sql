@@ -37,10 +37,10 @@ namespace ArgentSea.Sql.Test
 
 			var sqlDbData = sqlDbOptions.Value;
             sqlDbData.SqlDbConnections.Length.Should().Be(2, "two conections are defined in the configuration file.");
-            sqlDbData.SqlDbConnections[0].ReadConnectionInternal.SetAmbientConfiguration(globalData, null, sqlDbData.SqlDbConnections[0]);
-            sqlDbData.SqlDbConnections[0].WriteConnectionInternal.SetAmbientConfiguration(globalData, null, sqlDbData.SqlDbConnections[0]);
-            sqlDbData.SqlDbConnections[1].ReadConnectionInternal.SetAmbientConfiguration(globalData, null, sqlDbData.SqlDbConnections[1]);
-            sqlDbData.SqlDbConnections[1].WriteConnectionInternal.SetAmbientConfiguration(globalData, null, sqlDbData.SqlDbConnections[1]);
+            sqlDbData.SqlDbConnections[0].ReadConnectionInternal.SetAmbientConfiguration(globalData, null, null, sqlDbData.SqlDbConnections[0]);
+            sqlDbData.SqlDbConnections[0].WriteConnectionInternal.SetAmbientConfiguration(globalData, null, null, sqlDbData.SqlDbConnections[0]);
+            sqlDbData.SqlDbConnections[1].ReadConnectionInternal.SetAmbientConfiguration(globalData, null, null, sqlDbData.SqlDbConnections[1]);
+            sqlDbData.SqlDbConnections[1].WriteConnectionInternal.SetAmbientConfiguration(globalData, null, null, sqlDbData.SqlDbConnections[1]);
 
             sqlDbData.SqlDbConnections[0].ReadConnection.GetConnectionString().Should().Be("Data Source=10.10.25.1;Initial Catalog=MainDb;Connect Timeout=5;Type System Version=\"SQL Server 2012\";Application Name=MyApp;ConnectRetryCount=0", "this is the value inherited from global configuration settings");
             sqlDbData.SqlDbConnections[0].WriteConnection.GetConnectionString().Should().Be("Data Source=10.10.25.5;Initial Catalog=MainDb;Connect Timeout=5;Type System Version=\"SQL Server 2012\";Application Name=MyApp;ConnectRetryCount=0", "this is the value inherited from global configuration settings");

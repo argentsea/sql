@@ -16,6 +16,7 @@ namespace ArgentSea.Sql
         private string _connectionString = null;
         private SqlConnectionPropertiesBase _globalProperties = null;
         private SqlConnectionPropertiesBase _shardSetProperties = null;
+        private SqlConnectionPropertiesBase _readWriteProperties = null;
         private SqlConnectionPropertiesBase _shardProperties = null;
 
         private const int DefaultConnectTimeout = 5; //minimum recommended value per https://docs.microsoft.com/en-us/sql/database-engine/database-mirroring/connect-clients-to-a-database-mirroring-session-sql-server?view=sql-server-2017#RetryAlgorithm
@@ -154,6 +155,10 @@ namespace ArgentSea.Sql
                 {
                     SetProperties(_shardSetProperties);
                 }
+                if (!(_readWriteProperties is null))
+                {
+                    SetProperties(_shardSetProperties);
+                }
                 if (!(_shardProperties is null))
                 {
                     SetProperties(_shardProperties);
@@ -164,10 +169,11 @@ namespace ArgentSea.Sql
             return _connectionString;
         }
 
-        public void SetAmbientConfiguration(DataConnectionConfigurationBase globalProperties, DataConnectionConfigurationBase shardSetProperties, DataConnectionConfigurationBase shardProperties)
+        public void SetAmbientConfiguration(DataConnectionConfigurationBase globalProperties, DataConnectionConfigurationBase shardSetProperties, DataConnectionConfigurationBase readWriteProperties, DataConnectionConfigurationBase shardProperties)
         {
             _globalProperties = globalProperties as SqlConnectionPropertiesBase;
             _shardSetProperties = shardSetProperties as SqlConnectionPropertiesBase;
+            _readWriteProperties = readWriteProperties as SqlConnectionPropertiesBase;
             _shardProperties = shardProperties as SqlConnectionPropertiesBase;
 
             if (!(_globalProperties is null))
@@ -177,6 +183,10 @@ namespace ArgentSea.Sql
             if (!(_shardSetProperties is null))
             {
                 _shardSetProperties.PropertyChanged += HandlePropertyChanged;
+            }
+            if (!(_readWriteProperties is null))
+            {
+                _readWriteProperties.PropertyChanged += HandlePropertyChanged;
             }
             if (!(_shardProperties is null))
             {

@@ -243,7 +243,7 @@ namespace ArgentSea.Sql
         /// <param name="model">An object model instance. The property values are provided as table row values.</param>
         /// <param name="logger"></param>
         /// <returns>A SqlMetaData object. A list of these can be used as a Sql table-valued parameter.</returns>
-        public static SqlDataRecord ToTvpRecord<TModel>(TModel model, ILogger logger) where TModel : class
+        public static SqlDataRecord ToTvpRecord<TModel>(TModel model, ILogger logger) where TModel : class, new()
         {
             var modelT = typeof(TModel);
             if (!_setTvpParamCache.TryGetValue(modelT, out var sqlTblDelegate))
@@ -260,14 +260,6 @@ namespace ArgentSea.Sql
                 SqlLoggingExtensions.SqlTvpCacheHit(logger, modelT);
             }
             return ((Func<TModel, ILogger, SqlDataRecord>)sqlTblDelegate)(model, logger);
-        }
-
-        private class BadShardType : IComparable
-        {
-            public int CompareTo(object obj)
-            {
-                throw new NotImplementedException();
-            }
         }
     }
 }
