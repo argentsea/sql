@@ -5,7 +5,12 @@
 	  <!-- Required in both test/product projects. This is a temporary workaround for https://github.com/Microsoft/vstest/issues/800 -->
 	  <DebugType>Full</DebugType>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <PackageProjectUrl>http://www.argentsea.com</PackageProjectUrl>
+	  <PackageProjectUrl>https://www.argentsea.com</PackageProjectUrl>
+	  <Version>0.1.0</Version>
+	  <Authors>John Hicks</Authors>
+	  <Description>SQL Server implementation of ArgentSea — a .NET open source framework for accessing databases, built for simplicity, high-performance and global scale.</Description>
+	  <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+	  <RepositoryUrl>https://github.com/argentsea/sql</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
