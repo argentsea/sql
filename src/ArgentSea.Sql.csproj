@@ -8,19 +8,16 @@
 	  <PackageProjectUrl>https://www.argentsea.com</PackageProjectUrl>
 	  <Version>0.1.0</Version>
 	  <Authors>John Hicks</Authors>
-	  <Description>SQL Server implementation of ArgentSea — a .NET open source framework for accessing databases, built for simplicity, high-performance and global scale.</Description>
+	  <Description>Microsoft SQL Server implementation of ArgentSea — a .NET open source framework for accessing databases, built for simplicity, high-performance and global scale.</Description>
 	  <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
 	  <RepositoryUrl>https://github.com/argentsea/sql</RepositoryUrl>
+	  <PackageIconUrl>https://www.argentsea.com/images/argentsea-logo.png</PackageIconUrl>
+	  <Copyright>© John Hicks</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ArgentSea" Version="0.6.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\ArgentSea.Shared\src\ArgentSea.csproj">
-      <Private>true</Private>
-    </ProjectReference>
   </ItemGroup>
 
 </Project>
