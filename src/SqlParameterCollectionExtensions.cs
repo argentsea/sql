@@ -17,7 +17,7 @@ namespace ArgentSea.Sql
     /// </summary>
     public static class SqlParameterCollectionExtensions
     {
-        private static string NormalizeSqlParameterName(string parameterName)
+        internal static string NormalizeSqlParameterName(string parameterName)
         {
             if (!parameterName.StartsWith("@"))
             {

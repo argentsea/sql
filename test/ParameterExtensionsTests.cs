@@ -18,7 +18,7 @@ namespace ArgentSea.Sql.Test
         [InlineData(int.MinValue)]
         public void IntegerTests(int value)
         {
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             prms.AddSqlIntInputParameter("1", value);
             prms.AddSqlIntInputParameter("2", (int?)value);
             prms["@1"].GetInteger().Should().Be(value, "that was the integer value");
@@ -37,7 +37,7 @@ namespace ArgentSea.Sql.Test
         [InlineData(short.MinValue)]
         public void ShortTests(short value)
         {
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             prms.AddSqlSmallIntInputParameter("1", value);
             prms.AddSqlSmallIntInputParameter("2", (short?)value);
             prms["@1"].GetShort().Should().Be(value, "that was the short value");
@@ -55,7 +55,7 @@ namespace ArgentSea.Sql.Test
         [InlineData(long.MinValue)]
         public void LongTests(long value)
         {
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             prms.AddSqlBigIntInputParameter("1", value);
             prms.AddSqlBigIntInputParameter("2", (long?)value);
             prms["@1"].GetLong().Should().Be(value, "that was the long value");
@@ -73,7 +73,7 @@ namespace ArgentSea.Sql.Test
         [InlineData(byte.MaxValue)]
         public void ByteTests(byte value)
         {
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             prms.AddSqlTinyIntInputParameter("1", value);
             prms.AddSqlTinyIntInputParameter("2", (byte?)value);
             prms["@1"].GetByte().Should().Be(value, "that was the byte value");
@@ -91,7 +91,7 @@ namespace ArgentSea.Sql.Test
         [InlineData(false)]
         public void BooleanTests(bool value)
         {
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             prms.AddSqlBitInputParameter("1", value);
             prms.AddSqlBitInputParameter("2", (bool?)value);
             prms["@1"].GetBoolean().Should().Be(value, "that was the boolean value");
@@ -110,7 +110,7 @@ namespace ArgentSea.Sql.Test
         [InlineData(double.MinValue)]
         public void DoubleTests(double value)
         {
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             prms.AddSqlFloatInputParameter("1", value);
             prms.AddSqlFloatInputParameter("2", (double?)value);
             prms["@1"].GetDouble().Should().Be(value, "that was the double value");
@@ -130,7 +130,7 @@ namespace ArgentSea.Sql.Test
         [InlineData(float.MinValue)]
         public void FloatTests(float value)
         {
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             prms.AddSqlRealInputParameter("1", value);
             prms.AddSqlRealInputParameter("2", (float?)value);
             prms["@1"].GetFloat().Should().Be(value, "that was the single value");
@@ -150,7 +150,7 @@ namespace ArgentSea.Sql.Test
         [InlineData("Test", 25)]
         public void NVarCharTests(string value, int length)
         {
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             prms.AddSqlNVarCharInputParameter("1", value, length);
             if (value is null)
             {
@@ -164,7 +164,7 @@ namespace ArgentSea.Sql.Test
         [InlineData("Test", 25)]
         public void NCharTests(string value, int length)
         {
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             prms.AddSqlNCharInputParameter("1", value, length);
             if (value is null)
             {
@@ -179,7 +179,7 @@ namespace ArgentSea.Sql.Test
         [InlineData("Test", 25)]
         public void VarCharTests(string value, int length)
         {
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             prms.AddSqlVarCharInputParameter("1", value, length, 1033);
             if (value is null)
             {
@@ -193,7 +193,7 @@ namespace ArgentSea.Sql.Test
         [InlineData("Test", 25)]
         public void CharTests(string value, int length)
         {
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             prms.AddSqlCharInputParameter("1", value, length, 1033);
             if (value is null)
             {
@@ -214,7 +214,7 @@ namespace ArgentSea.Sql.Test
         [MemberData(nameof(BinaryTestData))]
         public void BinaryTests(byte[] value, int length)
         {
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             prms.AddSqlBinaryInputParameter("1", value, length);
             prms["@1"].Size.Should().Be(length, "that was the specified length");
             if (value is null)
@@ -236,7 +236,7 @@ namespace ArgentSea.Sql.Test
         [MemberData(nameof(BinaryTestData))]
         public void VarBinaryTests(byte[] value, int length)
         {
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             prms.AddSqlVarBinaryInputParameter("1", value, length);
             prms["@1"].Size.Should().Be(length, "that was the specified length");
             if (value is null)
@@ -266,7 +266,7 @@ namespace ArgentSea.Sql.Test
         [MemberData(nameof(DateTimeTestData))]
         public void DateTimeTests(DateTime value)
         {
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             prms.AddSqlDateTimeInputParameter("1", value);
             prms.AddSqlDateTimeInputParameter("2", (DateTime?)value);
             prms["@1"].GetDateTime().Should().Be(value, "that was the datetime value");
@@ -283,7 +283,7 @@ namespace ArgentSea.Sql.Test
         [MemberData(nameof(DateTimeTestData))]
         public void DateTime2Tests(DateTime value)
         {
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             prms.AddSqlDateTime2InputParameter("1", value);
             prms.AddSqlDateTime2InputParameter("2", (DateTime?)value);
             prms["@1"].GetDateTime().Should().Be(value, "that was the datetime2 value");
@@ -294,7 +294,7 @@ namespace ArgentSea.Sql.Test
         [MemberData(nameof(DateTimeTestData))]
         public void DateTests(DateTime value)
         {
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             prms.AddSqlDateInputParameter("1", value);
             prms.AddSqlDateInputParameter("2", (DateTime?)value);
             prms["@1"].GetDateTime().Date.Should().Be(value.Date, "that was the date value");
@@ -305,7 +305,7 @@ namespace ArgentSea.Sql.Test
         [MemberData(nameof(DateTimeTestData))]
         public void TimeTests(DateTime value)
         {
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             prms.AddSqlTimeInputParameter("1", value.TimeOfDay);
             prms.AddSqlTimeInputParameter("2", (TimeSpan?)value.TimeOfDay);
             prms["@1"].GetTimeSpan().Should().Be(value.TimeOfDay, "that was the time value");
@@ -325,7 +325,7 @@ namespace ArgentSea.Sql.Test
         [MemberData(nameof(DateTimeOffsetTestData))]
         public void DateTimeOffsetTests(DateTimeOffset value)
         {
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             prms.AddSqlDateTimeOffsetInputParameter("1", value);
             prms.AddSqlDateTimeOffsetInputParameter("2", (DateTimeOffset?)value);
             prms["@1"].GetDateTimeOffset().Should().Be(value, "that was the time value");
@@ -350,7 +350,7 @@ namespace ArgentSea.Sql.Test
         [MemberData(nameof(DecimalTestData))]
         public void DecimalTests(decimal value, byte precision, byte scale)
         {
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             prms.AddSqlDecimalInputParameter("1", value, precision, scale);
             prms.AddSqlDecimalInputParameter("2", (decimal?)value, precision, scale);
             prms["@1"].GetDecimal().Should().Be(value, "that was the decimal value");
@@ -387,7 +387,7 @@ namespace ArgentSea.Sql.Test
         [MemberData(nameof(GuidTestData))]
         public void UuidTests(Guid value)
         {
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             prms.AddSqlUniqueIdentifierInputParameter("1", value);
             prms.AddSqlUniqueIdentifierInputParameter("2", (Guid?)value);
             prms["@1"].GetGuid().Should().Be(value, "that was the guid value");

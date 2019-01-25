@@ -55,7 +55,7 @@ namespace ArgentSea.Sql.Test
                 ChildShard2 = new ShardChild<byte, short, string>('!', 255, 255, "testing123")
 			};
 			var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-			var prms = new QueryParameterCollection();
+			var prms = new ParameterCollection();
 
 			prms.CreateInputParameters<SqlMapModel>(smv, dbLogger);
 
@@ -192,7 +192,7 @@ namespace ArgentSea.Sql.Test
                 ChildShard2 = null
             };
 			var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-			var prms = new QueryParameterCollection();
+			var prms = new ParameterCollection();
 
 			prms.CreateInputParameters<SqlMapModel>(smv, dbLogger);
 			Assert.True(((SqlParameter)prms["@ArgentSeaTestDataId"]).SqlDbType == System.Data.SqlDbType.Int);
@@ -358,7 +358,7 @@ namespace ArgentSea.Sql.Test
 				RecordChild = new ShardChild<byte, int, short>(new DataOrigin('A'), 34, 35, -1),
 			};
 			var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-			var prms = new QueryParameterCollection();
+			var prms = new ParameterCollection();
 
 			prms.CreateOutputParameters<SqlMapModel>(dbLogger);
 
@@ -580,7 +580,7 @@ namespace ArgentSea.Sql.Test
 		{
 
 			var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-			var prms = new QueryParameterCollection();
+			var prms = new ParameterCollection();
 			var guid = Guid.NewGuid();
 
 
@@ -829,7 +829,7 @@ namespace ArgentSea.Sql.Test
                 ChildShard2= null
             };
 			var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-			var prms = new QueryParameterCollection();
+			var prms = new ParameterCollection();
 
 			var result = TvpMapper.ToTvpRecord<SqlMapModel>(smv, dbLogger);
 

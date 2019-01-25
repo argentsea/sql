@@ -118,57 +118,98 @@ namespace ArgentSea.Sql
             return new SqlConnection(connectionString);
         }
 
-        //public string NormalizeFieldName(string fieldName)
-        //{
-        //    if (fieldName.StartsWith("@"))
-        //    {
-        //        return fieldName.Substring(1);
-        //    }
-        //    return fieldName;
-        //}
-
-        //public string NormalizeParameterName(string parameterName)
-        //{
-        //    if (!parameterName.StartsWith("@"))
-        //    {
-        //        return "@" + parameterName;
-        //    }
-        //    return parameterName;
-        //}
-
-        public void SetParameters(DbCommand cmd, DbParameterCollection parameters, Dictionary<string, object> parameterValues)
+        public void SetParameters(DbCommand cmd, string[] queryParameterNames, DbParameterCollection parameters, Dictionary<string, object> parameterValues)
         {
-            for (var i = 0; i < parameters.Count; i++)
-            {
-                var prmSource = (SqlParameter)parameters[i];
+            int[] ordinals;
 
-                var prmTarget = new SqlParameter()
+            if (queryParameterNames is null || queryParameterNames.Length == 0)
+            {
+                ordinals = new int[parameters.Count];
+                for (var i = 0; i < parameters.Count; i++)
                 {
-                    CompareInfo = prmSource.CompareInfo,
-                    DbType = prmSource.DbType,
-                    Direction = prmSource.Direction,
-                    IsNullable = prmSource.IsNullable,
-                    LocaleId = prmSource.LocaleId,
-                    Offset = prmSource.Offset,
-                    ParameterName = prmSource.ParameterName,
-                    Precision = prmSource.Precision,
-                    Scale = prmSource.Scale,
-                    Size = prmSource.Size,
-                    SourceColumn = prmSource.SourceColumn,
-                    SourceColumnNullMapping = prmSource.SourceColumnNullMapping,
-                    SqlDbType = prmSource.SqlDbType,
-                    SqlValue = prmSource.SqlValue,
-                    TypeName = prmSource.TypeName,
-                    Value = prmSource.Value
-                };
-                if (!(parameterValues is null))
-                {
-                    if (parameterValues.TryGetValue(prmTarget.ParameterName, out var prmValue))
+                    ordinals[i] = i;
+
+                    var prmSource = (SqlParameter)parameters[i];
+
+                    var prmTarget = new SqlParameter()
                     {
-                        prmTarget.Value = prmValue;
+                        CompareInfo = prmSource.CompareInfo,
+                        DbType = prmSource.DbType,
+                        Direction = prmSource.Direction,
+                        IsNullable = prmSource.IsNullable,
+                        LocaleId = prmSource.LocaleId,
+                        Offset = prmSource.Offset,
+                        ParameterName = prmSource.ParameterName,
+                        Precision = prmSource.Precision,
+                        Scale = prmSource.Scale,
+                        Size = prmSource.Size,
+                        SourceColumn = prmSource.SourceColumn,
+                        SourceColumnNullMapping = prmSource.SourceColumnNullMapping,
+                        SqlDbType = prmSource.SqlDbType,
+                        SqlValue = prmSource.SqlValue,
+                        TypeName = prmSource.TypeName,
+                        Value = prmSource.Value
+                    };
+                    if (!(parameterValues is null))
+                    {
+                        if (parameterValues.TryGetValue(prmTarget.ParameterName, out var prmValue))
+                        {
+                            prmTarget.Value = prmValue;
+                        }
+                    }
+                    cmd.Parameters.Add(prmTarget);
+                }
+            }
+            else
+            {
+                ordinals = new int[queryParameterNames.Length];
+                for (int i = 0; i < queryParameterNames.Length; i++)
+                {
+                    var parameterName = SqlParameterCollectionExtensions.NormalizeSqlParameterName(queryParameterNames[i]);
+                    var found = false;
+                    for (var j = 0; j < parameters.Count; j++)
+                    {
+                        if (parameters[j].ParameterName == parameterName)
+                        {
+                            ordinals[i] = j;
+                            found = true;
+
+                            var prmSource = (SqlParameter)parameters[j];
+
+                            var prmTarget = new SqlParameter()
+                            {
+                                CompareInfo = prmSource.CompareInfo,
+                                DbType = prmSource.DbType,
+                                Direction = prmSource.Direction,
+                                IsNullable = prmSource.IsNullable,
+                                LocaleId = prmSource.LocaleId,
+                                Offset = prmSource.Offset,
+                                ParameterName = prmSource.ParameterName,
+                                Precision = prmSource.Precision,
+                                Scale = prmSource.Scale,
+                                Size = prmSource.Size,
+                                SourceColumn = prmSource.SourceColumn,
+                                SourceColumnNullMapping = prmSource.SourceColumnNullMapping,
+                                SqlDbType = prmSource.SqlDbType,
+                                SqlValue = prmSource.SqlValue,
+                                TypeName = prmSource.TypeName,
+                                Value = prmSource.Value
+                            };
+                            if (!(parameterValues is null))
+                            {
+                                if (parameterValues.TryGetValue(prmTarget.ParameterName, out var prmValue))
+                                {
+                                    prmTarget.Value = prmValue;
+                                }
+                            }
+                            cmd.Parameters.Add(prmTarget);
+                        }
+                    }
+                    if (!found)
+                    {
+                        throw new ParameterNotFoundException($"Expected parameter { parameterName }, but it was not found in the parameter list.");
                     }
                 }
-                cmd.Parameters.Add(prmTarget);
             }
         }
 

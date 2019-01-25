@@ -42,7 +42,7 @@ namespace ArgentSea.Sql
             var ordinal = 0;
             //variables.Add(prmModel);
             variables.Add(expRecord);
-            using (logger.BuildTvpScope(tModel))
+            using (logger?.BuildTvpScope(tModel))
             {
                 IterateTvpProperties(tModel, resultExpressions, setExpressions, sqlMetaTypeExpressions, variables, prmModel, expRecord, expLogger, noDupPrmNameList, ref ordinal, logger);
 

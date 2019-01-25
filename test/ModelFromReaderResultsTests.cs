@@ -137,7 +137,7 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(3).Returns("Amount");
 
             var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             var prm = new SqlParameter("@Description", ParameterDirection.Output);
             prm.Value = "Root Model";
             prms.Add(prm);
@@ -175,7 +175,7 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(3).Returns("Amount");
 
             var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             var prm = new SqlParameter("@Description", ParameterDirection.Output);
             prm.Value = "Root Model";
             prms.Add(prm);
@@ -216,7 +216,7 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(3).Returns("Amount");
 
             var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             var prm = new SqlParameter("@Description", ParameterDirection.Output);
             prm.Value = "Root Model";
             prms.Add(prm);
@@ -262,7 +262,7 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(3).Returns("Amount");
 
             var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             var prm = new SqlParameter("@Description", ParameterDirection.Output);
             prm.Value = "Root Model";
             prms.Add(prm);
@@ -312,7 +312,7 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(3).Returns("Amount");
 
             var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             var prm = new SqlParameter("@Description", ParameterDirection.Output);
             prm.Value = "Root Model";
             prms.Add(prm);
@@ -366,7 +366,7 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(3).Returns("Amount");
 
             var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             var prm = new SqlParameter("@Description", ParameterDirection.Output);
             prm.Value = "Root Model";
             prms.Add(prm);
@@ -423,7 +423,7 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(3).Returns("Amount");
 
             var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             var prm = new SqlParameter("@Description", ParameterDirection.Output);
             prm.Value = "Root Model";
             prms.Add(prm);
@@ -483,7 +483,7 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(3).Returns("Amount");
 
             var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-            var prms = new QueryParameterCollection();
+            var prms = new ParameterCollection();
             var prm = new SqlParameter("@Description", ParameterDirection.Output);
             prm.Value = "Root Model";
             prms.Add(prm);

@@ -42,10 +42,10 @@ namespace ArgentSea.Sql.Test
             sqlDbData.SqlDbConnections[1].ReadConnectionInternal.SetAmbientConfiguration(globalData, null, null, sqlDbData.SqlDbConnections[1]);
             sqlDbData.SqlDbConnections[1].WriteConnectionInternal.SetAmbientConfiguration(globalData, null, null, sqlDbData.SqlDbConnections[1]);
 
-            sqlDbData.SqlDbConnections[0].ReadConnection.GetConnectionString().Should().Be("Data Source=10.10.25.1;Initial Catalog=MainDb;Connect Timeout=5;Type System Version=\"SQL Server 2012\";Application Name=MyApp;ConnectRetryCount=0", "this is the value inherited from global configuration settings");
-            sqlDbData.SqlDbConnections[0].WriteConnection.GetConnectionString().Should().Be("Data Source=10.10.25.5;Initial Catalog=MainDb;Connect Timeout=5;Type System Version=\"SQL Server 2012\";Application Name=MyApp;ConnectRetryCount=0", "this is the value inherited from global configuration settings");
-            sqlDbData.SqlDbConnections[1].ReadConnection.GetConnectionString().Should().Be("Data Source=MyOtherServer;Initial Catalog=OtherDb;Connect Timeout=20;Type System Version=\"SQL Server 2012\";Application Name=MyOtherApp;Current Language=English;ConnectRetryCount=0");
-            sqlDbData.SqlDbConnections[1].WriteConnection.GetConnectionString().Should().Be("Data Source=MyOtherServer;Initial Catalog=OtherDb;Connect Timeout=20;Type System Version=\"SQL Server 2012\";Application Name=MyOtherApp;Current Language=English;ConnectRetryCount=0", "this is the value inherited from global configuration settings");
+            sqlDbData.SqlDbConnections[0].ReadConnection.GetConnectionString(null).Should().Be("Data Source=10.10.25.1;Initial Catalog=MainDb;Connect Timeout=5;Type System Version=\"SQL Server 2012\";Application Name=MyApp;ConnectRetryCount=0", "this is the value inherited from global configuration settings");
+            sqlDbData.SqlDbConnections[0].WriteConnection.GetConnectionString(null).Should().Be("Data Source=10.10.25.5;Initial Catalog=MainDb;Connect Timeout=5;Type System Version=\"SQL Server 2012\";Application Name=MyApp;ConnectRetryCount=0", "this is the value inherited from global configuration settings");
+            sqlDbData.SqlDbConnections[1].ReadConnection.GetConnectionString(null).Should().Be("Data Source=MyOtherServer;Initial Catalog=OtherDb;Connect Timeout=20;Type System Version=\"SQL Server 2012\";Application Name=MyOtherApp;Current Language=English;ConnectRetryCount=0");
+            sqlDbData.SqlDbConnections[1].WriteConnection.GetConnectionString(null).Should().Be("Data Source=MyOtherServer;Initial Catalog=OtherDb;Connect Timeout=20;Type System Version=\"SQL Server 2012\";Application Name=MyOtherApp;Current Language=English;ConnectRetryCount=0", "this is the value inherited from global configuration settings");
 
             var sqlShardData = sqlShardOptions.Value;
 			sqlShardData.SqlShardSets.Length.Should().Be(2, "there are two shard sets defined");
@@ -114,18 +114,18 @@ namespace ArgentSea.Sql.Test
             var shardService = new ArgentSea.Sql.SqlShardSets<byte>(sqlShardOptions, globalOptions, shardLogger);
 
             dbService["MainDb"].Read.ConnectionString.Should().Be("Data Source=10.10.25.1;Initial Catalog=MainDb;Connect Timeout=5;Type System Version=\"SQL Server 2012\";Application Name=MyApp;ConnectRetryCount=0", "this is the value inherited from global configuratoin settings");
-            shardService["Inherit"][0].Read.ConnectionString.Should().Be("Data Source=10.10.23.20;Failover Partner=MyMirror;Initial Catalog=dbName2;Connect Timeout=5;Type System Version=\"SQL Server 2012\";Application Name=MyOtherApp;ConnectRetryCount=0", "the configuration file builds this connection string");
+            shardService["Inherit"][0].Read.ConnectionString.Should().Be("Data Source=10.10.23.20;Failover Partner=MyMirror;Initial Catalog=dbName2;Connect Timeout=5;Type System Version=\"SQL Server 2012\";Application Name=MyOtherApp;ApplicationIntent=ReadOnly;ConnectRetryCount=0", "the configuration file builds this connection string");
 
             globalOptions.Value.CurrentLanguage = "Pigeon";
             dbService["MainDb"].Read.ConnectionString.Should().Be("Data Source=10.10.25.1;Initial Catalog=MainDb;Connect Timeout=5;Type System Version=\"SQL Server 2012\";Application Name=MyApp;Current Language=Pigeon;ConnectRetryCount=0", "this is the value inherited from global configuratoin settings");
-            shardService["Inherit"][0].Read.ConnectionString.Should().Be("Data Source=10.10.23.20;Failover Partner=MyMirror;Initial Catalog=dbName2;Connect Timeout=5;Type System Version=\"SQL Server 2012\";Application Name=MyOtherApp;Current Language=Pigeon;ConnectRetryCount=0", "the configuration file builds this connection string");
+            shardService["Inherit"][0].Read.ConnectionString.Should().Be("Data Source=10.10.23.20;Failover Partner=MyMirror;Initial Catalog=dbName2;Connect Timeout=5;Type System Version=\"SQL Server 2012\";Application Name=MyOtherApp;Current Language=Pigeon;ApplicationIntent=ReadOnly;ConnectRetryCount=0", "the configuration file builds this connection string");
 
             sqlDbOptions.Value.SqlDbConnections[0].PacketSize = 16384;
             sqlShardOptions.Value.SqlShardSets[0].PacketSize = 16384;
             dbService["MainDb"].Read.ConnectionString.Should().Be("Data Source=10.10.25.1;Initial Catalog=MainDb;Connect Timeout=5;Packet Size=16384;Type System Version=\"SQL Server 2012\";Application Name=MyApp;Current Language=Pigeon;ConnectRetryCount=0", "this is the value inherited from global configuratoin settings");
-            shardService["Inherit"][0].Read.ConnectionString.Should().Be("Data Source=10.10.23.20;Failover Partner=MyMirror;Initial Catalog=dbName2;Connect Timeout=5;Packet Size=16384;Type System Version=\"SQL Server 2012\";Application Name=MyOtherApp;Current Language=Pigeon;ConnectRetryCount=0", "the configuration file builds this connection string");
+            shardService["Inherit"][0].Read.ConnectionString.Should().Be("Data Source=10.10.23.20;Failover Partner=MyMirror;Initial Catalog=dbName2;Connect Timeout=5;Packet Size=16384;Type System Version=\"SQL Server 2012\";Application Name=MyOtherApp;Current Language=Pigeon;ApplicationIntent=ReadOnly;ConnectRetryCount=0", "the configuration file builds this connection string");
             sqlShardOptions.Value.SqlShardSets[0].PacketSize = 4096;
-            shardService["Inherit"][0].Read.ConnectionString.Should().Be("Data Source=10.10.23.20;Failover Partner=MyMirror;Initial Catalog=dbName2;Connect Timeout=5;Packet Size=4096;Type System Version=\"SQL Server 2012\";Application Name=MyOtherApp;Current Language=Pigeon;ConnectRetryCount=0", "the configuration file builds this connection string");
+            shardService["Inherit"][0].Read.ConnectionString.Should().Be("Data Source=10.10.23.20;Failover Partner=MyMirror;Initial Catalog=dbName2;Connect Timeout=5;Packet Size=4096;Type System Version=\"SQL Server 2012\";Application Name=MyOtherApp;Current Language=Pigeon;ApplicationIntent=ReadOnly;ConnectRetryCount=0", "the configuration file builds this connection string");
 
         }
     }

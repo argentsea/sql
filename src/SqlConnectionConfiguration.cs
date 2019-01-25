@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.ComponentModel;
+using Microsoft.Extensions.Logging;
 
 namespace ArgentSea.Sql
 {
@@ -26,8 +27,7 @@ namespace ArgentSea.Sql
             _csb = new SqlConnectionStringBuilder();
             _csb.ConnectTimeout = DefaultConnectTimeout;
             _csb.ConnectRetryCount = 0;
-
-       }
+        }
 
         private void HandlePropertyChanged(object sender, PropertyChangedEventArgs args)
         {
@@ -143,7 +143,7 @@ namespace ArgentSea.Sql
             }
         }
 
-        public string GetConnectionString()
+        public string GetConnectionString(ILogger logger)
         {
             if (string.IsNullOrEmpty(_connectionString))
             {
@@ -165,6 +165,13 @@ namespace ArgentSea.Sql
                 }
                 SetProperties(this);
                 _connectionString = _csb.ToString();
+                var logCS = _connectionString;
+                var pwd = _csb.Password;
+                if (!string.IsNullOrEmpty(pwd)) 
+                {
+                    logCS = logCS.Replace(pwd, "********");
+                }
+                logger?.SqlConnectionStringBuilt(logCS);
             }
             return _connectionString;
         }
