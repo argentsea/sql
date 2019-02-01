@@ -8,7 +8,7 @@ using System.Text;
 namespace ArgentSea.Sql
 {
     /// <summary>
-    /// This configuration class defines an array of database <see cref="SqlConnectionConfiguration">connection configurations</see>. 
+    /// This configuration class defines an array of database <see cref="ArgentSea.Sql.SqlConnectionConfiguration" />. 
     /// <example>
     /// For example, you might configure your appsettings.json like this:
     /// <code>

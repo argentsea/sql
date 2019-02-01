@@ -18,7 +18,7 @@ namespace ArgentSea.Sql
     {
         public static void TvpStringExpressionBuilder(string parameterName, SqlDbType sqlType, int length, ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
         {
-            var dataName = ToFieldName(parameterName);
+            var dataName = SqlParameterCollectionExtensions.NormalizeSqlColumnName(parameterName);
             if (parameterNames.Add(dataName))
             {
                 var ctor = typeof(SqlMetaData).GetConstructor(new[] { typeof(string), typeof(SqlDbType), typeof(long) });
@@ -62,7 +62,7 @@ namespace ArgentSea.Sql
         //int, short, byte, enum
         public static void TvpEnumXIntExpressionBuilder(string parameterName, SqlDbType sqlType, string methodName, Type baseType, ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
         {
-            var dataName = ToFieldName(parameterName);
+            var dataName = SqlParameterCollectionExtensions.NormalizeSqlColumnName(parameterName);
             if (parameterNames.Add(dataName))
             {
                 var ctor = typeof(SqlMetaData).GetConstructor(new[] { typeof(string), typeof(SqlDbType) });
@@ -113,11 +113,11 @@ namespace ArgentSea.Sql
         //bool and long
         public static bool TvpSimpleValueExpressionBuilder(string parameterName, SqlDbType sqlType, string methodName, Type baseType, ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
         {
-            var dataName = ToFieldName(parameterName);
+            var dataName = SqlParameterCollectionExtensions.NormalizeSqlColumnName(parameterName);
             if (parameterNames.Add(dataName))
             {
                 var ctor = typeof(SqlMetaData).GetConstructor(new[] { typeof(string), typeof(SqlDbType) });
-                var expPrmName = Expression.Constant(ToFieldName(dataName), typeof(string));
+                var expPrmName = Expression.Constant(SqlParameterCollectionExtensions.NormalizeSqlColumnName(dataName), typeof(string));
                 var expPrmType = Expression.Constant(sqlType, typeof(SqlDbType));
                 sqlMetaDataTypeExpressions.Add(Expression.New(ctor, new[] { expPrmName, expPrmType }));
 
@@ -155,7 +155,7 @@ namespace ArgentSea.Sql
 
         public static void TvpGuidFloatingPointExpressionBuilder(string parameterName, SqlDbType sqlType, string methodName, Type baseType, ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
         {
-            var dataName = ToFieldName(parameterName);
+            var dataName = SqlParameterCollectionExtensions.NormalizeSqlColumnName(parameterName);
             if (parameterNames.Add(dataName))
             {
                 var ctor = typeof(SqlMetaData).GetConstructor(new[] { typeof(string), typeof(SqlDbType) });
@@ -199,7 +199,7 @@ namespace ArgentSea.Sql
 
         public static void TvpBinaryExpressionBuilder(string parameterName, SqlDbType sqlType, int length, ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
         {
-            var dataName = ToFieldName(parameterName);
+            var dataName = SqlParameterCollectionExtensions.NormalizeSqlColumnName(parameterName);
             if (parameterNames.Add(dataName))
             {
                 var ctor = typeof(SqlMetaData).GetConstructor(new[] { typeof(string), typeof(SqlDbType), typeof(int) });
@@ -222,21 +222,5 @@ namespace ArgentSea.Sql
 						));
             }
         }
-        internal static string ToParameterName(string parameterName)
-        {
-            if (!string.IsNullOrEmpty(parameterName) && !parameterName.StartsWith("@"))
-            {
-                parameterName = "@" + parameterName;
-            }
-            return parameterName;
-        }
-		internal static string ToFieldName(string parameterName)
-		{
-			if (!string.IsNullOrEmpty(parameterName) && parameterName.StartsWith("@"))
-			{
-				parameterName = parameterName.Substring(1);
-			}
-			return parameterName;
-		}
 	}
 }

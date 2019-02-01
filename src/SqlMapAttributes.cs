@@ -19,7 +19,7 @@ namespace ArgentSea.Sql
     /// </summary>
 	public abstract class SqlParameterMapAttribute : ParameterMapAttributeBase
     {
-        //public SqlParameterMapAttribute(string parameterName, SqlDbType sqlType): base(TvpExpressionHelpers.ToParameterName(parameterName), (int)sqlType)
+        //public SqlParameterMapAttribute(string parameterName, SqlDbType sqlType): base(SqlParameterCollectionExtensions.NormalizeSqlParameterName(parameterName), (int)sqlType)
         public SqlParameterMapAttribute(string parameterName, SqlDbType sqlType) : base(parameterName, (int)sqlType)
         {
         }
@@ -69,9 +69,9 @@ namespace ArgentSea.Sql
         protected override void AppendReaderExpressions(Expression expProperty, IList<MethodCallExpression> columnLookupExpressions, IList<Expression> expressions, ParameterExpression prmSqlRdr, ParameterExpression expOrdinals, ParameterExpression expOrdinal, ref int propIndex, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReaderStringExpressions(this.ColumnName, expProperty, columnLookupExpressions, expressions, prmSqlRdr, expOrdinals, expOrdinal, ref propIndex, propertyType, expLogger, logger);
 
-        public override string ParameterName { get => TvpExpressionHelpers.ToParameterName(base.Name); }
+        public override string ParameterName { get => SqlParameterCollectionExtensions.NormalizeSqlParameterName(base.Name); }
 
-        public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
+        public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
     }
 
     /// <summary>
@@ -113,9 +113,9 @@ namespace ArgentSea.Sql
         protected override void AppendReaderExpressions(Expression expProperty, IList<MethodCallExpression> columnLookupExpressions, IList<Expression> expressions, ParameterExpression prmSqlRdr, ParameterExpression expOrdinals, ParameterExpression expOrdinal, ref int propIndex, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReaderStringExpressions(this.ColumnName, expProperty, columnLookupExpressions, expressions, prmSqlRdr, expOrdinals, expOrdinal, ref propIndex, propertyType, expLogger, logger);
 
-        public override string ParameterName { get => TvpExpressionHelpers.ToParameterName(base.Name); }
+        public override string ParameterName { get => SqlParameterCollectionExtensions.NormalizeSqlParameterName(base.Name); }
 
-        public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
+        public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
     }
 
     /// <summary>
@@ -161,9 +161,9 @@ namespace ArgentSea.Sql
         protected override void AppendReaderExpressions(Expression expProperty, IList<MethodCallExpression> columnLookupExpressions, IList<Expression> expressions, ParameterExpression prmSqlRdr, ParameterExpression expOrdinals, ParameterExpression expOrdinal, ref int propIndex, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReaderStringExpressions(this.ColumnName, expProperty, columnLookupExpressions, expressions, prmSqlRdr, expOrdinals, expOrdinal, ref propIndex, propertyType, expLogger, logger);
 
-        public override string ParameterName { get => TvpExpressionHelpers.ToParameterName(base.Name); }
+        public override string ParameterName { get => SqlParameterCollectionExtensions.NormalizeSqlParameterName(base.Name); }
 
-        public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
+        public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
     }
 
     /// <summary>
@@ -210,9 +210,9 @@ namespace ArgentSea.Sql
         protected override void AppendReaderExpressions(Expression expProperty, IList<MethodCallExpression> columnLookupExpressions, IList<Expression> expressions, ParameterExpression prmSqlRdr, ParameterExpression expOrdinals, ParameterExpression expOrdinal, ref int propIndex, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReaderStringExpressions(this.ColumnName, expProperty, columnLookupExpressions, expressions, prmSqlRdr, expOrdinals, expOrdinal, ref propIndex, propertyType, expLogger, logger);
 
-        public override string ParameterName { get => TvpExpressionHelpers.ToParameterName(base.Name); }
+        public override string ParameterName { get => SqlParameterCollectionExtensions.NormalizeSqlParameterName(base.Name); }
 
-        public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
+        public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
     }
     #endregion
     #region Number expSprocParameters
@@ -259,9 +259,9 @@ namespace ArgentSea.Sql
 			=> ExpressionHelpers.ReaderEnumXIntExpressions(this.ColumnName, expProperty, typeof(long), columnLookupExpressions, expressions, prmSqlRdr, expOrdinals, expOrdinal, ref propIndex, propertyType, expLogger, logger);
         //=> ExpressionHelpers.ReaderSimpleValueExpressions(this.ColumnName, expProperty, columnLookupExpressions, expressions, prmSqlRdr, expOrdinals, expOrdinal, ref propIndex, propertyType, expLogger, logger);
 
-        public override string ParameterName { get => TvpExpressionHelpers.ToParameterName(base.Name); }
+        public override string ParameterName { get => SqlParameterCollectionExtensions.NormalizeSqlParameterName(base.Name); }
 
-        public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
+        public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
     }
 
     /// <summary>
@@ -302,9 +302,9 @@ namespace ArgentSea.Sql
         protected override void AppendReaderExpressions(Expression expProperty, IList<MethodCallExpression> columnLookupExpressions, IList<Expression> expressions, ParameterExpression prmSqlRdr, ParameterExpression expOrdinals, ParameterExpression expOrdinal, ref int propIndex, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReaderEnumXIntExpressions(this.ColumnName, expProperty, typeof(int), columnLookupExpressions, expressions, prmSqlRdr, expOrdinals, expOrdinal, ref propIndex, propertyType, expLogger, logger);
 
-        public override string ParameterName { get => TvpExpressionHelpers.ToParameterName(base.Name); }
+        public override string ParameterName { get => SqlParameterCollectionExtensions.NormalizeSqlParameterName(base.Name); }
 
-        public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
+        public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
     }
 
     /// <summary>
@@ -345,9 +345,9 @@ namespace ArgentSea.Sql
         protected override void AppendReaderExpressions(Expression expProperty, IList<MethodCallExpression> columnLookupExpressions, IList<Expression> expressions, ParameterExpression prmSqlRdr, ParameterExpression expOrdinals, ParameterExpression expOrdinal, ref int propIndex, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReaderEnumXIntExpressions(this.ColumnName, expProperty, typeof(short), columnLookupExpressions, expressions, prmSqlRdr, expOrdinals, expOrdinal, ref propIndex, propertyType, expLogger, logger);
 
-        public override string ParameterName { get => TvpExpressionHelpers.ToParameterName(base.Name); }
+        public override string ParameterName { get => SqlParameterCollectionExtensions.NormalizeSqlParameterName(base.Name); }
 
-        public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
+        public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
     }
 
     /// <summary>
@@ -388,9 +388,9 @@ namespace ArgentSea.Sql
         protected override void AppendReaderExpressions(Expression expProperty, IList<MethodCallExpression> columnLookupExpressions, IList<Expression> expressions, ParameterExpression prmSqlRdr, ParameterExpression expOrdinals, ParameterExpression expOrdinal, ref int propIndex, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReaderEnumXIntExpressions(this.ColumnName, expProperty, typeof(byte), columnLookupExpressions, expressions, prmSqlRdr, expOrdinals, expOrdinal, ref propIndex, propertyType, expLogger, logger);
 
-        public override string ParameterName { get => TvpExpressionHelpers.ToParameterName(base.Name); }
+        public override string ParameterName { get => SqlParameterCollectionExtensions.NormalizeSqlParameterName(base.Name); }
 
-        public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
+        public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
     }
 
     /// <summary>
@@ -429,9 +429,9 @@ namespace ArgentSea.Sql
         protected override void AppendReaderExpressions(Expression expProperty, IList<MethodCallExpression> columnLookupExpressions, IList<Expression> expressions, ParameterExpression prmSqlRdr, ParameterExpression expOrdinals, ParameterExpression expOrdinal, ref int propIndex, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReaderSimpleValueExpressions(this.ColumnName, expProperty, columnLookupExpressions, expressions, prmSqlRdr, expOrdinals, expOrdinal, ref propIndex, propertyType, expLogger, logger);
 
-        public override string ParameterName { get => TvpExpressionHelpers.ToParameterName(base.Name); }
+        public override string ParameterName { get => SqlParameterCollectionExtensions.NormalizeSqlParameterName(base.Name); }
 
-        public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
+        public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
 
     }
 
@@ -469,7 +469,7 @@ namespace ArgentSea.Sql
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
         {
-            var dataName = TvpExpressionHelpers.ToFieldName(this.ParameterName);
+            var dataName = SqlParameterCollectionExtensions.NormalizeSqlColumnName(this.ParameterName);
             if (parameterNames.Add(dataName))
             {
                 var ctor = typeof(SqlMetaData).GetConstructor(new[] { typeof(string), typeof(SqlDbType), typeof(byte), typeof(byte) });
@@ -510,9 +510,9 @@ namespace ArgentSea.Sql
         protected override void AppendReaderExpressions(Expression expProperty, IList<MethodCallExpression> columnLookupExpressions, IList<Expression> expressions, ParameterExpression prmSqlRdr, ParameterExpression expOrdinals, ParameterExpression expOrdinal, ref int propIndex, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReaderSimpleValueExpressions(this.ColumnName, expProperty, columnLookupExpressions, expressions, prmSqlRdr, expOrdinals, expOrdinal, ref propIndex, propertyType, expLogger, logger);
 
-        public override string ParameterName { get => TvpExpressionHelpers.ToParameterName(base.Name); }
+        public override string ParameterName { get => SqlParameterCollectionExtensions.NormalizeSqlParameterName(base.Name); }
 
-        public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
+        public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
     }
 
     /// <summary>
@@ -551,9 +551,9 @@ namespace ArgentSea.Sql
         protected override void AppendReaderExpressions(Expression expProperty, IList<MethodCallExpression> columnLookupExpressions, IList<Expression> expressions, ParameterExpression prmSqlRdr, ParameterExpression expOrdinals, ParameterExpression expOrdinal, ref int propIndex, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReaderSimpleValueExpressions(this.ColumnName, expProperty, columnLookupExpressions, expressions, prmSqlRdr, expOrdinals, expOrdinal, ref propIndex, propertyType, expLogger, logger);
 
-        public override string ParameterName { get => TvpExpressionHelpers.ToParameterName(base.Name); }
+        public override string ParameterName { get => SqlParameterCollectionExtensions.NormalizeSqlParameterName(base.Name); }
 
-        public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
+        public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
     }
 
     /// <summary>
@@ -592,9 +592,9 @@ namespace ArgentSea.Sql
         protected override void AppendReaderExpressions(Expression expProperty, IList<MethodCallExpression> columnLookupExpressions, IList<Expression> expressions, ParameterExpression prmSqlRdr, ParameterExpression expOrdinals, ParameterExpression expOrdinal, ref int propIndex, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReaderSimpleValueExpressions(this.ColumnName, expProperty, columnLookupExpressions, expressions, prmSqlRdr, expOrdinals, expOrdinal, ref propIndex, propertyType, expLogger, logger);
 
-        public override string ParameterName { get => TvpExpressionHelpers.ToParameterName(base.Name); }
+        public override string ParameterName { get => SqlParameterCollectionExtensions.NormalizeSqlParameterName(base.Name); }
 
-        public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
+        public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
     }
 
     /// <summary>
@@ -634,9 +634,9 @@ namespace ArgentSea.Sql
         protected override void AppendReaderExpressions(Expression expProperty, IList<MethodCallExpression> columnLookupExpressions, IList<Expression> expressions, ParameterExpression prmSqlRdr, ParameterExpression expOrdinals, ParameterExpression expOrdinal, ref int propIndex, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReaderNullableValueTypeExpressions(this.ColumnName, expProperty, Expression.Constant(double.NaN, typeof(double)), columnLookupExpressions, expressions, prmSqlRdr, expOrdinals, expOrdinal, ref propIndex, propertyType, expLogger, logger);
 
-        public override string ParameterName { get => TvpExpressionHelpers.ToParameterName(base.Name); }
+        public override string ParameterName { get => SqlParameterCollectionExtensions.NormalizeSqlParameterName(base.Name); }
 
-        public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
+        public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
     }
 
     /// <summary>
@@ -676,9 +676,9 @@ namespace ArgentSea.Sql
         protected override void AppendReaderExpressions(Expression expProperty, IList<MethodCallExpression> columnLookupExpressions, IList<Expression> expressions, ParameterExpression prmSqlRdr, ParameterExpression expOrdinals, ParameterExpression expOrdinal, ref int propIndex, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReaderNullableValueTypeExpressions(this.ColumnName, expProperty, Expression.Constant(float.NaN, typeof(float)), columnLookupExpressions, expressions, prmSqlRdr, expOrdinals, expOrdinal, ref propIndex, propertyType, expLogger, logger);
 
-        public override string ParameterName { get => TvpExpressionHelpers.ToParameterName(base.Name); }
+        public override string ParameterName { get => SqlParameterCollectionExtensions.NormalizeSqlParameterName(base.Name); }
 
-        public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
+        public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
     }
     #endregion
     #region Temporal parameters
@@ -718,9 +718,9 @@ namespace ArgentSea.Sql
         protected override void AppendReaderExpressions(Expression expProperty, IList<MethodCallExpression> columnLookupExpressions, IList<Expression> expressions, ParameterExpression prmSqlRdr, ParameterExpression expOrdinals, ParameterExpression expOrdinal, ref int propIndex, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReaderSimpleValueExpressions(this.ColumnName, expProperty, columnLookupExpressions, expressions, prmSqlRdr, expOrdinals, expOrdinal, ref propIndex, propertyType, expLogger, logger);
 
-        public override string ParameterName { get => TvpExpressionHelpers.ToParameterName(base.Name); }
+        public override string ParameterName { get => SqlParameterCollectionExtensions.NormalizeSqlParameterName(base.Name); }
 
-        public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
+        public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
     }
 
     /// <summary>
@@ -759,9 +759,9 @@ namespace ArgentSea.Sql
         protected override void AppendReaderExpressions(Expression expProperty, IList<MethodCallExpression> columnLookupExpressions, IList<Expression> expressions, ParameterExpression prmSqlRdr, ParameterExpression expOrdinals, ParameterExpression expOrdinal, ref int propIndex, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReaderSimpleValueExpressions(this.ColumnName, expProperty, columnLookupExpressions, expressions, prmSqlRdr, expOrdinals, expOrdinal, ref propIndex, propertyType, expLogger, logger);
 
-        public override string ParameterName { get => TvpExpressionHelpers.ToParameterName(base.Name); }
+        public override string ParameterName { get => SqlParameterCollectionExtensions.NormalizeSqlParameterName(base.Name); }
 
-        public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
+        public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
     }
 
     /// <summary>
@@ -800,9 +800,9 @@ namespace ArgentSea.Sql
         protected override void AppendReaderExpressions(Expression expProperty, IList<MethodCallExpression> columnLookupExpressions, IList<Expression> expressions, ParameterExpression prmSqlRdr, ParameterExpression expOrdinals, ParameterExpression expOrdinal, ref int propIndex, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReaderSimpleValueExpressions(this.ColumnName, expProperty, columnLookupExpressions, expressions, prmSqlRdr, expOrdinals, expOrdinal, ref propIndex, propertyType, expLogger, logger);
 
-        public override string ParameterName { get => TvpExpressionHelpers.ToParameterName(base.Name); }
+        public override string ParameterName { get => SqlParameterCollectionExtensions.NormalizeSqlParameterName(base.Name); }
 
-        public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
+        public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
     }
 
     /// <summary>
@@ -841,9 +841,9 @@ namespace ArgentSea.Sql
         protected override void AppendReaderExpressions(Expression expProperty, IList<MethodCallExpression> columnLookupExpressions, IList<Expression> expressions, ParameterExpression prmSqlRdr, ParameterExpression expOrdinals, ParameterExpression expOrdinal, ref int propIndex, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReaderSimpleValueExpressions(this.ColumnName, expProperty, columnLookupExpressions, expressions, prmSqlRdr, expOrdinals, expOrdinal, ref propIndex, propertyType, expLogger, logger);
 
-        public override string ParameterName { get => TvpExpressionHelpers.ToParameterName(base.Name); }
+        public override string ParameterName { get => SqlParameterCollectionExtensions.NormalizeSqlParameterName(base.Name); }
 
-        public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
+        public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
     }
 
     /// <summary>
@@ -882,9 +882,9 @@ namespace ArgentSea.Sql
         protected override void AppendReaderExpressions(Expression expProperty, IList<MethodCallExpression> columnLookupExpressions, IList<Expression> expressions, ParameterExpression prmSqlRdr, ParameterExpression expOrdinals, ParameterExpression expOrdinal, ref int propIndex, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReaderSimpleValueExpressions(this.ColumnName, expProperty, columnLookupExpressions, expressions, prmSqlRdr, expOrdinals, expOrdinal, ref propIndex, propertyType, expLogger, logger);
 
-        public override string ParameterName { get => TvpExpressionHelpers.ToParameterName(base.Name); }
+        public override string ParameterName { get => SqlParameterCollectionExtensions.NormalizeSqlParameterName(base.Name); }
 
-        public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
+        public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
     }
     #endregion
     #region Other parameters
@@ -926,9 +926,9 @@ namespace ArgentSea.Sql
         protected override void AppendReaderExpressions(Expression expProperty, IList<MethodCallExpression> columnLookupExpressions, IList<Expression> expressions, ParameterExpression prmSqlRdr, ParameterExpression expOrdinals, ParameterExpression expOrdinal, ref int propIndex, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReaderSimpleValueExpressions(this.ColumnName, expProperty, columnLookupExpressions, expressions, prmSqlRdr, expOrdinals, expOrdinal, ref propIndex, propertyType, expLogger, logger);
 
-        public override string ParameterName { get => TvpExpressionHelpers.ToParameterName(base.Name); }
+        public override string ParameterName { get => SqlParameterCollectionExtensions.NormalizeSqlParameterName(base.Name); }
 
-        public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
+        public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
     }
 
     /// <summary>
@@ -975,9 +975,9 @@ namespace ArgentSea.Sql
         protected override void AppendReaderExpressions(Expression expProperty, IList<MethodCallExpression> columnLookupExpressions, IList<Expression> expressions, ParameterExpression prmSqlRdr, ParameterExpression expOrdinals, ParameterExpression expOrdinal, ref int propIndex, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReaderSimpleValueExpressions(this.ColumnName, expProperty, columnLookupExpressions, expressions, prmSqlRdr, expOrdinals, expOrdinal, ref propIndex, propertyType, expLogger, logger);
 
-        public override string ParameterName { get => TvpExpressionHelpers.ToParameterName(base.Name); }
+        public override string ParameterName { get => SqlParameterCollectionExtensions.NormalizeSqlParameterName(base.Name); }
 
-        public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
+        public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
     }
 
     /// <summary>
@@ -1017,9 +1017,9 @@ namespace ArgentSea.Sql
         protected override void AppendReaderExpressions(Expression expProperty, IList<MethodCallExpression> columnLookupExpressions, IList<Expression> expressions, ParameterExpression prmSqlRdr, ParameterExpression expOrdinals, ParameterExpression expOrdinal, ref int propIndex, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.ReaderNullableValueTypeExpressions(this.ColumnName, expProperty, Expression.Constant(Guid.Empty, typeof(Guid)), columnLookupExpressions, expressions, prmSqlRdr, expOrdinals, expOrdinal, ref propIndex, propertyType, expLogger, logger);
 
-        public override string ParameterName { get => TvpExpressionHelpers.ToParameterName(base.Name); }
+        public override string ParameterName { get => SqlParameterCollectionExtensions.NormalizeSqlParameterName(base.Name); }
 
-        public override string ColumnName { get => TvpExpressionHelpers.ToFieldName(base.Name); }
+        public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
     }
     #endregion
 }

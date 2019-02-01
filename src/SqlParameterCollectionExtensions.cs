@@ -21,24 +21,32 @@ namespace ArgentSea.Sql
         {
             if (!parameterName.StartsWith("@"))
             {
-                return "@" + parameterName;
+                return $"@{parameterName}";
             }
             return parameterName;
         }
+        internal static string NormalizeSqlColumnName(string columnName)
+        {
+            if (!string.IsNullOrEmpty(columnName) && columnName.StartsWith("@"))
+            {
+                columnName = columnName.Substring(1);
+            }
+            return columnName;
+        }
 
-		#region String types
-		//NVARCHAR
-		/// <summary>
-		/// Creates parameter for providing a string or a DBNull value to a stored procedure.
-		/// </summary>
-		/// <param name="prms">The existing parameter collection to which this parameter should be added.</param>
-		/// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
-		/// <param name="value">An empty string will be saved as a zero-length string; a null string will be saved as a database null value.</param>
-		/// <param name="maxLength">This should match the size of the parameter, not the size of the input string (and certainly not the number of bytes).
-		/// For nvarchar(max) parameters, specify -1. 
-		/// Setting the value correctly will help avoid plan cache pollution (when not using stored procedures) and minimize memory buffer allocations.</param>
-		/// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-		public static DbParameterCollection AddSqlNVarCharInputParameter(this DbParameterCollection prms, string parameterName, string value, int maxLength)
+        #region String types
+        //NVARCHAR
+        /// <summary>
+        /// Creates parameter for providing a string or a DBNull value to a stored procedure.
+        /// </summary>
+        /// <param name="prms">The existing parameter collection to which this parameter should be added.</param>
+        /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
+        /// <param name="value">An empty string will be saved as a zero-length string; a null string will be saved as a database null value.</param>
+        /// <param name="maxLength">This should match the size of the parameter, not the size of the input string (and certainly not the number of bytes).
+        /// For nvarchar(max) parameters, specify -1. 
+        /// Setting the value correctly will help avoid plan cache pollution (when not using stored procedures) and minimize memory buffer allocations.</param>
+        /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
+        public static DbParameterCollection AddSqlNVarCharInputParameter(this DbParameterCollection prms, string parameterName, string value, int maxLength)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.NVarChar, maxLength)
             {

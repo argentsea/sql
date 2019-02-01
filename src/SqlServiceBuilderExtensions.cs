@@ -7,6 +7,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using ArgentSea;
 using ArgentSea.Sql;
+using System.IO;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -27,9 +28,24 @@ namespace Microsoft.Extensions.DependencyInjection
             ) 
         {
             // even if these configs are already set by another provider, this will just overwrite with the same values.
-            services.Configure<SqlGlobalPropertiesOptions>(config.GetSection("SqlGlobalSettings"));
+            var global = config.GetSection("SqlGlobalSettings");
+            services.Configure<SqlGlobalPropertiesOptions>(global);
 			services.Configure<SqlDbConnectionOptions>(config);
-			services.AddSingleton<SqlDatabases>();
+            //var sqlPath = global.GetValue<string>("SqlFolder");
+            //if (!string.IsNullOrEmpty(sqlPath))
+            //{
+            //    if (!Directory.Exists(sqlPath))
+            //    {
+            //        throw new DirectoryNotFoundException($"Directory “{sqlPath}” was configured as the location for SQL files, but the directory was not found.");
+            //    }
+            //    QueryStatement.Folder = sqlPath;
+            //}
+            //var sqlExt = global.GetValue<string>("SqlFileExt");
+            //if (!string.IsNullOrEmpty(sqlExt))
+            //{
+            //    QueryStatement.Extension = sqlExt;
+            //}
+            services.AddSingleton<SqlDatabases>();
 			return services;
         }
 
