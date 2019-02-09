@@ -13,6 +13,7 @@ using System.Linq.Expressions;
 using System.Globalization;
 using Microsoft.Extensions.Logging;
 using System.Linq;
+using System.Threading;
 
 namespace ArgentSea.Sql
 {
@@ -21,7 +22,7 @@ namespace ArgentSea.Sql
     /// </summary>
     public class TvpMapper
     {
-        private static ConcurrentDictionary<Type, Delegate> _setTvpParamCache = new ConcurrentDictionary<Type, Delegate>();
+        private static ConcurrentDictionary<Type, Lazy<Delegate>> _setTvpParamCache = new ConcurrentDictionary<Type, Lazy<Delegate>>();
 
         private static Func<TModel, ILogger, SqlDataRecord> BuildTableValuedParameterDelegate<TModel>(ILogger logger) where TModel : class
         {
@@ -196,15 +197,15 @@ namespace ArgentSea.Sql
                     }
                     if (!string.IsNullOrEmpty(shardIdPrm) && !foundShardId)
                     {
-                        throw new Exception($"The shard attribute specified a shardId attribute named {shardIdPrm}, but the attribute was not found. Remove this argument if you do not have a Shard Id.");
+                        throw new MapAttributeMissingException(MapAttributeMissingException.ShardElement.ShardId, shardIdPrm);
                     }
                     if (!foundRecordId)
                     {
-                        throw new Exception($"The shard attribute specified a recordId attribute named {recordIdPrm}, but the attribute was not found.");
+                        throw new MapAttributeMissingException(MapAttributeMissingException.ShardElement.RecordId, recordIdPrm);
                     }
                     if (isShardChild && !foundChildId)
                     {
-                        throw new Exception($"The ShardChild attribute specified a childId attribute named {childIdPrm}, but the attribute was not found.");
+                        throw new MapAttributeMissingException(MapAttributeMissingException.ShardElement.ChildId, childIdPrm);
                     }
                 }
                 else if (prop.IsDefined(typeof(SqlParameterMapAttribute), true))
@@ -233,6 +234,10 @@ namespace ArgentSea.Sql
                     IterateTvpProperties(prop.PropertyType, resultExpressions, setExpressions, sqlMetaTypeExpressions, variables, expProperty, expRecord, expLogger, noDupPrmNameList, ref ordinal, logger);
                 }
             }
+            if (ordinal == 0)
+            {
+                throw new NoMappingAttributesFoundException();
+            }
         }
 
         /// <summary>
@@ -245,21 +250,17 @@ namespace ArgentSea.Sql
         /// <returns>A SqlMetaData object. A list of these can be used as a Sql table-valued parameter.</returns>
         public static SqlDataRecord ToTvpRecord<TModel>(TModel model, ILogger logger) where TModel : class, new()
         {
-            var modelT = typeof(TModel);
-            if (!_setTvpParamCache.TryGetValue(modelT, out var sqlTblDelegate))
+            var tModel = typeof(TModel);
+            var lazyTvpParameters = _setTvpParamCache.GetOrAdd(tModel, new Lazy<Delegate>(() => BuildTableValuedParameterDelegate<TModel>(logger), LazyThreadSafetyMode.ExecutionAndPublication));
+            if (lazyTvpParameters.IsValueCreated)
             {
-                SqlLoggingExtensions.SqlTvpCacheMiss(logger, modelT);
-                sqlTblDelegate = BuildTableValuedParameterDelegate<TModel>(logger);
-                if (!_setTvpParamCache.TryAdd(modelT, sqlTblDelegate))
-                {
-                    sqlTblDelegate = _setTvpParamCache[modelT];
-                }
+                SqlLoggingExtensions.SqlTvpCacheHit(logger, tModel);
             }
             else
             {
-                SqlLoggingExtensions.SqlTvpCacheHit(logger, modelT);
+                SqlLoggingExtensions.SqlTvpCacheMiss(logger, tModel);
             }
-            return ((Func<TModel, ILogger, SqlDataRecord>)sqlTblDelegate)(model, logger);
+            return ((Func<TModel, ILogger, SqlDataRecord>)lazyTvpParameters.Value)(model, logger);
         }
     }
 }
