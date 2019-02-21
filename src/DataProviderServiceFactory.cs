@@ -118,7 +118,7 @@ namespace ArgentSea.Sql
             return new SqlConnection(connectionString);
         }
 
-        public void SetParameters(DbCommand cmd, string[] queryParameterNames, DbParameterCollection parameters, Dictionary<string, object> parameterValues)
+        public void SetParameters(DbCommand cmd, string[] queryParameterNames, DbParameterCollection parameters, IDictionary<string, object> parameterValues)
         {
             int[] ordinals;
 

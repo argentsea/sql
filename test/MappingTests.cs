@@ -49,8 +49,8 @@ namespace ArgentSea.Sql.Test
 				Modifier = ConsoleModifiers.Control,
 				DayOfTheWeek = DayOfWeek.Sunday,
 				GarbageCollectorNotificationStatus = GCNotificationStatus.NotApplicable,
-				RecordKey = new ShardKey<byte, int>(new DataOrigin('x'), 2, 1234),
-				RecordChild = new ShardChild<byte, int, short>(new DataOrigin('y'), 3, 4567, (short)-23456),
+				RecordKey = new ShardKey<byte, int>('x', 2, 1234),
+				RecordChild = new ShardChild<byte, int, short>('y', 3, 4567, (short)-23456),
                 DataShard2 = new ShardKey<byte, long>('z', (byte)22, 123432L),
                 ChildShard2 = new ShardChild<byte, short, string>('!', 255, 255, "testing123")
 			};
@@ -354,8 +354,8 @@ namespace ArgentSea.Sql.Test
 				Modifier = ConsoleModifiers.Shift,
 				DayOfTheWeek = DayOfWeek.Saturday,
 				GarbageCollectorNotificationStatus = GCNotificationStatus.Succeeded,
-				RecordKey = new ShardKey<byte, int>(new DataOrigin('9'), 33, int.MinValue),
-				RecordChild = new ShardChild<byte, int, short>(new DataOrigin('A'), 34, 35, -1),
+				RecordKey = new ShardKey<byte, int>('9', 33, int.MinValue),
+				RecordChild = new ShardChild<byte, int, short>('A', 34, 35, -1),
 			};
 			var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
 			var prms = new ParameterCollection();
@@ -556,20 +556,20 @@ namespace ArgentSea.Sql.Test
 			result.DayOfTheWeek.Value.Should().Be(DayOfWeek.Tuesday, "that was the output parameter value");
 			result.GarbageCollectorNotificationStatus.Should().Be(GCNotificationStatus.Failed, "that was the output parameter value");
 
-            result.RecordKey.Value.Origin.SourceIndicator.Should().Be('x', "that is the data origin value");
+            result.RecordKey.Value.Origin.Should().Be('x', "that is the data origin value");
             result.RecordKey.Value.ShardId.Should().Be(6, "that was the output parameter value");
             result.RecordKey.Value.RecordId.Should().Be(4, "that was the output parameter value");
 
-            result.RecordChild.Key.Origin.SourceIndicator.Should().Be('y', "that is the data origin value");
+            result.RecordChild.Key.Origin.Should().Be('y', "that is the data origin value");
             result.RecordChild.Key.ShardId.Should().Be(15, "that was the output parameter value");
             result.RecordChild.Key.RecordId.Should().Be(5, "that was the output parameter value");
             result.RecordChild.ChildId.Should().Be(6, "that was the output parameter value");
 
-            result.DataShard2.Origin.SourceIndicator.Should().Be('A', "that is the data origin value");
+            result.DataShard2.Origin.Should().Be('A', "that is the data origin value");
             result.DataShard2.ShardId.Should().Be(5, "that is the value of the current shard");
             result.DataShard2.RecordId.Should().Be(long.MaxValue, "that is the record id");
 
-            result.ChildShard2.Value.Origin.SourceIndicator.Should().Be('B', "that is the data origin value");
+            result.ChildShard2.Value.Origin.Should().Be('B', "that is the data origin value");
             result.ChildShard2.Value.ShardId.Should().Be(255, "that is the value of the current shard");
             result.ChildShard2.Value.RecordId.Should().Be(12345, "that is the record id");
             result.ChildShard2.Value.ChildId.Should().Be("Test123", "that is the child id");
@@ -668,11 +668,11 @@ namespace ArgentSea.Sql.Test
 			result.GarbageCollectorNotificationStatus.HasValue.Should().BeFalse("the output parameter was set to DbNull");
 
             result.RecordKey.HasValue.Should().BeFalse("because the input arguments are dbNull");
-            result.RecordChild.Origin.SourceIndicator.Should().Be('0', "that is the empty data origin value");
+            result.RecordChild.Origin.Should().Be('0', "that is the empty data origin value");
             result.RecordChild.Key.ShardId.Should().Be(0, "that is the empty shardchild value");
             result.RecordChild.Key.RecordId.Should().Be(0, "that is the empty shardchild value");
             result.RecordChild.ChildId.Should().Be(0, "that is the empty shardchild value");
-            result.DataShard2.Origin.SourceIndicator.Should().Be('0', "that is the empty data origin value");
+            result.DataShard2.Origin.Should().Be('0', "that is the empty data origin value");
             result.DataShard2.ShardId.Should().Be(0, "that is the empty shardKey value");
             result.DataShard2.RecordId.Should().Be(0, "that is the empty shardKey value");
             result.ChildShard2.Should().BeNull("because the data values are dbNull");
@@ -716,10 +716,10 @@ namespace ArgentSea.Sql.Test
 				Modifier = ConsoleModifiers.Shift,
 				DayOfTheWeek = DayOfWeek.Wednesday,
 				GarbageCollectorNotificationStatus = GCNotificationStatus.NotApplicable,
-                RecordKey = new ShardKey<byte, int>(new DataOrigin('?'), (byte)254, int.MaxValue),
-                RecordChild = new ShardChild<byte, int, short>(new DataOrigin('!'), (byte)0, 35, short.MinValue),
-                DataShard2 = new ShardKey<byte, long>(new DataOrigin('*'), (byte)0, 123L),
-                ChildShard2 = new Nullable<ShardChild<byte, short, string>>(new ShardChild<byte, short, string>(new DataOrigin('@'), (byte)200, (short)1234, "testing..."))
+                RecordKey = new ShardKey<byte, int>('?', (byte)254, int.MaxValue),
+                RecordChild = new ShardChild<byte, int, short>('!', (byte)0, 35, short.MinValue),
+                DataShard2 = new ShardKey<byte, long>('*', (byte)0, 123L),
+                ChildShard2 = new Nullable<ShardChild<byte, short, string>>(new ShardChild<byte, short, string>('@', (byte)200, (short)1234, "testing..."))
             };
 			var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
 
@@ -913,10 +913,10 @@ namespace ArgentSea.Sql.Test
 				Modifier = ConsoleModifiers.Control,
 				DayOfTheWeek = DayOfWeek.Sunday,
 				GarbageCollectorNotificationStatus = GCNotificationStatus.NotApplicable,
-				RecordKey = new Nullable<ShardKey<byte, int>>(new ShardKey<byte, int>(new DataOrigin('x'), 2, 1234)),
-				RecordChild = new ShardChild<byte, int, short>(new DataOrigin('y'), 3, 4567, (short)-23456),
-                DataShard2 = new ShardKey<byte, long>(new DataOrigin('z'), 32, -1234),
-                ChildShard2 = new ShardChild<byte, short, string>(new DataOrigin('y'), 3, -4567, "testing...")
+				RecordKey = new Nullable<ShardKey<byte, int>>(new ShardKey<byte, int>('x', 2, 1234)),
+				RecordChild = new ShardChild<byte, int, short>('y', 3, 4567, (short)-23456),
+                DataShard2 = new ShardKey<byte, long>('z', 32, -1234),
+                ChildShard2 = new ShardChild<byte, short, string>('y', 3, -4567, "testing...")
 			};
 
 			var rdr = Substitute.For<System.Data.Common.DbDataReader>();
