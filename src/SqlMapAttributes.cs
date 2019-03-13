@@ -498,9 +498,9 @@ namespace ArgentSea.Sql
                 {
                     expAssign = Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, expProperty });
                 }
-                expAssign = Expression.IfThen(
+                setExpressions.Add(Expression.IfThen(
                     Expression.Call(typeof(TvpExpressionHelpers).GetMethod(nameof(TvpExpressionHelpers.IncludeThisColumn), BindingFlags.NonPublic | BindingFlags.Static), new Expression[] { Expression.Constant(this.ParameterName, typeof(string)), expColumnList }), //if
-                    expAssign); //then
+                    expAssign)); //then
             }
         }
 
