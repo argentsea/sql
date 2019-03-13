@@ -16,7 +16,7 @@ namespace ArgentSea.Sql
 {
     internal static class TvpExpressionHelpers
     {
-        public static void TvpStringExpressionBuilder(string parameterName, SqlDbType sqlType, int length, ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
+        public static void TvpStringExpressionBuilder(string parameterName, SqlDbType sqlType, int length, ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression prmColumnList, ParameterExpression expLogger, ILogger logger)
         {
             var dataName = SqlParameterCollectionExtensions.NormalizeSqlColumnName(parameterName);
             if (parameterNames.Add(dataName))
@@ -29,12 +29,13 @@ namespace ArgentSea.Sql
 
                 var miSet = typeof(SqlDataRecord).GetMethod(nameof(SqlDataRecord.SetString));
                 var miDbNull = typeof(SqlDataRecord).GetMethod(nameof(SqlDataRecord.SetDBNull));
-                var expOrdinal = Expression.Constant(ordinal, typeof(int));
+                var expOrdinal = Expression.Call(typeof(TvpExpressionHelpers).GetMethod(nameof(TvpExpressionHelpers.GetOrdinal), BindingFlags.NonPublic | BindingFlags.Static), Expression.Constant(ordinal, typeof(int)), Expression.Constant(parameterName, typeof(string)), prmColumnList);
+                Expression expAssign;
                 if (propertyType.IsEnum)
                 {
                     var miEnumToString = typeof(Enum).GetMethod(nameof(Enum.ToString), new Type[] { });
                     var expGetString = Expression.Call(expProperty, miEnumToString);
-                    setExpressions.Add(Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, expGetString }));
+                    expAssign = Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, expGetString });
                 }
                 else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>) && Nullable.GetUnderlyingType(propertyType).IsEnum) //Nullable Enum
                 {
@@ -42,25 +43,28 @@ namespace ArgentSea.Sql
                     var piNullableHasValue = propertyType.GetProperty(nameof(Nullable<int>.HasValue));
                     var piNullableGetValue = propertyType.GetProperty(nameof(Nullable<int>.Value));
 
-                    setExpressions.Add(Expression.Condition(
+                    expAssign = Expression.Condition(
 						Expression.Property(expProperty, piNullableHasValue),
 						Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, Expression.Call(Expression.Property(expProperty, piNullableGetValue), miEnumToString) }),
 						Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal })
-						));
+						);
                 }
                 else
                 {
-                    setExpressions.Add(Expression.Condition(
+                    expAssign = Expression.Condition(
 						Expression.Equal(expProperty, Expression.Constant(null, typeof(string))),
 						Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal }),
 						Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, expProperty })
-						));
+						);
                 }
+                setExpressions.Add(Expression.IfThen(
+                    Expression.Call(typeof(TvpExpressionHelpers).GetMethod(nameof(TvpExpressionHelpers.IncludeThisColumn), BindingFlags.NonPublic | BindingFlags.Static), new Expression[] { Expression.Constant(parameterName, typeof(string)), prmColumnList }), //if
+                    expAssign)); //then
             }
         }
 
         //int, short, byte, enum
-        public static void TvpEnumXIntExpressionBuilder(string parameterName, SqlDbType sqlType, string methodName, Type baseType, ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
+        public static void TvpEnumXIntExpressionBuilder(string parameterName, SqlDbType sqlType, string methodName, Type baseType, ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression prmColumnList, ParameterExpression expLogger, ILogger logger)
         {
             var dataName = SqlParameterCollectionExtensions.NormalizeSqlColumnName(parameterName);
             if (parameterNames.Add(dataName))
@@ -72,10 +76,11 @@ namespace ArgentSea.Sql
 
                 var miSet = typeof(SqlDataRecord).GetMethod(methodName);
                 var miDbNull = typeof(SqlDataRecord).GetMethod(nameof(SqlDataRecord.SetDBNull));
-                var expOrdinal = Expression.Constant(ordinal, typeof(int));
+                var expOrdinal = Expression.Call(typeof(TvpExpressionHelpers).GetMethod(nameof(TvpExpressionHelpers.GetOrdinal), BindingFlags.NonPublic | BindingFlags.Static), Expression.Constant(ordinal, typeof(int)), Expression.Constant(parameterName, typeof(string)), prmColumnList);
+                Expression expAssign;
                 if (propertyType.IsEnum)
                 {
-                    setExpressions.Add(Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, Expression.Convert(expProperty, baseType) }));
+                    expAssign = Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, Expression.Convert(expProperty, baseType) });
                 }
                 else if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
                 {
@@ -86,32 +91,35 @@ namespace ArgentSea.Sql
                     if (Nullable.GetUnderlyingType(propertyType).IsEnum)
                     {
 
-                        setExpressions.Add(Expression.Condition(
+                        expAssign = Expression.Condition(
 							Expression.Property(expProperty, piNullableHasValue),
 							Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, Expression.Convert(Expression.Convert(Expression.Property(expProperty, piNullableGetValue), typeof(int)), baseType) }),
 							Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal })
-							));
+							);
 
                         //left off here: need to convert Nullable<Enum> and validate int
                     }
                     else //if (Nullable.GetUnderlyingType(propertyType) == typeof(int))
                     {
-                        setExpressions.Add(Expression.Condition(
+                        expAssign = Expression.Condition(
 							Expression.Property(expProperty, piNullableHasValue),
 							Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, Expression.Convert(Expression.Property(expProperty, piNullableGetValue), baseType) }),
 							Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal })
-							));
+							);
                     }
                 }
                 else
                 {
-                    setExpressions.Add(Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, expProperty }));
+                    expAssign = Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, expProperty });
                 }
+                setExpressions.Add(Expression.IfThen(
+                    Expression.Call(typeof(TvpExpressionHelpers).GetMethod(nameof(TvpExpressionHelpers.IncludeThisColumn), BindingFlags.NonPublic | BindingFlags.Static), new Expression[] { Expression.Constant(parameterName, typeof(string)), prmColumnList }), //if
+                    expAssign)); //then
             }
         }
 
         //bool and long
-        public static bool TvpSimpleValueExpressionBuilder(string parameterName, SqlDbType sqlType, string methodName, Type baseType, ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
+        public static bool TvpSimpleValueExpressionBuilder(string parameterName, SqlDbType sqlType, string methodName, Type baseType, ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression prmColumnList, ParameterExpression expLogger, ILogger logger)
         {
             var dataName = SqlParameterCollectionExtensions.NormalizeSqlColumnName(parameterName);
             if (parameterNames.Add(dataName))
@@ -123,37 +131,41 @@ namespace ArgentSea.Sql
 
                 var miSet = typeof(SqlDataRecord).GetMethod(methodName);
                 var miDbNull = typeof(SqlDataRecord).GetMethod(nameof(SqlDataRecord.SetDBNull));
-                var expOrdinal = Expression.Constant(ordinal, typeof(int));
+                var expOrdinal = Expression.Call(typeof(TvpExpressionHelpers).GetMethod(nameof(TvpExpressionHelpers.GetOrdinal), BindingFlags.NonPublic | BindingFlags.Static), Expression.Constant(ordinal, typeof(int)), Expression.Constant(parameterName, typeof(string)), prmColumnList);
 
+                Expression expAssign;
                 if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
                 {
                     var piNullableHasValue = propertyType.GetProperty(nameof(Nullable<int>.HasValue));
                     var piNullableGetValue = propertyType.GetProperty(nameof(Nullable<int>.Value));
 
-                    setExpressions.Add(Expression.Condition(
+                    expAssign = Expression.Condition(
 						Expression.Property(expProperty, piNullableHasValue),
 						Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, Expression.Property(expProperty, piNullableGetValue) }),
 						Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal })
-						));
+						);
                 }
                 else if (!propertyType.IsValueType)
                 {
-                    setExpressions.Add(Expression.Condition(
+                    expAssign = Expression.Condition(
 						Expression.Equal(expProperty, Expression.Constant(null, propertyType)),
 						Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal }),
 						Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, expProperty })
-						));
+						);
                 }
                 else
                 {
-                    setExpressions.Add(Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, expProperty }));
+                    expAssign = Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, expProperty });
                 }
+                setExpressions.Add(Expression.IfThen(
+                    Expression.Call(typeof(TvpExpressionHelpers).GetMethod(nameof(TvpExpressionHelpers.IncludeThisColumn), BindingFlags.NonPublic | BindingFlags.Static), new Expression[] { Expression.Constant(parameterName, typeof(string)), prmColumnList }), //if
+                    expAssign)); //then
                 return true;
             }
             return false;
         }
 
-        public static void TvpGuidFloatingPointExpressionBuilder(string parameterName, SqlDbType sqlType, string methodName, Type baseType, ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
+        public static void TvpGuidFloatingPointExpressionBuilder(string parameterName, SqlDbType sqlType, string methodName, Type baseType, ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression prmColumnList, ParameterExpression expLogger, ILogger logger)
         {
             var dataName = SqlParameterCollectionExtensions.NormalizeSqlColumnName(parameterName);
             if (parameterNames.Add(dataName))
@@ -165,41 +177,46 @@ namespace ArgentSea.Sql
 
                 var miSet = typeof(SqlDataRecord).GetMethod(methodName);
                 var miDbNull = typeof(SqlDataRecord).GetMethod(nameof(SqlDataRecord.SetDBNull));
-                var expOrdinal = Expression.Constant(ordinal, typeof(int));
+                var expOrdinal = Expression.Call(typeof(TvpExpressionHelpers).GetMethod(nameof(TvpExpressionHelpers.GetOrdinal), BindingFlags.NonPublic | BindingFlags.Static), Expression.Constant(ordinal, typeof(int)), Expression.Constant(parameterName, typeof(string)), prmColumnList);
+                ConditionalExpression expAssign;
                 if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
                 {
                     var piNullableHasValue = propertyType.GetProperty(nameof(Nullable<int>.HasValue));
                     var piNullableGetValue = propertyType.GetProperty(nameof(Nullable<int>.Value));
 
-                    setExpressions.Add(Expression.Condition(
+                    expAssign = Expression.Condition(
 						Expression.Property(expProperty, piNullableHasValue),
 						Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, Expression.Property(expProperty, piNullableGetValue) }),
 						Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal })
-						));
+						);
                 }
                 else if (propertyType == typeof(Guid))
                 {
-                    setExpressions.Add(Expression.Condition(
+                    expAssign = Expression.Condition(
 						Expression.Equal(expProperty, Expression.Constant(Guid.Empty, propertyType)),
 						Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal }),
 						Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, expProperty })
-						));
+						);
                 }
                 else
                 {
                     var miIsNaN = propertyType.GetMethod(nameof(double.IsNaN));
-                    setExpressions.Add(Expression.Condition(
+                    expAssign = Expression.Condition(
 						Expression.Call(miIsNaN, expProperty),
 						Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal }),
 						Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, expProperty })
-						));
+						);
                 }
+                setExpressions.Add(Expression.IfThen(
+                    Expression.Call(typeof(TvpExpressionHelpers).GetMethod(nameof(TvpExpressionHelpers.IncludeThisColumn), BindingFlags.NonPublic | BindingFlags.Static), new Expression[] { Expression.Constant(parameterName, typeof(string)), prmColumnList }), //if
+                    expAssign)); //then
             }
         }
 
-        public static void TvpBinaryExpressionBuilder(string parameterName, SqlDbType sqlType, int length, ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expLogger, ILogger logger)
+        public static void TvpBinaryExpressionBuilder(string parameterName, SqlDbType sqlType, int length, ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression prmColumnList, ParameterExpression expLogger, ILogger logger)
         {
             var dataName = SqlParameterCollectionExtensions.NormalizeSqlColumnName(parameterName);
+
             if (parameterNames.Add(dataName))
             {
                 var ctor = typeof(SqlMetaData).GetConstructor(new[] { typeof(string), typeof(SqlDbType), typeof(int) });
@@ -210,17 +227,43 @@ namespace ArgentSea.Sql
 
                 var miSet = typeof(SqlDataRecord).GetMethod(nameof(SqlDataRecord.SetBytes));
                 var miDbNull = typeof(SqlDataRecord).GetMethod(nameof(SqlDataRecord.SetDBNull));
-                var expOrdinal = Expression.Constant(ordinal, typeof(int));
+                var expOrdinal = Expression.Call(typeof(TvpExpressionHelpers).GetMethod(nameof(TvpExpressionHelpers.GetOrdinal), BindingFlags.NonPublic | BindingFlags.Static), Expression.Constant(ordinal, typeof(int)), Expression.Constant(parameterName, typeof(string)), prmColumnList);
                 var expFieldOffset = Expression.Constant(0L, typeof(long));
                 var expBufOffset = Expression.Constant(0, typeof(int));
                 var expLength = Expression.Property(expProperty, typeof(byte[]).GetProperty(nameof(Array.Length)));
 
-                setExpressions.Add(Expression.Condition(
-						Expression.Equal(expProperty, Expression.Constant(null, typeof(byte[]))),
-						Expression.Call(expRecord, miDbNull, new Expression[] { Expression.Constant(ordinal, typeof(int)) }),
-						Expression.Call(expRecord, miSet, new Expression[] { Expression.Constant(ordinal, typeof(int)), expFieldOffset, expProperty, expBufOffset, expLength })
-						));
+                var expAssign = Expression.Condition(
+                    Expression.Equal(expProperty, Expression.Constant(null, typeof(byte[]))),
+                    Expression.Call(expRecord, miDbNull, new Expression[] { Expression.Constant(ordinal, typeof(int)) }),
+                    Expression.Call(expRecord, miSet, new Expression[] { Expression.Constant(ordinal, typeof(int)), expFieldOffset, expProperty, expBufOffset, expLength })
+                    );
+                setExpressions.Add(Expression.IfThen(
+                    Expression.Call(typeof(TvpExpressionHelpers).GetMethod(nameof(TvpExpressionHelpers.IncludeThisColumn), BindingFlags.NonPublic | BindingFlags.Static), new Expression[] { Expression.Constant(parameterName, typeof(string)), prmColumnList }), //if
+                    expAssign)); //then
             }
         }
-	}
+        internal static bool IncludeThisColumn(string columnName, IList<string> columnList)
+        {
+            if (columnList is null)
+            {
+                return true;
+            }
+            foreach (var clm in columnList)
+            {
+                if (columnName == clm)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        internal static int GetOrdinal(int ordinal, string columnName, IList<string> columnList)
+        {
+            if (columnList is null)
+            {
+                return ordinal;
+            }
+            return (columnList.IndexOf(columnName));
+        }
+    }
 }

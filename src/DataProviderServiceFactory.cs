@@ -120,17 +120,11 @@ namespace ArgentSea.Sql
 
         public void SetParameters(DbCommand cmd, string[] queryParameterNames, DbParameterCollection parameters, IDictionary<string, object> parameterValues)
         {
-            int[] ordinals;
-
             if (queryParameterNames is null || queryParameterNames.Length == 0)
             {
-                ordinals = new int[parameters.Count];
                 for (var i = 0; i < parameters.Count; i++)
                 {
-                    ordinals[i] = i;
-
                     var prmSource = (SqlParameter)parameters[i];
-
                     var prmTarget = new SqlParameter()
                     {
                         CompareInfo = prmSource.CompareInfo,
@@ -162,8 +156,7 @@ namespace ArgentSea.Sql
             }
             else
             {
-                ordinals = new int[queryParameterNames.Length];
-                for (int i = 0; i < queryParameterNames.Length; i++)
+                for (var i = 0; i < queryParameterNames.Length; i++)
                 {
                     var parameterName = SqlParameterCollectionExtensions.NormalizeSqlParameterName(queryParameterNames[i]);
                     var found = false;
@@ -171,11 +164,8 @@ namespace ArgentSea.Sql
                     {
                         if (parameters[j].ParameterName == parameterName)
                         {
-                            ordinals[i] = j;
                             found = true;
-
                             var prmSource = (SqlParameter)parameters[j];
-
                             var prmTarget = new SqlParameter()
                             {
                                 CompareInfo = prmSource.CompareInfo,
@@ -207,7 +197,7 @@ namespace ArgentSea.Sql
                     }
                     if (!found)
                     {
-                        throw new ParameterNotFoundException($"Expected parameter { parameterName }, but it was not found in the parameter list.");
+                        throw new ParameterNotFoundException(parameterName);
                     }
                 }
             }
