@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ArgentSea" Version="0.8.1" />
+    <PackageReference Include="ArgentSea" Version="0.8.2" />
     <PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
   </ItemGroup>
 

@@ -20,7 +20,7 @@ namespace ArgentSea.Sql
     /// <summary>
     /// This class adds the ability to map model properties to SQL table-valued parameters.
     /// </summary>
-    public class TvpMapper
+    public static class TvpMapper
     {
         private static ConcurrentDictionary<Type, Lazy<Delegate>> _setTvpParamCache = new ConcurrentDictionary<Type, Lazy<Delegate>>();
 

@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ArgentSea" Version="0.8.1" />
+    <PackageReference Include="ArgentSea" Version="0.8.2" />
     <PackageReference Include="FluentAssertions" Version="5.6.0" />
     <PackageReference Include="Microsoft.CodeCoverage" Version="16.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
