@@ -1123,6 +1123,99 @@ namespace ArgentSea.Sql
             prms.Add(prm);
             return prms;
         }
+
+        public static DbParameterCollection AddSqlTableValuedParameter<TModel, TShard, TRecord>(this DbParameterCollection prms, string parameterName, IEnumerable<TModel> values, string shardIdName, SqlDbType shardIdType, string recordIdName, SqlDbType recordIdType) 
+            where TModel : IKeyedModel<TShard, TRecord>
+            where TShard : IComparable
+            where TRecord : IComparable
+        {
+            var tvp = new List<SqlDataRecord>();
+            var metaData = new SqlMetaData[] { new SqlMetaData(shardIdName, shardIdType), new SqlMetaData(recordIdName, recordIdType) };
+            foreach (var val in values)
+            {
+                var rec = new SqlDataRecord(metaData);
+                rec.SetValue(0, val.Key.ShardId);
+                rec.SetValue(1, val.Key.RecordId);
+                tvp.Add(rec);
+            }
+            var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Structured)
+            {
+                Value = tvp,
+                Direction = ParameterDirection.Input
+            };
+            prms.Add(prm);
+            return prms;
+        }
+        public static DbParameterCollection AddSqlTableValuedParameter<TModel, TShard, TRecord, TChild>(this DbParameterCollection prms, string parameterName, IEnumerable<TModel> values, string shardIdName, SqlDbType shardIdType, string recordIdName, SqlDbType recordIdType, string childIdName, SqlDbType childIdType)
+            where TModel : IKeyedChildModel<TShard, TRecord, TChild>
+            where TShard : IComparable
+            where TRecord : IComparable
+            where TChild : IComparable
+        {
+            var tvp = new List<SqlDataRecord>();
+            var metaData = new SqlMetaData[] { new SqlMetaData(shardIdName, shardIdType), new SqlMetaData(recordIdName, recordIdType), new SqlMetaData(childIdName, childIdType) };
+            foreach (var val in values)
+            {
+                var rec = new SqlDataRecord(metaData);
+                rec.SetValue(0, val.Key.ShardId);
+                rec.SetValue(1, val.Key.RecordId);
+                rec.SetValue(2, val.Key.ChildId);
+                tvp.Add(rec);
+            }
+            var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Structured)
+            {
+                Value = tvp,
+                Direction = ParameterDirection.Input
+            };
+            prms.Add(prm);
+            return prms;
+        }
+        public static DbParameterCollection AddSqlTableValuedParameter<TShard, TRecord>(this DbParameterCollection prms, string parameterName, IEnumerable<ShardKey<TShard, TRecord>> values, string shardIdName, SqlDbType shardIdType, string recordIdName, SqlDbType recordIdType)
+            where TShard : IComparable
+            where TRecord : IComparable
+        {
+            var tvp = new List<SqlDataRecord>();
+            var metaData = new SqlMetaData[] { new SqlMetaData(shardIdName, shardIdType), new SqlMetaData(recordIdName, recordIdType) };
+            foreach (var val in values)
+            {
+                var rec = new SqlDataRecord(metaData);
+                rec.SetValue(0, val.ShardId);
+                rec.SetValue(1, val.RecordId);
+                tvp.Add(rec);
+            }
+            var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Structured)
+            {
+                Value = tvp,
+                Direction = ParameterDirection.Input
+            };
+            prms.Add(prm);
+            return prms;
+        }
+        public static DbParameterCollection AddSqlTableValuedParameter<TShard, TRecord, TChild>(this DbParameterCollection prms, string parameterName, IEnumerable<ShardChild<TShard, TRecord, TChild>> values, string shardIdName, SqlDbType shardIdType, string recordIdName, SqlDbType recordIdType, string childIdName, SqlDbType childIdType)
+            where TShard : IComparable
+            where TRecord : IComparable
+            where TChild : IComparable
+        {
+            var tvp = new List<SqlDataRecord>();
+            var metaData = new SqlMetaData[] { new SqlMetaData(shardIdName, shardIdType), new SqlMetaData(recordIdName, recordIdType), new SqlMetaData(childIdName, childIdType) };
+            foreach (var val in values)
+            {
+                var rec = new SqlDataRecord(metaData);
+                rec.SetValue(0, val.ShardId);
+                rec.SetValue(1, val.RecordId);
+                rec.SetValue(2, val.ChildId);
+                tvp.Add(rec);
+            }
+            var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Structured)
+            {
+                Value = tvp,
+                Direction = ParameterDirection.Input
+            };
+            prms.Add(prm);
+            return prms;
+        }
+
+
         /// <summary>
         /// Creates a parameter for providing a user-defined table to a stored procedure.
         /// </summary>
