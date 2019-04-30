@@ -50,7 +50,7 @@ namespace ArgentSea.Sql
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.NVarChar, maxLength)
             {
-                Value = value != null ? value : (dynamic)System.DBNull.Value,
+                Value = value ?? (dynamic)System.DBNull.Value,
                 Direction = ParameterDirection.Input
             };
             prms.Add(prm);
@@ -85,7 +85,7 @@ namespace ArgentSea.Sql
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.NChar, length)
             {
-                Value = value != null ? value : (dynamic)System.DBNull.Value,
+                Value = value ?? (dynamic)System.DBNull.Value,
                 Direction = ParameterDirection.Input
             };
             prms.Add(prm);
@@ -123,7 +123,7 @@ namespace ArgentSea.Sql
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.VarChar, maxLength)
             {
-                Value = value != null ? value : (dynamic)System.DBNull.Value,
+                Value = value ?? (dynamic)System.DBNull.Value,
                 LocaleId = localeId,
                 Direction = ParameterDirection.Input
             };
@@ -164,7 +164,7 @@ namespace ArgentSea.Sql
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Char, length)
             {
-                Value = value != null ? value : (dynamic)System.DBNull.Value,
+                Value = value ?? (dynamic)System.DBNull.Value,
                 LocaleId = localeId,
                 Direction = ParameterDirection.Input
             };
@@ -1023,7 +1023,7 @@ namespace ArgentSea.Sql
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.VarBinary, length)
             {
-                Value = value == null ? (dynamic)System.DBNull.Value : value,
+                Value = value ?? (dynamic)System.DBNull.Value,
                 Direction = ParameterDirection.Input
             };
             prms.Add(prm);
@@ -1058,7 +1058,7 @@ namespace ArgentSea.Sql
 		{
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Binary, length)
             {
-                Value = value == null ? (dynamic)System.DBNull.Value : value,
+                Value = value ?? (dynamic)System.DBNull.Value,
                 Direction = ParameterDirection.Input
             };
             prms.Add(prm);
