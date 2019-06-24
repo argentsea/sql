@@ -210,31 +210,31 @@ namespace ArgentSea.Sql
             {
                 if (string.IsNullOrEmpty(this._connectionDescription))
                 {
-                    string initialCatalog = _globalProperties.InitialCatalog;
-                    string dataSource = _globalProperties.DataSource;
-                    if (!string.IsNullOrEmpty(_shardSetProperties.InitialCatalog))
+                    string initialCatalog = _globalProperties?.InitialCatalog;
+                    string dataSource = _globalProperties?.DataSource;
+                    if (!string.IsNullOrEmpty(_shardSetProperties?.InitialCatalog))
                     {
                         initialCatalog = _shardSetProperties.InitialCatalog;
                     }
-                    if (!string.IsNullOrEmpty(_shardSetProperties.DataSource))
+                    if (!string.IsNullOrEmpty(_shardSetProperties?.DataSource))
                     {
                         dataSource = _shardSetProperties.DataSource;
                     }
 
-                    if (!string.IsNullOrEmpty(_readWriteProperties.InitialCatalog))
+                    if (!string.IsNullOrEmpty(_readWriteProperties?.InitialCatalog))
                     {
                         initialCatalog = _readWriteProperties.InitialCatalog;
                     }
-                    if (!string.IsNullOrEmpty(_readWriteProperties.DataSource))
+                    if (!string.IsNullOrEmpty(_readWriteProperties?.DataSource))
                     {
                         dataSource = _readWriteProperties.DataSource;
                     }
 
-                    if (!string.IsNullOrEmpty(_shardProperties.InitialCatalog))
+                    if (!string.IsNullOrEmpty(_shardProperties?.InitialCatalog))
                     {
                         initialCatalog = _shardProperties.InitialCatalog;
                     }
-                    if (!string.IsNullOrEmpty(_shardProperties.DataSource))
+                    if (!string.IsNullOrEmpty(_shardProperties?.DataSource))
                     {
                         dataSource = _shardProperties.DataSource;
                     }
