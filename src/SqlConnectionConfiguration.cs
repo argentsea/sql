@@ -13,20 +13,19 @@ namespace ArgentSea.Sql
     /// </summary>
     public class SqlConnectionConfiguration : SqlConnectionPropertiesBase, IDataConnection
     {
-        private readonly SqlConnectionStringBuilder _csb;
         private string _connectionString = null;
         private SqlConnectionPropertiesBase _globalProperties = null;
         private SqlConnectionPropertiesBase _shardSetProperties = null;
         private SqlConnectionPropertiesBase _readWriteProperties = null;
         private SqlConnectionPropertiesBase _shardProperties = null;
+        private readonly object _connectionLock = new object();
+        private string _connectionDescription = null;
 
         private const int DefaultConnectTimeout = 5; //minimum recommended value per https://docs.microsoft.com/en-us/sql/database-engine/database-mirroring/connect-clients-to-a-database-mirroring-session-sql-server?view=sql-server-2017#RetryAlgorithm
 
         public SqlConnectionConfiguration()
         {
-            _csb = new SqlConnectionStringBuilder();
-            _csb.ConnectTimeout = DefaultConnectTimeout;
-            _csb.ConnectRetryCount = 0;
+            //
         }
 
         private void HandlePropertyChanged(object sender, PropertyChangedEventArgs args)
@@ -34,112 +33,112 @@ namespace ArgentSea.Sql
             _connectionString = null;
         }
 
-        private void SetProperties(DataConnectionConfigurationBase properties)
+        private void SetProperties(SqlConnectionStringBuilder csb, DataConnectionConfigurationBase properties)
         {
             if (!(properties.Password is null))
             {
-                _csb.Password = properties.Password;
+                csb.Password = properties.Password;
             }
             if (!(properties.UserName is null))
             {
-                _csb.UserID = properties.UserName;
+                csb.UserID = properties.UserName;
             }
             if (!(properties.WindowsAuth is null))
             {
-                _csb.IntegratedSecurity = properties.WindowsAuth.Value;
+                csb.IntegratedSecurity = properties.WindowsAuth.Value;
             }
             var props = (SqlConnectionPropertiesBase)properties;
             if (!(props.ApplicationIntent is null))
             {
-                _csb.ApplicationIntent = props.ApplicationIntent.Value;
+                csb.ApplicationIntent = props.ApplicationIntent.Value;
             }
             if (!(props.ApplicationName is null))
             {
-                _csb.ApplicationName = props.ApplicationName;
+                csb.ApplicationName = props.ApplicationName;
             }
             //if (!(props.ConnectRetryCount is null))
             //{
-            //    _csb.ConnectRetryCount = props.ConnectRetryCount.Value;
+            //    csb.ConnectRetryCount = props.ConnectRetryCount.Value;
             //}
             //if (!(props.ConnectRetryInterval is null))
             //{
-            //    _csb.ConnectRetryInterval = props.ConnectRetryInterval.Value;
+            //    csb.ConnectRetryInterval = props.ConnectRetryInterval.Value;
             //}
             if (!(props.ConnectTimeout is null))
             {
-                _csb.ConnectTimeout = props.ConnectTimeout.Value;
+                csb.ConnectTimeout = props.ConnectTimeout.Value;
             }
             if (!(props.CurrentLanguage is null))
             {
-                _csb.CurrentLanguage = props.CurrentLanguage;
+                csb.CurrentLanguage = props.CurrentLanguage;
             }
             if (!(props.DataSource is null))
             {
-                _csb.DataSource = props.DataSource;
+                csb.DataSource = props.DataSource;
             }
             if (!(props.Encrypt is null))
             {
-                _csb.Encrypt = props.Encrypt.Value;
+                csb.Encrypt = props.Encrypt.Value;
             }
             if (!(props.FailoverPartner is null))
             {
-                _csb.FailoverPartner = props.FailoverPartner;
+                csb.FailoverPartner = props.FailoverPartner;
             }
             if (!(props.InitialCatalog is null))
             {
-                _csb.InitialCatalog = props.InitialCatalog;
+                csb.InitialCatalog = props.InitialCatalog;
             }
             if (!(props.LoadBalanceTimeout is null))
             {
-                _csb.LoadBalanceTimeout = props.LoadBalanceTimeout.Value;
+                csb.LoadBalanceTimeout = props.LoadBalanceTimeout.Value;
             }
             if (!(props.MaxPoolSize is null))
             {
-                _csb.MaxPoolSize = props.MaxPoolSize.Value;
+                csb.MaxPoolSize = props.MaxPoolSize.Value;
             }
             if (!(props.MinPoolSize is null))
             {
-                _csb.MinPoolSize = props.MinPoolSize.Value;
+                csb.MinPoolSize = props.MinPoolSize.Value;
             }
             if (!(props.MultipleActiveResultSets is null))
             {
-                _csb.MultipleActiveResultSets = props.MultipleActiveResultSets.Value;
+                csb.MultipleActiveResultSets = props.MultipleActiveResultSets.Value;
             }
             if (!(props.MultiSubnetFailover is null))
             {
-                _csb.MultiSubnetFailover = props.MultiSubnetFailover.Value;
+                csb.MultiSubnetFailover = props.MultiSubnetFailover.Value;
             }
             if (!(props.PacketSize is null))
             {
-                _csb.PacketSize = props.PacketSize.Value;
+                csb.PacketSize = props.PacketSize.Value;
             }
             if (!(props.PersistSecurityInfo is null))
             {
-                _csb.PersistSecurityInfo = props.PersistSecurityInfo.Value;
+                csb.PersistSecurityInfo = props.PersistSecurityInfo.Value;
             }
             if (!(props.Pooling is null))
             {
-                _csb.Pooling = props.Pooling.Value;
+                csb.Pooling = props.Pooling.Value;
             }
             if (!(props.Replication is null))
             {
-                _csb.Replication = props.Replication.Value;
+                csb.Replication = props.Replication.Value;
             }
             if (!(props.TrustServerCertificate is null))
             {
-                _csb.TrustServerCertificate = props.TrustServerCertificate.Value;
+                csb.TrustServerCertificate = props.TrustServerCertificate.Value;
             }
             if (!(props.TypeSystemVersion is null))
             {
-                _csb.TypeSystemVersion = props.TypeSystemVersion;
+                csb.TypeSystemVersion = props.TypeSystemVersion;
             }
             if (!(props.UserInstance is null))
             {
-                _csb.UserInstance = props.UserInstance.Value;
+                csb.UserInstance = props.UserInstance.Value;
             }
             if (!(props.WorkstationID is null))
             {
-                _csb.WorkstationID = props.WorkstationID;
+                csb.WorkstationID = props.WorkstationID;
             }
         }
 
@@ -147,27 +146,31 @@ namespace ArgentSea.Sql
         {
             if (string.IsNullOrEmpty(_connectionString))
             {
+                var csb = new SqlConnectionStringBuilder();
+                csb.ConnectTimeout = DefaultConnectTimeout;
+                csb.ConnectRetryCount = 0;
                 if (!(_globalProperties is null))
                 {
-                    SetProperties(_globalProperties);
+                    SetProperties(csb, _globalProperties);
                 }
                 if (!(_shardSetProperties is null))
                 {
-                    SetProperties(_shardSetProperties);
+                    SetProperties(csb, _shardSetProperties);
                 }
                 if (!(_readWriteProperties is null))
                 {
-                    SetProperties(_readWriteProperties);
+                    SetProperties(csb, _readWriteProperties);
                 }
                 if (!(_shardProperties is null))
                 {
-                    SetProperties(_shardProperties);
+                    SetProperties(csb, _shardProperties);
                 }
-                SetProperties(this);
-                _connectionString = _csb.ToString();
+                SetProperties(csb, this);
+                _connectionString = csb.ToString();
+                _connectionDescription = $"database {csb.InitialCatalog} on server {csb.DataSource}";
                 var logCS = _connectionString;
-                var pwd = _csb.Password;
-                if (!string.IsNullOrEmpty(pwd)) 
+                var pwd = csb.Password;
+                if (!string.IsNullOrEmpty(pwd))
                 {
                     logCS = logCS.Replace(pwd, "********");
                 }
@@ -203,44 +206,51 @@ namespace ArgentSea.Sql
 
         public string ConnectionDescription
         {
-            get => $"database {this._csb.InitialCatalog} on server {this._csb.DataSource}";
+            get
+            {
+                if (string.IsNullOrEmpty(this._connectionDescription))
+                {
+                    string initialCatalog = _globalProperties.InitialCatalog;
+                    string dataSource = _globalProperties.DataSource;
+                    if (!string.IsNullOrEmpty(_shardSetProperties.InitialCatalog))
+                    {
+                        initialCatalog = _shardSetProperties.InitialCatalog;
+                    }
+                    if (!string.IsNullOrEmpty(_shardSetProperties.DataSource))
+                    {
+                        dataSource = _shardSetProperties.DataSource;
+                    }
+
+                    if (!string.IsNullOrEmpty(_readWriteProperties.InitialCatalog))
+                    {
+                        initialCatalog = _readWriteProperties.InitialCatalog;
+                    }
+                    if (!string.IsNullOrEmpty(_readWriteProperties.DataSource))
+                    {
+                        dataSource = _readWriteProperties.DataSource;
+                    }
+
+                    if (!string.IsNullOrEmpty(_shardProperties.InitialCatalog))
+                    {
+                        initialCatalog = _shardProperties.InitialCatalog;
+                    }
+                    if (!string.IsNullOrEmpty(_shardProperties.DataSource))
+                    {
+                        dataSource = _shardProperties.DataSource;
+                    }
+
+                    if (!string.IsNullOrEmpty(this.InitialCatalog))
+                    {
+                        initialCatalog = this.InitialCatalog;
+                    }
+                    if (!string.IsNullOrEmpty(this.DataSource))
+                    {
+                        dataSource = this.DataSource;
+                    }
+                    _connectionDescription = $"database {initialCatalog} on server {dataSource}";
+                }
+                return this._connectionDescription;
+            }
         }
-
-        /// <summary>
-        /// Adds an item to the configuration
-        /// </summary>
-        /// <param name="item"></param>
-        public void Add(KeyValuePair<string, object> item)
-		{
-			this._csb.Add(item.Key, item.Value);
-		}
-		/// <summary>
-		/// Determines whether the configuration contains a specific key.
-		/// </summary>
-		public bool ContainsKey(string key)
-		{
-			return this._csb.ContainsKey(key);
-		}
-
-		/// <summary>
-		/// Removes the entry from the configuration instance.
-		/// </summary>
-		public void Remove(KeyValuePair<string, object> item)
-		{
-			this._csb.Remove(item.Key);
-		}
-
-		/// <summary>
-		/// Removes the entry from the configuration instance.
-		/// </summary>
-		public void Remove(string key)
-		{
-			this._csb.Remove(key);
-		}
-
-		public bool TryGetValue(string key, out object value)
-		{
-			return this._csb.TryGetValue(key, out value);
-		}
     }
 }
