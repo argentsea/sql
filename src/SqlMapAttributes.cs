@@ -28,6 +28,8 @@ namespace ArgentSea.Sql
 		}
 		protected internal abstract void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expColumnList, ParameterExpression expLogger, ILogger logger);
 
+        public override string SqlTypeName => ((SqlDbType)base.SqlType).ToString();
+
     }
 
     #region String parameters
