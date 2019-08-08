@@ -11,13 +11,12 @@ namespace ArgentSea.Sql
     /// <summary>
     /// A collection of ShardSets.
     /// </summary>
-    /// <typeparam name="TShard">The type of the shardId index value.</typeparam>
-    public class SqlShardSets<TShard> : ArgentSea.ShardSetsBase<TShard, SqlShardConnectionOptions<TShard>> where TShard : IComparable
+    public class SqlShardSets : ArgentSea.ShardSetsBase<SqlShardConnectionOptions>
 	{
 		public SqlShardSets(
-			IOptions<SqlShardConnectionOptions<TShard>> configOptions,
+			IOptions<SqlShardConnectionOptions> configOptions,
 			IOptions<SqlGlobalPropertiesOptions> globalOptions,
-			ILogger<SqlShardSets<TShard>> logger
+			ILogger<SqlShardSets> logger
 			) : base(configOptions, new DataProviderServiceFactory(), globalOptions?.Value, logger)
 		{
 

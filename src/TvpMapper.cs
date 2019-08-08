@@ -93,7 +93,7 @@ namespace ArgentSea.Sql
                     }
                     else
                     {
-                        expDetectNullOrEmpty = Expression.NotEqual(expOriginalProperty, Expression.Property(null, propType.GetProperty(nameof(ShardKey<int, int>.Empty))));
+                        expDetectNullOrEmpty = Expression.NotEqual(expOriginalProperty, Expression.Property(null, propType.GetProperty(nameof(ShardKey<int>.Empty))));
                     }
 
                     if (isShardKey)
@@ -121,7 +121,7 @@ namespace ArgentSea.Sql
                             {
                                 throw new InvalidMapTypeException(prop, attrPM.SqlType);
                             }
-                            var expShardProperty = Expression.Property(expProperty, propType.GetProperty(nameof(ShardKey<int, int>.ShardId)));
+                            var expShardProperty = Expression.Property(expProperty, propType.GetProperty(nameof(ShardKey<int>.ShardId)));
                             ParameterExpression expNullableShardId;
                             if (tDataShardId.IsValueType)
                             {
@@ -148,7 +148,7 @@ namespace ArgentSea.Sql
                             {
                                 throw new InvalidMapTypeException(prop, attrPM.SqlType);
                             }
-                            var expRecordProperty = Expression.Property(expProperty, propType.GetProperty(nameof(ShardKey<int, int>.RecordId)));
+                            var expRecordProperty = Expression.Property(expProperty, propType.GetProperty(nameof(ShardKey<int>.RecordId)));
                             ParameterExpression expNullableRecordId;
                             if (tDataRecordId.IsValueType)
                             {
@@ -175,7 +175,7 @@ namespace ArgentSea.Sql
                             {
                                 throw new InvalidMapTypeException(prop, attrPM.SqlType);
                             }
-                            var expChildProperty = Expression.Property(expProperty, propType.GetProperty(nameof(ShardChild<int, int, int>.ChildId)));
+                            var expChildProperty = Expression.Property(expProperty, propType.GetProperty(nameof(ShardChild<int, int>.ChildId)));
                             ParameterExpression expNullableChildId;
                             if (tDataChildId.IsValueType)
                             {

@@ -31,40 +31,11 @@ namespace Microsoft.Extensions.DependencyInjection
             var global = config.GetSection("SqlGlobalSettings");
             services.Configure<SqlGlobalPropertiesOptions>(global);
 			services.Configure<SqlDbConnectionOptions>(config);
-            //var sqlPath = global.GetValue<string>("SqlFolder");
-            //if (!string.IsNullOrEmpty(sqlPath))
-            //{
-            //    if (!Directory.Exists(sqlPath))
-            //    {
-            //        throw new DirectoryNotFoundException($"Directory “{sqlPath}” was configured as the location for SQL files, but the directory was not found.");
-            //    }
-            //    QueryStatement.Folder = sqlPath;
-            //}
-            //var sqlExt = global.GetValue<string>("SqlFileExt");
-            //if (!string.IsNullOrEmpty(sqlExt))
-            //{
-            //    QueryStatement.Extension = sqlExt;
-            //}
             services.AddSingleton<SqlDatabases>();
-			return services;
+            services.AddSqlServices(config);
+            services.Configure<SqlShardConnectionOptions>(config);
+            services.AddSingleton<ShardSetsBase<SqlShardConnectionOptions>, SqlShardSets>();
+            return services;
         }
-
-		/// <summary>
-		/// Loads configuration into injectable Options and the DbDataStores and ShardDataStores services. ILogger service should have already be created.
-		/// </summary>
-		/// <typeparam name="TShard"></typeparam>
-		/// <param name="services"></param>
-		/// <param name="config"></param>
-		/// <returns></returns>
-		public static IServiceCollection AddSqlServices<TShard>(
-			this IServiceCollection services,
-			IConfiguration config
-			) where TShard: IComparable
-		{
-			services.AddSqlServices(config);
-			services.Configure<SqlShardConnectionOptions<TShard>>(config);
-			//services.AddSingleton<ShardSetsBase<TShard, SqlShardConnectionOptions<TShard>>, SqlShardSets<TShard>>();
-			return services;
-		}
 	}
 }

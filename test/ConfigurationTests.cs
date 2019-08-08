@@ -24,13 +24,13 @@ namespace ArgentSea.Sql.Test
 
 			services.Configure<SqlGlobalPropertiesOptions>(config.GetSection("SqlGlobalSettings"));
 			services.Configure<SqlDbConnectionOptions>(config);
-			services.Configure<SqlShardConnectionOptions<int>>(config);
+			services.Configure<SqlShardConnectionOptions>(config);
 
 			var serviceProvider = services.BuildServiceProvider();
 
 			var globalOptions = serviceProvider.GetService<IOptions<SqlGlobalPropertiesOptions>>();
 			var sqlDbOptions = serviceProvider.GetService<IOptions<SqlDbConnectionOptions>>();
-			var sqlShardOptions = serviceProvider.GetService<IOptions<SqlShardConnectionOptions<int>>>();
+			var sqlShardOptions = serviceProvider.GetService<IOptions<SqlShardConnectionOptions>>();
 
 			var globalData = globalOptions.Value;
             globalData.RetryCount.Should().Be(15, "that is the first value set in the configurationsettings.json configuration file");
@@ -61,12 +61,12 @@ namespace ArgentSea.Sql.Test
 			services.AddOptions();
 
 			services.AddLogging();
-            services.AddSqlServices<byte>(config);
+            services.AddSqlServices(config);
 
             var serviceProvider = services.BuildServiceProvider();
             var globalOptions = serviceProvider.GetService<IOptions<SqlGlobalPropertiesOptions>>();
 			var sqlDbOptions = serviceProvider.GetService<IOptions<SqlDbConnectionOptions>>();
-			var sqlShardOptions = serviceProvider.GetService<IOptions<SqlShardConnectionOptions<byte>>>();
+			var sqlShardOptions = serviceProvider.GetService<IOptions<SqlShardConnectionOptions>>();
 			var dbLogger = NSubstitute.Substitute.For<Microsoft.Extensions.Logging.ILogger<SqlDatabases>>();
 
 			var dbService = new SqlDatabases(sqlDbOptions, globalOptions, dbLogger);
@@ -74,9 +74,9 @@ namespace ArgentSea.Sql.Test
             dbService["MainDb"].Read.ConnectionString.Should().Be("Data Source=10.10.25.1;Initial Catalog=MainDb;Connect Timeout=5;Type System Version=\"SQL Server 2012\";Application Name=MyApp;ConnectRetryCount=0", "this is the value inherited from global configuratoin settings");
             dbService["MainDb"].Write.ConnectionString.Should().Be("Data Source=10.10.25.5;Initial Catalog=MainDb;Connect Timeout=5;Type System Version=\"SQL Server 2012\";Application Name=MyApp;ConnectRetryCount=0", "this is the value inherited from global configuratoin settings");
             dbService["OtherDb"].Read.ConnectionString.Should().Be("Data Source=MyOtherServer;Initial Catalog=OtherDb;Connect Timeout=20;Type System Version=\"SQL Server 2012\";Application Name=MyOtherApp;Current Language=English;ConnectRetryCount=0", "this is the value inherited from global configuratoin settings");
-            var shardLogger = NSubstitute.Substitute.For<Microsoft.Extensions.Logging.ILogger<ArgentSea.Sql.SqlShardSets<byte>>>();
+            var shardLogger = NSubstitute.Substitute.For<Microsoft.Extensions.Logging.ILogger<ArgentSea.Sql.SqlShardSets>>();
 
-            var shardService = new ArgentSea.Sql.SqlShardSets<byte>(sqlShardOptions, globalOptions, shardLogger);
+            var shardService = new ArgentSea.Sql.SqlShardSets(sqlShardOptions, globalOptions, shardLogger);
 
             shardService.Count.Should().Be(2, "two shard sets are defined in the configuration file");
 			shardService["Inherit"].Count.Should().Be(2, "the configuration file has two shard connections defined on shard set Set1");
@@ -101,17 +101,17 @@ namespace ArgentSea.Sql.Test
             var services = new ServiceCollection();
             services.AddOptions();
             services.AddLogging();
-            services.AddSqlServices<byte>(config);
+            services.AddSqlServices(config);
 
             var serviceProvider = services.BuildServiceProvider();
             var globalOptions = serviceProvider.GetService<IOptions<SqlGlobalPropertiesOptions>>();
             var sqlDbOptions = serviceProvider.GetService<IOptions<SqlDbConnectionOptions>>();
-            var sqlShardOptions = serviceProvider.GetService<IOptions<SqlShardConnectionOptions<byte>>>();
+            var sqlShardOptions = serviceProvider.GetService<IOptions<SqlShardConnectionOptions>>();
             var dbLogger = NSubstitute.Substitute.For<Microsoft.Extensions.Logging.ILogger<SqlDatabases>>();
 
             var dbService = new SqlDatabases(sqlDbOptions, globalOptions, dbLogger);
-            var shardLogger = NSubstitute.Substitute.For<Microsoft.Extensions.Logging.ILogger<ArgentSea.Sql.SqlShardSets<byte>>>();
-            var shardService = new ArgentSea.Sql.SqlShardSets<byte>(sqlShardOptions, globalOptions, shardLogger);
+            var shardLogger = NSubstitute.Substitute.For<Microsoft.Extensions.Logging.ILogger<ArgentSea.Sql.SqlShardSets>>();
+            var shardService = new ArgentSea.Sql.SqlShardSets(sqlShardOptions, globalOptions, shardLogger);
 
             dbService["MainDb"].Read.ConnectionString.Should().Be("Data Source=10.10.25.1;Initial Catalog=MainDb;Connect Timeout=5;Type System Version=\"SQL Server 2012\";Application Name=MyApp;ConnectRetryCount=0", "this is the value inherited from global configuratoin settings");
             shardService["Inherit"][0].Read.ConnectionString.Should().Be("Data Source=10.10.23.20;Failover Partner=MyMirror;Initial Catalog=dbName2;Connect Timeout=5;Type System Version=\"SQL Server 2012\";Application Name=MyOtherApp;ApplicationIntent=ReadOnly;ConnectRetryCount=0", "the configuration file builds this connection string");

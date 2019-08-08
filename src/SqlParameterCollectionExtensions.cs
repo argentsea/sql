@@ -1124,9 +1124,8 @@ namespace ArgentSea.Sql
             return prms;
         }
 
-        public static DbParameterCollection AddSqlTableValuedParameter<TModel, TShard, TRecord>(this DbParameterCollection prms, string parameterName, IEnumerable<TModel> values, string shardIdName, SqlDbType shardIdType, string recordIdName, SqlDbType recordIdType) 
-            where TModel : IKeyedModel<TShard, TRecord>
-            where TShard : IComparable
+        public static DbParameterCollection AddSqlTableValuedParameter<TModel, TRecord>(this DbParameterCollection prms, string parameterName, IEnumerable<TModel> values, string shardIdName, SqlDbType shardIdType, string recordIdName, SqlDbType recordIdType) 
+            where TModel : IKeyedModel<TRecord>
             where TRecord : IComparable
         {
             var tvp = new List<SqlDataRecord>();
@@ -1146,9 +1145,8 @@ namespace ArgentSea.Sql
             prms.Add(prm);
             return prms;
         }
-        public static DbParameterCollection AddSqlTableValuedParameter<TModel, TShard, TRecord, TChild>(this DbParameterCollection prms, string parameterName, IEnumerable<TModel> values, string shardIdName, SqlDbType shardIdType, string recordIdName, SqlDbType recordIdType, string childIdName, SqlDbType childIdType)
-            where TModel : IKeyedChildModel<TShard, TRecord, TChild>
-            where TShard : IComparable
+        public static DbParameterCollection AddSqlTableValuedParameter<TModel, TRecord, TChild>(this DbParameterCollection prms, string parameterName, IEnumerable<TModel> values, string shardIdName, SqlDbType shardIdType, string recordIdName, SqlDbType recordIdType, string childIdName, SqlDbType childIdType)
+            where TModel : IKeyedChildModel<TRecord, TChild>
             where TRecord : IComparable
             where TChild : IComparable
         {
@@ -1170,8 +1168,7 @@ namespace ArgentSea.Sql
             prms.Add(prm);
             return prms;
         }
-        public static DbParameterCollection AddSqlTableValuedParameter<TShard, TRecord>(this DbParameterCollection prms, string parameterName, IEnumerable<ShardKey<TShard, TRecord>> values, string shardIdName, SqlDbType shardIdType, string recordIdName, SqlDbType recordIdType)
-            where TShard : IComparable
+        public static DbParameterCollection AddSqlTableValuedParameter<TRecord>(this DbParameterCollection prms, string parameterName, IEnumerable<ShardKey<TRecord>> values, string shardIdName, SqlDbType shardIdType, string recordIdName, SqlDbType recordIdType)
             where TRecord : IComparable
         {
             var tvp = new List<SqlDataRecord>();
@@ -1191,8 +1188,7 @@ namespace ArgentSea.Sql
             prms.Add(prm);
             return prms;
         }
-        public static DbParameterCollection AddSqlTableValuedParameter<TShard, TRecord, TChild>(this DbParameterCollection prms, string parameterName, IEnumerable<ShardChild<TShard, TRecord, TChild>> values, string shardIdName, SqlDbType shardIdType, string recordIdName, SqlDbType recordIdType, string childIdName, SqlDbType childIdType)
-            where TShard : IComparable
+        public static DbParameterCollection AddSqlTableValuedParameter<TRecord, TChild>(this DbParameterCollection prms, string parameterName, IEnumerable<ShardChild<TRecord, TChild>> values, string shardIdName, SqlDbType shardIdType, string recordIdName, SqlDbType recordIdType, string childIdName, SqlDbType childIdType)
             where TRecord : IComparable
             where TChild : IComparable
         {

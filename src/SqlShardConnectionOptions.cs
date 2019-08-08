@@ -10,28 +10,26 @@ namespace ArgentSea.Sql
     /// <summary>
     /// This options class contains the shard dataset configuration information.
     /// </summary>
-    /// <typeparam name="TShard"></typeparam>
-    public class SqlShardConnectionOptions<TShard> : IShardSetsConfigurationOptions<TShard>
-        where TShard : IComparable
+    public class SqlShardConnectionOptions : IShardSetsConfigurationOptions
     {
-        public IShardSetConnectionsConfiguration<TShard>[] ShardSetsConfigInternal { get => SqlShardSets; }
+        public IShardSetConnectionsConfiguration[] ShardSetsConfigInternal { get => SqlShardSets; }
 		public SqlShardConnectionsConfiguration[] SqlShardSets { get; set; }
 
-        public class SqlShardConnectionsConfiguration: SqlConnectionPropertiesBase, IShardSetConnectionsConfiguration<TShard>
+        public class SqlShardConnectionsConfiguration: SqlConnectionPropertiesBase, IShardSetConnectionsConfiguration
 		{
 			public string ShardSetName { get; set; }
-            public TShard DefaultShardId { get; set; }
-			public IShardConnectionConfiguration<TShard>[] ShardsConfigInternal { get => Shards; }
+            public short DefaultShardId { get; set; }
+			public IShardConnectionConfiguration[] ShardsConfigInternal { get => Shards; }
 			public SqlShardConnectionConfiguration[] Shards { get; set; }
-            public IShardConnectionConfiguration<TShard> ReadConfigInternal => Read;
-            public IShardConnectionConfiguration<TShard> WriteConfigInternal => Write;
+            public IShardConnectionConfiguration ReadConfigInternal => Read;
+            public IShardConnectionConfiguration WriteConfigInternal => Write;
             public SqlShardConnectionConfiguration Read { get; set; }
             public SqlShardConnectionConfiguration Write { get; set; }
         }
 
-        public class SqlShardConnectionConfiguration: SqlConnectionPropertiesBase, IShardConnectionConfiguration<TShard>
+        public class SqlShardConnectionConfiguration: SqlConnectionPropertiesBase, IShardConnectionConfiguration
 		{
-			public TShard ShardId { get; set; }
+			public short ShardId { get; set; }
 			public IDataConnection ReadConnectionInternal { get => ReadConnection; }
 			public IDataConnection WriteConnectionInternal { get => WriteConnection; }
             public SqlConnectionConfiguration ReadConnection { get; set; } = new SqlConnectionConfiguration();

@@ -112,24 +112,24 @@ namespace ArgentSea.Sql.Test
         [MapShardKey('x', "DataShard", "DataRecordId")]
         [MapToSqlTinyInt("DataShard")]
         [MapToSqlInt("DataRecordId")]
-        public ShardKey<byte, int>? RecordKey { get; set; } = ShardKey<byte, int>.Empty;
+        public ShardKey<int>? RecordKey { get; set; } = ShardKey<int>.Empty;
 
         [MapShardChild('y', "ChildShard", "ParentRecordId", "ChildRecordId")]
         [MapToSqlTinyInt("ChildShard")]
         [MapToSqlInt("ParentRecordId")]
         [MapToSqlSmallInt("ChildRecordId")]
-        public ShardChild<byte, int, short> RecordChild { get; set; } = ShardChild<byte, int, short>.Empty;
+        public ShardChild<int, short> RecordChild { get; set; } = ShardChild<int, short>.Empty;
 
 
         [MapShardKey('A', "@DataRecordId2")]
         [MapToSqlBigInt("@DataRecordId2")]
-        public ShardKey<byte, long> DataShard2 { get; set; } = new ShardKey<byte, long>('A', 123, 54321);
+        public ShardKey<long> DataShard2 { get; set; } = new ShardKey<long>('A', 123, 54321);
 
         [MapShardChild('B', "ChildShard2", "ParentRecord2Id", "ChildRecord2Id")]
         [MapToSqlTinyInt("ChildShard2")]
         [MapToSqlSmallInt("ParentRecord2Id")]
         [MapToSqlNVarChar("ChildRecord2Id", 255)]
-        public ShardChild<byte, short, string>? ChildShard2 { get; set; } = null;
+        public ShardChild<short, string>? ChildShard2 { get; set; } = null;
 
 
 
