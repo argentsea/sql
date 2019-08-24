@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyModel.Resolution;
 using ArgentSea;
 using ArgentSea.Sql;
 using FluentAssertions;
@@ -111,7 +110,7 @@ namespace ArgentSea.Sql.Test
 
             var dbService = new SqlDatabases(sqlDbOptions, globalOptions, dbLogger);
             var shardLogger = NSubstitute.Substitute.For<Microsoft.Extensions.Logging.ILogger<ArgentSea.Sql.SqlShardSets>>();
-            var shardService = new ArgentSea.Sql.SqlShardSets(sqlShardOptions, globalOptions, shardLogger);
+            var shardService = new SqlShardSets(sqlShardOptions, globalOptions, shardLogger);
 
             dbService["MainDb"].Read.ConnectionString.Should().Be("Data Source=10.10.25.1;Initial Catalog=MainDb;Connect Timeout=5;Type System Version=\"SQL Server 2012\";Application Name=MyApp;ConnectRetryCount=0", "this is the value inherited from global configuratoin settings");
             shardService["Inherit"][0].Read.ConnectionString.Should().Be("Data Source=10.10.23.20;Failover Partner=MyMirror;Initial Catalog=dbName2;Connect Timeout=5;Type System Version=\"SQL Server 2012\";Application Name=MyOtherApp;ApplicationIntent=ReadOnly;ConnectRetryCount=0", "the configuration file builds this connection string");

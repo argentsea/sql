@@ -70,22 +70,19 @@ namespace ArgentSea.Sql
             {
                 MemberExpression expProperty = Expression.Property(prmModel, prop);
                 MemberExpression expOriginalProperty = expProperty;
-                var isShardKey = prop.IsDefined(typeof(MapShardKeyAttribute), true);
-                var isShardChild = prop.IsDefined(typeof(MapShardChildAttribute), true);
+                Type propType = prop.PropertyType;
+                var shdAttr = ExpressionHelpers.GetMapShardKeyAttribute(prop, propType, out var isNullable, out var isShardKey, out var isShardChild, out var isShardGrandChild, out var isShardGreatGrandChild);
 
-                if ((isShardKey || isShardChild) && prop.IsDefined(typeof(SqlParameterMapAttribute), true))
+                if (!(shdAttr is null) && (isShardKey || isShardChild || isShardGrandChild || isShardGrandChild))
                 {
-                    Type propType = prop.PropertyType;
-                    var foundShardId = false;
                     var foundRecordId = false;
                     var foundChildId = false;
-                    string shardIdPrm;
-                    string recordIdPrm;
-                    string childIdPrm;
+                    var foundGrandChildId = false;
+                    var foundGreatGrandChildId = false;
                     setExpressions.Add(Expression.Call(miLogTrace, expLogger, Expression.Constant(prop.Name)));
 
                     Expression expDetectNullOrEmpty;
-                    if (propType.IsGenericType && propType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                    if (isNullable)
                     {
                         expProperty = Expression.Property(expProperty, propType.GetProperty(nameof(Nullable<int>.Value)));
                         propType = Nullable.GetUnderlyingType(propType);
@@ -96,57 +93,30 @@ namespace ArgentSea.Sql
                         expDetectNullOrEmpty = Expression.NotEqual(expOriginalProperty, Expression.Property(null, propType.GetProperty(nameof(ShardKey<int>.Empty))));
                     }
 
-                    if (isShardKey)
+                    if (!(shdAttr.ShardParameter is null))
                     {
-                        var shdData = prop.GetCustomAttribute<MapShardKeyAttribute>(true);
-                        shardIdPrm = shdData.ShardIdName;
-                        recordIdPrm = shdData.RecordIdName;
-                        childIdPrm = null;
-                    }
-                    else
-                    {
-                        var shdData = prop.GetCustomAttribute<MapShardChildAttribute>(true);
-                        shardIdPrm = shdData.ShardIdName;
-                        recordIdPrm = shdData.RecordIdName;
-                        childIdPrm = shdData.ChildIdName;
+                        var expShardProperty = Expression.Property(expProperty, propType.GetProperty(nameof(ShardKey<int>.ShardId)));
+                        ParameterExpression expNullableShardId = Expression.Variable(typeof(Nullable<>).MakeGenericType(typeof(short)), prop.Name + "_NullableShardId");
+                        variables.Add(expNullableShardId);
+                        setExpressions.Add(Expression.IfThenElse(
+                            expDetectNullOrEmpty,
+                            Expression.Assign(expNullableShardId, Expression.Convert(expShardProperty, expNullableShardId.Type)),
+                            Expression.Assign(expNullableShardId, Expression.Constant(null, expNullableShardId.Type))
+                            ));
+                        var srtPrm = new MapToSqlSmallIntAttribute(shdAttr.ShardIdName);
+                        srtPrm.AppendTvpExpressions(expRecord, expNullableShardId, setExpressions, sqlMetaTypeExpressions, noDupPrmNameList, ref ordinal, expNullableShardId.Type, prmColumnList, expLogger, logger);
+                        ordinal++;
                     }
                     var attrPMs = prop.GetCustomAttributes<SqlParameterMapAttribute>(true);
                     foreach (var attrPM in attrPMs)
                     {
-                        if (!string.IsNullOrEmpty(shardIdPrm) && attrPM.Name == shardIdPrm)
-                        {
-                            foundShardId = true;
-                            var tDataShardId = propType.GetGenericArguments()[0];
-                            if (!attrPM.IsValidType(tDataShardId))
-                            {
-                                throw new InvalidMapTypeException(prop, attrPM.SqlType);
-                            }
-                            var expShardProperty = Expression.Property(expProperty, propType.GetProperty(nameof(ShardKey<int>.ShardId)));
-                            ParameterExpression expNullableShardId;
-                            if (tDataShardId.IsValueType)
-                            {
-                                expNullableShardId = Expression.Variable(typeof(Nullable<>).MakeGenericType(tDataShardId), prop.Name + "_NullableShardId");
-                            }
-                            else
-                            {
-                                expNullableShardId = Expression.Variable(tDataShardId, prop.Name + "_NullableShardId");
-                            }
-                            variables.Add(expNullableShardId);
-                            setExpressions.Add(Expression.IfThenElse(
-                                expDetectNullOrEmpty,
-                                Expression.Assign(expNullableShardId, Expression.Convert(expShardProperty, expNullableShardId.Type)),
-                                Expression.Assign(expNullableShardId, Expression.Constant(null, expNullableShardId.Type))
-                                ));
-                            attrPM.AppendTvpExpressions(expRecord, expNullableShardId, setExpressions, sqlMetaTypeExpressions, noDupPrmNameList, ref ordinal, expNullableShardId.Type, prmColumnList, expLogger, logger);
-                            ordinal++;
-                        }
-                        if (attrPM.Name == recordIdPrm)
+                        if (attrPM.Name == shdAttr.RecordIdName)
                         {
                             foundRecordId = true;
-                            var tDataRecordId = propType.GetGenericArguments()[1];
+                            var tDataRecordId = propType.GetGenericArguments()[0];
                             if (!attrPM.IsValidType(tDataRecordId))
                             {
-                                throw new InvalidMapTypeException(prop, attrPM.SqlType);
+                                throw new InvalidMapTypeException(prop, attrPM.SqlType, attrPM.SqlTypeName);
                             }
                             var expRecordProperty = Expression.Property(expProperty, propType.GetProperty(nameof(ShardKey<int>.RecordId)));
                             ParameterExpression expNullableRecordId;
@@ -167,23 +137,77 @@ namespace ArgentSea.Sql
                             attrPM.AppendTvpExpressions(expRecord, expNullableRecordId, setExpressions, sqlMetaTypeExpressions, noDupPrmNameList, ref ordinal, expNullableRecordId.Type, prmColumnList, expLogger, logger);
                             ordinal++;
                         }
-                        if (isShardChild && attrPM.Name == childIdPrm)
+                        if ((isShardChild || isShardGrandChild || isShardGreatGrandChild) && attrPM.Name == shdAttr.ChildIdName)
                         {
                             foundChildId = true;
-                            var tDataChildId = propType.GetGenericArguments()[2];
-                            if (!attrPM.IsValidType(tDataChildId))
+                            var tDataId = propType.GetGenericArguments()[1];
+                            if (!attrPM.IsValidType(tDataId))
                             {
-                                throw new InvalidMapTypeException(prop, attrPM.SqlType);
+                                throw new InvalidMapTypeException(prop, attrPM.SqlType, attrPM.SqlTypeName);
                             }
-                            var expChildProperty = Expression.Property(expProperty, propType.GetProperty(nameof(ShardChild<int, int>.ChildId)));
+                            var expChildProperty = Expression.Property(expProperty, propType.GetProperty(nameof(ShardKey<int, int>.ChildId)));
                             ParameterExpression expNullableChildId;
-                            if (tDataChildId.IsValueType)
+                            if (tDataId.IsValueType)
                             {
-                                expNullableChildId = Expression.Variable(typeof(Nullable<>).MakeGenericType(tDataChildId), prop.Name + "_NullableChildId");
+                                expNullableChildId = Expression.Variable(typeof(Nullable<>).MakeGenericType(tDataId), prop.Name + "_NullableChildId");
                             }
                             else
                             {
-                                expNullableChildId = Expression.Variable(tDataChildId, prop.Name + "_NullableChildId");
+                                expNullableChildId = Expression.Variable(tDataId, prop.Name + "_NullableChildId");
+                            }
+                            variables.Add(expNullableChildId);
+                            setExpressions.Add(Expression.IfThenElse(
+                                expDetectNullOrEmpty,
+                                Expression.Assign(expNullableChildId, Expression.Convert(expChildProperty, expNullableChildId.Type)),
+                                Expression.Assign(expNullableChildId, Expression.Constant(null, expNullableChildId.Type))
+                                ));
+                            attrPM.AppendTvpExpressions(expRecord, expNullableChildId, setExpressions, sqlMetaTypeExpressions, noDupPrmNameList, ref ordinal, expNullableChildId.Type, prmColumnList, expLogger, logger);
+                            ordinal++;
+                        }
+                        if ((isShardGrandChild || isShardGreatGrandChild) && attrPM.Name == shdAttr.GrandChildIdName)
+                        {
+                            foundGrandChildId = true;
+                            var tDataId = propType.GetGenericArguments()[2];
+                            if (!attrPM.IsValidType(tDataId))
+                            {
+                                throw new InvalidMapTypeException(prop, attrPM.SqlType, attrPM.SqlTypeName);
+                            }
+                            var expChildProperty = Expression.Property(expProperty, propType.GetProperty(nameof(ShardKey<int, int, int, int>.GrandChildId)));
+                            ParameterExpression expNullableChildId;
+                            if (tDataId.IsValueType)
+                            {
+                                expNullableChildId = Expression.Variable(typeof(Nullable<>).MakeGenericType(tDataId), prop.Name + "_NullableGrandChildId");
+                            }
+                            else
+                            {
+                                expNullableChildId = Expression.Variable(tDataId, prop.Name + "_NullableGrandChildId");
+                            }
+                            variables.Add(expNullableChildId);
+                            setExpressions.Add(Expression.IfThenElse(
+                                expDetectNullOrEmpty,
+                                Expression.Assign(expNullableChildId, Expression.Convert(expChildProperty, expNullableChildId.Type)),
+                                Expression.Assign(expNullableChildId, Expression.Constant(null, expNullableChildId.Type))
+                                ));
+                            attrPM.AppendTvpExpressions(expRecord, expNullableChildId, setExpressions, sqlMetaTypeExpressions, noDupPrmNameList, ref ordinal, expNullableChildId.Type, prmColumnList, expLogger, logger);
+                            ordinal++;
+                        }
+                        if (isShardGreatGrandChild && attrPM.Name == shdAttr.GreatGrandChildIdName)
+                        {
+                            foundGreatGrandChildId = true;
+                            var tDataId = propType.GetGenericArguments()[3];
+                            if (!attrPM.IsValidType(tDataId))
+                            {
+                                throw new InvalidMapTypeException(prop, attrPM.SqlType, attrPM.SqlTypeName);
+                            }
+                            var expChildProperty = Expression.Property(expProperty, propType.GetProperty(nameof(ShardKey<int, int, int, int>.GreatGrandChildId)));
+                            ParameterExpression expNullableChildId;
+                            if (tDataId.IsValueType)
+                            {
+                                expNullableChildId = Expression.Variable(typeof(Nullable<>).MakeGenericType(tDataId), prop.Name + "_NullableGreatGrandChildId");
+                            }
+                            else
+                            {
+                                expNullableChildId = Expression.Variable(tDataId, prop.Name + "_NullableChildId");
                             }
                             variables.Add(expNullableChildId);
                             setExpressions.Add(Expression.IfThenElse(
@@ -195,17 +219,21 @@ namespace ArgentSea.Sql
                             ordinal++;
                         }
                     }
-                    if (!string.IsNullOrEmpty(shardIdPrm) && !foundShardId)
-                    {
-                        throw new MapAttributeMissingException(MapAttributeMissingException.ShardElement.ShardId, shardIdPrm);
-                    }
                     if (!foundRecordId)
                     {
-                        throw new MapAttributeMissingException(MapAttributeMissingException.ShardElement.RecordId, recordIdPrm);
+                        throw new MapAttributeMissingException(MapAttributeMissingException.ShardElement.RecordId, shdAttr.RecordIdName);
                     }
-                    if (isShardChild && !foundChildId)
+                    if ((isShardChild || isShardGrandChild || isShardGreatGrandChild) && !foundChildId)
                     {
-                        throw new MapAttributeMissingException(MapAttributeMissingException.ShardElement.ChildId, childIdPrm);
+                        throw new MapAttributeMissingException(MapAttributeMissingException.ShardElement.ChildId, shdAttr.ChildIdName);
+                    }
+                    if ((isShardGrandChild || isShardGreatGrandChild) && !foundGrandChildId)
+                    {
+                        throw new MapAttributeMissingException(MapAttributeMissingException.ShardElement.GrandChildId, shdAttr.GrandChildIdName);
+                    }
+                    if (isShardGreatGrandChild && !foundGreatGrandChildId)
+                    {
+                        throw new MapAttributeMissingException(MapAttributeMissingException.ShardElement.GreatGrandChildId, shdAttr.GreatGrandChildIdName);
                     }
                 }
                 else if (prop.IsDefined(typeof(SqlParameterMapAttribute), true))
@@ -223,7 +251,7 @@ namespace ArgentSea.Sql
                         setExpressions.Add(Expression.Call(miLogTrace, expLogger, Expression.Constant(prop.Name)));
                         if (!attrPM.IsValidType(prop.PropertyType))
                         {
-                            throw new ArgentSea.InvalidMapTypeException(prop, attrPM.SqlType);
+                            throw new ArgentSea.InvalidMapTypeException(prop, attrPM.SqlType, attrPM.SqlTypeName);
                         }
                         attrPM.AppendTvpExpressions(expRecord, expProperty, setExpressions, sqlMetaTypeExpressions, noDupPrmNameList, ref ordinal, prop.PropertyType, prmColumnList, expLogger, logger);
                     }

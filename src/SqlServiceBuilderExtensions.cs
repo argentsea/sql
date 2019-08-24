@@ -32,7 +32,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.Configure<SqlGlobalPropertiesOptions>(global);
 			services.Configure<SqlDbConnectionOptions>(config);
             services.AddSingleton<SqlDatabases>();
-            services.AddSqlServices(config);
             services.Configure<SqlShardConnectionOptions>(config);
             services.AddSingleton<ShardSetsBase<SqlShardConnectionOptions>, SqlShardSets>();
             return services;
