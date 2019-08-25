@@ -16,11 +16,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ArgentSea" Version="0.9.2" />
     <PackageReference Include="System.Data.SqlClient" Version="4.6.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\ArgentSea.Shared\src\ArgentSea.csproj" />
   </ItemGroup>
 
 </Project>
