@@ -33,7 +33,7 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.Configure<SqlDbConnectionOptions>(config);
             services.AddSingleton<SqlDatabases>();
             services.Configure<SqlShardConnectionOptions>(config);
-            services.AddSingleton<ShardSetsBase<SqlShardConnectionOptions>, SqlShardSets>();
+            services.AddSingleton<SqlShardSets, SqlShardSets>();
             return services;
         }
 	}
