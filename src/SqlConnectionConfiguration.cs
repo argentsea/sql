@@ -2,9 +2,10 @@
 // See the LICENSE file in the repository root for more information.
 
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.ComponentModel;
 using Microsoft.Extensions.Logging;
+using ArgentSea;
 
 namespace ArgentSea.Sql
 {

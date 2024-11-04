@@ -1,7 +1,7 @@
 ﻿// © John Hicks. All rights reserved. Licensed under the MIT license.
 // See the LICENSE file in the repository root for more information.
 
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 namespace ArgentSea.Sql
 {

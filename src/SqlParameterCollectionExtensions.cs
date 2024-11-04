@@ -4,7 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
+using Microsoft.Data.SqlClient.Server;
 using System.Data.Common;
 using System.Data;
 using Microsoft.SqlServer.Server;
@@ -1108,7 +1109,7 @@ namespace ArgentSea.Sql
         /// <param name="value">A list of SqlDataRecord objects containing the table contents.</param>
         /// <param name="length">The fixed number of bytes in the database column.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlTableValuedParameter<TModel>(this DbParameterCollection prms, string parameterName, IEnumerable<TModel> values, ILogger logger) where TModel: class, new()
+        public static DbParameterCollection AddSqlTableValuedParameter<TModel>(this DbParameterCollection prms, string parameterName, IEnumerable<TModel> values, ILogger logger) where TModel: new()
         {
             var tvp = new List<SqlDataRecord>();
             foreach (var val in values)
@@ -1324,7 +1325,7 @@ namespace ArgentSea.Sql
         /// <param name="value">A list of SqlDataRecord objects containing the table contents.</param>
         /// <param name="length">The fixed number of bytes in the database column.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlTableValuedParameter<TModel>(this DbParameterCollection prms, string parameterName, IEnumerable<TModel> values, IList<string> columnList, ILogger logger) where TModel : class, new()
+        public static DbParameterCollection AddSqlTableValuedParameter<TModel>(this DbParameterCollection prms, string parameterName, IEnumerable<TModel> values, IList<string> columnList, ILogger logger) where TModel : new()
         {
             var tvp = new List<SqlDataRecord>();
             foreach (var val in values)

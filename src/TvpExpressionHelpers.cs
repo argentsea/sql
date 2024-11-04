@@ -10,7 +10,7 @@ using System.Collections.Concurrent;
 using System.Linq.Expressions;
 using System.Globalization;
 using Microsoft.Extensions.Logging;
-using Microsoft.SqlServer.Server;
+using Microsoft.Data.SqlClient.Server;
 
 namespace ArgentSea.Sql
 {

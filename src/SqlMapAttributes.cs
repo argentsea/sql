@@ -3,14 +3,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
+using Microsoft.Data.SqlClient.Server;
 using System.Reflection;
 using System.Linq.Expressions;
-using Microsoft.SqlServer.Server;
 using Microsoft.Extensions.Logging;
 using ArgentSea;
+using System.Data;
 
 namespace ArgentSea.Sql
 {
@@ -789,13 +788,13 @@ namespace ArgentSea.Sql
 		}
 
 		public override bool IsValidType(Type candidateType)
-            => candidateType == typeof(DateTime) || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && Nullable.GetUnderlyingType(candidateType) == typeof(DateTime));
+            => candidateType == typeof(DateOnly) || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && Nullable.GetUnderlyingType(candidateType) == typeof(DateOnly));
 
         protected override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateInputParameter), null, null, parameterNames, expLogger, logger);
 
         protected internal override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expColumnList, ParameterExpression expLogger, ILogger logger)
-            => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ColumnName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetDateTime), typeof(DateTime), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expColumnList, expLogger, logger);
+            => TvpExpressionHelpers.TvpSimpleValueExpressionBuilder(this.ColumnName, (SqlDbType)this.SqlType, nameof(SqlDataRecord.SetDateTime), typeof(DateOnly), expRecord, expProperty, setExpressions, sqlMetaDataTypeExpressions, parameterNames, ref ordinal, propertyType, expColumnList, expLogger, logger);
 
         protected override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlDateOutputParameter), null, null, parameterNames, expIgnoreParameters, logger);
@@ -817,7 +816,7 @@ namespace ArgentSea.Sql
     public class MapToSqlTimeAttribute : SqlParameterMapAttribute
     {
         /// <summary>
-        /// Map this property to the specified Time database column.
+        /// Map this property to the specified Time database column. NOTE: for now, due to limited SQL client support for TimeOnly, this is still converting to/fron .NET type TimeSpan. Ths could change in the future..
         /// </summary>
         /// <param name="parameterName">The name of the parameter or column that contains the value. The system will automatically add or remove the prefix '@' as needed.</param>
         public MapToSqlTimeAttribute(string parameterName) : base(parameterName, SqlDbType.Time)
@@ -830,7 +829,7 @@ namespace ArgentSea.Sql
 		}
 
 		public override bool IsValidType(Type candidateType)
-            => candidateType == typeof(TimeSpan) || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && Nullable.GetUnderlyingType(candidateType) == typeof(TimeSpan));
+            => candidateType == typeof(TimeSpan) || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && (Nullable.GetUnderlyingType(candidateType) == typeof(TimeSpan)));
 
         protected override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
             => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlTimeInputParameter), null, null, parameterNames, expLogger, logger);
@@ -1027,5 +1026,6 @@ namespace ArgentSea.Sql
 
         public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
     }
+
     #endregion
 }

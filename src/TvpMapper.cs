@@ -3,14 +3,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Data;
-using Microsoft.SqlServer.Server;
-using System.Data.Common;
+using Microsoft.Data.SqlClient.Server;
 using System.Reflection;
 using System.Collections.Concurrent;
 using System.Linq.Expressions;
-using System.Globalization;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading;
@@ -24,7 +22,7 @@ namespace ArgentSea.Sql
     {
         private static ConcurrentDictionary<Type, Lazy<Delegate>> _setTvpParamCache = new ConcurrentDictionary<Type, Lazy<Delegate>>();
 
-        private static Func<TModel, IList<string>, ILogger, SqlDataRecord> BuildTableValuedParameterDelegate<TModel>(ILogger logger) where TModel : class
+        private static Func<TModel, IList<string>, ILogger, SqlDataRecord> BuildTableValuedParameterDelegate<TModel>(ILogger logger)
         {
             var tModel = typeof(TModel);
             var resultExpressions = new List<Expression>();
@@ -276,7 +274,7 @@ namespace ArgentSea.Sql
         /// <param name="model">An object model instance. The property values are provided as table row values.</param>
         /// <param name="logger"></param>
         /// <returns>A SqlMetaData object. A list of these can be used as a Sql table-valued parameter.</returns>
-        public static SqlDataRecord ToTvpRecord<TModel>(TModel model, ILogger logger) where TModel : class, new()
+        public static SqlDataRecord ToTvpRecord<TModel>(TModel model, ILogger logger)
             => ToTvpRecord<TModel>(model, null, logger);
 
         /// <summary>
@@ -289,7 +287,7 @@ namespace ArgentSea.Sql
         /// <param name="logger"></param>
         /// <returns>A SqlMetaData object. A list of these can be used as a Sql table-valued parameter.</returns>
         /// <summary>
-        public static SqlDataRecord ToTvpRecord<TModel>(TModel model, IList<string> columnList, ILogger logger) where TModel : class, new()
+        public static SqlDataRecord ToTvpRecord<TModel>(TModel model, IList<string> columnList, ILogger logger)
         {
             var tModel = typeof(TModel);
 
