@@ -44,7 +44,7 @@ namespace ArgentSea.Sql.Test
 		public Guid? GuidNull { get; set; }
 
 		[MapToSqlDate("Birthday")]
-		public DateTime? Birthday { get; set; }
+		public DateOnly? Birthday { get; set; }
 
 		[MapToSqlDateTime("RightNow")]
 		public DateTime? RightNow { get; set; }

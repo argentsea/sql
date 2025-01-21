@@ -165,6 +165,45 @@ namespace ArgentSea.Sql
             return false;
         }
 
+        // Required because TVP does not support DateOnly; must be converted to DateTime then assigned via SetDateTime.
+        public static bool TvpDateValueExpressionBuilder(string parameterName, SqlDbType sqlType, string methodName, Type baseType, ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression prmColumnList, ParameterExpression expLogger, ILogger logger)
+        {
+            var dataName = SqlParameterCollectionExtensions.NormalizeSqlColumnName(parameterName);
+            if (parameterNames.Add(dataName))
+            {
+                var ctor = typeof(SqlMetaData).GetConstructor(new[] { typeof(string), typeof(SqlDbType) });
+                var expPrmName = Expression.Constant(SqlParameterCollectionExtensions.NormalizeSqlColumnName(dataName), typeof(string));
+                var expPrmType = Expression.Constant(sqlType, typeof(SqlDbType));
+                sqlMetaDataTypeExpressions.Add(Expression.New(ctor, new[] { expPrmName, expPrmType }));
+
+                var miSet = typeof(SqlDataRecord).GetMethod(methodName); //SetDateTime
+                var miDbNull = typeof(SqlDataRecord).GetMethod(nameof(SqlDataRecord.SetDBNull));
+                var expOrdinal = Expression.Call(typeof(TvpExpressionHelpers).GetMethod(nameof(TvpExpressionHelpers.GetOrdinal), BindingFlags.NonPublic | BindingFlags.Static), Expression.Constant(ordinal, typeof(int)), Expression.Constant(parameterName, typeof(string)), prmColumnList);
+
+                Expression expAssign;
+                if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                {
+                    var piNullableHasValue = propertyType.GetProperty(nameof(Nullable<int>.HasValue));
+                    var piNullableGetValue = propertyType.GetProperty(nameof(Nullable<int>.Value));
+
+                    expAssign = Expression.Condition(
+                        Expression.Property(expProperty, piNullableHasValue),
+                        Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, Expression.Call(Expression.Property(expProperty, piNullableGetValue), typeof(DateOnly).GetMethod("ToDateTime", [typeof(TimeOnly)]), Expression.New(typeof(TimeOnly))) }),
+                        Expression.Call(expRecord, miDbNull, new Expression[] { expOrdinal })
+                        );
+                }
+                else
+                {
+                    expAssign = Expression.Call(expRecord, miSet, new Expression[] { expOrdinal, Expression.Call(expProperty, typeof(DateOnly).GetMethod("ToDateTime", [typeof(TimeOnly)]), Expression.New(typeof(TimeOnly))) });
+                }
+                setExpressions.Add(Expression.IfThen(
+                    Expression.Call(typeof(TvpExpressionHelpers).GetMethod(nameof(TvpExpressionHelpers.IncludeThisColumn), BindingFlags.NonPublic | BindingFlags.Static), new Expression[] { Expression.Constant(parameterName, typeof(string)), prmColumnList }), //if
+                    expAssign)); //then
+                return true;
+            }
+            return false;
+        }
+
         public static void TvpGuidFloatingPointExpressionBuilder(string parameterName, SqlDbType sqlType, string methodName, Type baseType, ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression prmColumnList, ParameterExpression expLogger, ILogger logger)
         {
             var dataName = SqlParameterCollectionExtensions.NormalizeSqlColumnName(parameterName);

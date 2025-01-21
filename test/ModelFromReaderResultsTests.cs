@@ -4,12 +4,16 @@ using System.Collections.Generic;
 using ArgentSea;
 using ArgentSea.Sql;
 using FluentAssertions;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Data;
 using NSubstitute;
+using Castle.Core.Logging;
+using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
+using System.Diagnostics;
 
 namespace ArgentSea.Sql.Test
 {
+
     internal class MasterModel
     {
 
@@ -135,7 +139,8 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(2).Returns("Status");
             rdr.GetName(3).Returns("Amount");
 
-            var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            //var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            var dbLogger = new DebugLogger();
             var prms = new ParameterCollection();
             var prm = new SqlParameter("@Description", ParameterDirection.Output);
             prm.Value = "Root Model";
@@ -173,7 +178,8 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(2).Returns("Status");
             rdr.GetName(3).Returns("Amount");
 
-            var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            //var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            var dbLogger = new DebugLogger();
             var prms = new ParameterCollection();
             var prm = new SqlParameter("@Description", ParameterDirection.Output);
             prm.Value = "Root Model";
@@ -214,7 +220,8 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(2).Returns("Status");
             rdr.GetName(3).Returns("Amount");
 
-            var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            //var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            var dbLogger = new DebugLogger();
             var prms = new ParameterCollection();
             var prm = new SqlParameter("@Description", ParameterDirection.Output);
             prm.Value = "Root Model";
@@ -260,7 +267,8 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(2).Returns("Status");
             rdr.GetName(3).Returns("Amount");
 
-            var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            //var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            var dbLogger = new DebugLogger();
             var prms = new ParameterCollection();
             var prm = new SqlParameter("@Description", ParameterDirection.Output);
             prm.Value = "Root Model";
@@ -310,7 +318,8 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(2).Returns("Status");
             rdr.GetName(3).Returns("Amount");
 
-            var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            //var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            var dbLogger = new DebugLogger();
             var prms = new ParameterCollection();
             var prm = new SqlParameter("@Description", ParameterDirection.Output);
             prm.Value = "Root Model";
@@ -364,7 +373,8 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(2).Returns("Status");
             rdr.GetName(3).Returns("Amount");
 
-            var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            //var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            var dbLogger = new DebugLogger();
             var prms = new ParameterCollection();
             var prm = new SqlParameter("@Description", ParameterDirection.Output);
             prm.Value = "Root Model";
@@ -421,7 +431,8 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(2).Returns("Status");
             rdr.GetName(3).Returns("Amount");
 
-            var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            //var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            var dbLogger = new DebugLogger();
             var prms = new ParameterCollection();
             var prm = new SqlParameter("@Description", ParameterDirection.Output);
             prm.Value = "Root Model";
@@ -481,7 +492,8 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(2).Returns("Status");
             rdr.GetName(3).Returns("Amount");
 
-            var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            //var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            var dbLogger = new DebugLogger();
             var prms = new ParameterCollection();
             var prm = new SqlParameter("@Description", ParameterDirection.Output);
             prm.Value = "Root Model";
@@ -541,8 +553,9 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(2).Returns("Status");
             rdr.GetName(3).Returns("Amount");
 
-            var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-            var result = Mapper.ModelFromReaderResultsHandler<MasterModel, MasterModel, ModelZero, ModelOne, ModelTwo, ModelThree, ModelFour, ModelFive, ModelSix>(0, "testSproc", null, rdr, null, "test connection", dbLogger);
+            //var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            var dbLogger = new DebugLogger();
+            var result = Mapper.ModelFromReaderResultsHandler<MasterModel, ModelZero, ModelOne, ModelTwo, ModelThree, ModelFour, ModelFive, ModelSix>(0, "testSproc", null, rdr, null, "test connection", dbLogger);
             result.PropertyZero.Count.Should().Be(3, "three rows were returned by the recordset");
             result.MasterDescription.Should().Be("Root Model", "that is the parameter value");
             result.PropertyZero[0].Id.Should().Be(4, "that is the recordset id value");
@@ -580,8 +593,9 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(2).Returns("Status");
             rdr.GetName(3).Returns("Amount");
 
-            var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-            var result = Mapper.ModelFromReaderResultsHandler<MasterModel, MasterModel, ModelZero, ModelOne, ModelTwo, ModelThree, ModelFour, ModelFive, ModelSix>(0, "testSproc", null, rdr, null, "test connection", dbLogger);
+            //var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            var dbLogger = new DebugLogger();
+            var result = Mapper.ModelFromReaderResultsHandler<MasterModel, ModelZero, ModelOne, ModelTwo, ModelThree, ModelFour, ModelFive, ModelSix>(0, "testSproc", null, rdr, null, "test connection", dbLogger);
             result.PropertyZero.Count.Should().Be(3, "three rows were returned by the recordset");
             result.PropertyOne.Count.Should().Be(3, "three rows were returned by the recordset");
             result.MasterDescription.Should().Be("Root Model", "that is the parameter value");
@@ -623,8 +637,9 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(2).Returns("Status");
             rdr.GetName(3).Returns("Amount");
 
-            var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-            var result = Mapper.ModelFromReaderResultsHandler<MasterModel, MasterModel, ModelZero, ModelOne, ModelTwo, ModelThree, ModelFour, ModelFive, ModelSix>(0, "testSproc", null, rdr, null, "test connection", dbLogger);
+            //var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            var dbLogger = new DebugLogger();
+            var result = Mapper.ModelFromReaderResultsHandler<MasterModel, ModelZero, ModelOne, ModelTwo, ModelThree, ModelFour, ModelFive, ModelSix>(0, "testSproc", null, rdr, null, "test connection", dbLogger);
             result.PropertyZero.Count.Should().Be(3, "three rows were returned by the recordset");
             result.PropertyOne.Count.Should().Be(3, "three rows were returned by the recordset");
             result.PropertyTwo.Count.Should().Be(2, "two rows were returned by the recordset");
@@ -671,8 +686,9 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(2).Returns("Status");
             rdr.GetName(3).Returns("Amount");
 
-            var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-            var result = Mapper.ModelFromReaderResultsHandler<MasterModel, MasterModel, ModelZero, ModelOne, ModelTwo, ModelThree, ModelFour, ModelFive, ModelSix>(0, "testSproc", null, rdr, null, "test connection", dbLogger);
+            //var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            var dbLogger = new DebugLogger();
+            var result = Mapper.ModelFromReaderResultsHandler<MasterModel, ModelZero, ModelOne, ModelTwo, ModelThree, ModelFour, ModelFive, ModelSix>(0, "testSproc", null, rdr, null, "test connection", dbLogger);
             result.PropertyZero.Count.Should().Be(3, "three rows were returned by the recordset");
             result.PropertyOne.Count.Should().Be(3, "three rows were returned by the recordset");
             result.PropertyTwo.Count.Should().Be(2, "two rows were returned by the recordset");
@@ -723,8 +739,9 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(2).Returns("Status");
             rdr.GetName(3).Returns("Amount");
 
-            var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-            var result = Mapper.ModelFromReaderResultsHandler<MasterModel, MasterModel, ModelZero, ModelOne, ModelTwo, ModelThree, ModelFour, ModelFive, ModelSix>(0, "testSproc", null, rdr, null, "test connection", dbLogger);
+            //var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            var dbLogger = new DebugLogger();
+            var result = Mapper.ModelFromReaderResultsHandler<MasterModel, ModelZero, ModelOne, ModelTwo, ModelThree, ModelFour, ModelFive, ModelSix>(0, "testSproc", null, rdr, null, "test connection", dbLogger);
             result.PropertyZero.Count.Should().Be(3, "three rows were returned by the recordset");
             result.PropertyOne.Count.Should().Be(3, "three rows were returned by the recordset");
             result.PropertyTwo.Count.Should().Be(2, "two rows were returned by the recordset");
@@ -778,8 +795,9 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(2).Returns("Status");
             rdr.GetName(3).Returns("Amount");
 
-            var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-            var result = Mapper.ModelFromReaderResultsHandler<MasterModel, MasterModel, ModelZero, ModelOne, ModelTwo, ModelThree, ModelFour, ModelFive, ModelSix>(0, "testSproc", null, rdr, null, "test connection", dbLogger);
+            //var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            var dbLogger = new DebugLogger();
+            var result = Mapper.ModelFromReaderResultsHandler<MasterModel, ModelZero, ModelOne, ModelTwo, ModelThree, ModelFour, ModelFive, ModelSix>(0, "testSproc", null, rdr, null, "test connection", dbLogger);
             result.PropertyZero.Count.Should().Be(3, "three rows were returned by the recordset");
             result.PropertyOne.Count.Should().Be(3, "three rows were returned by the recordset");
             result.PropertyTwo.Count.Should().Be(2, "two rows were returned by the recordset");
@@ -836,8 +854,9 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(2).Returns("Status");
             rdr.GetName(3).Returns("Amount");
 
-            var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-            var result = Mapper.ModelFromReaderResultsHandler<MasterModel, MasterModel, ModelZero, ModelOne, ModelTwo, ModelThree, ModelFour, ModelFive, ModelSix>(0, "testSproc", null, rdr, null, "test connection", dbLogger);
+            //var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            var dbLogger = new DebugLogger();
+            var result = Mapper.ModelFromReaderResultsHandler<MasterModel, ModelZero, ModelOne, ModelTwo, ModelThree, ModelFour, ModelFive, ModelSix>(0, "testSproc", null, rdr, null, "test connection", dbLogger);
             result.PropertyZero.Count.Should().Be(3, "three rows were returned by the recordset");
             result.PropertyOne.Count.Should().Be(3, "three rows were returned by the recordset");
             result.PropertyTwo.Count.Should().Be(2, "two rows were returned by the recordset");

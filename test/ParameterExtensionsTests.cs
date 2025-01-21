@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using ArgentSea;
 using ArgentSea.Sql;
 using FluentAssertions;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Data;
 
 namespace ArgentSea.Sql.Test
@@ -291,13 +291,14 @@ namespace ArgentSea.Sql.Test
 
         [Theory]
         [MemberData(nameof(DateTimeTestData))]
-        public void DateTests(DateTime value)
+        public void DateOnlyTests(DateTime value)
         {
+            var dateOnly = DateOnly.FromDateTime(value);
             var prms = new ParameterCollection();
-            prms.AddSqlDateInputParameter("1", value);
-            prms.AddSqlDateInputParameter("2", (DateTime?)value);
-            prms["@1"].GetDateTime().Date.Should().Be(value.Date, "that was the date value");
-            prms["@2"].GetNullableDateTime().Value.Date.Should().Be(value.Date, "that was the date value");
+            prms.AddSqlDateInputParameter("1", dateOnly);
+            prms.AddSqlDateInputParameter("2", (DateOnly?)dateOnly);
+            prms["@1"].GetDateOnly().Should().Be(dateOnly, "that was the date value");
+            prms["@2"].GetNullableDateOnly().Value.Should().Be(dateOnly, "that was the date value");
         }
 
         [Theory]

@@ -718,7 +718,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A DateTime value.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlDateInputParameter(this DbParameterCollection prms, string parameterName, DateTime value)
+        public static DbParameterCollection AddSqlDateInputParameter(this DbParameterCollection prms, string parameterName, DateOnly value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Date)
             {
@@ -735,7 +735,7 @@ namespace ArgentSea.Sql
         /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
         /// <param name="value">A DateTime value or null.</param>
         /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
-        public static DbParameterCollection AddSqlDateInputParameter(this DbParameterCollection prms, string parameterName, DateTime? value)
+        public static DbParameterCollection AddSqlDateInputParameter(this DbParameterCollection prms, string parameterName, DateOnly? value)
         {
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Date)
             {

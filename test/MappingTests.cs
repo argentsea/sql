@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using FluentAssertions;
 using NSubstitute;
+using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace ArgentSea.Sql.Test
 {
@@ -27,7 +29,7 @@ namespace ArgentSea.Sql.Test
 				TrueFalse = true,
 				GuidValue = Guid.NewGuid(),
 				GuidNull = Guid.NewGuid(),
-				Birthday = new DateTime(2008, 8, 8),
+				Birthday = new DateOnly(2008, 8, 8),
 				RightNow = new DateTime(2009, 9, 9),
 				ExactlyNow = new DateTime(2010, 10, 10),
 				NowElsewhere = new DateTimeOffset(2011, 11, 11, 11, 11, 11, new TimeSpan(11, 11, 00)),
@@ -54,8 +56,9 @@ namespace ArgentSea.Sql.Test
                 DataShard2 = new ShardKey<long>('z', (short)22, 123432L),
                 ChildShard2 = new ShardKey<short, string>('!', 255, 255, "testing123")
 			};
-			var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-			var prms = new ParameterCollection();
+			//var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+			var dbLogger = new DebugLogger();
+            var prms = new ParameterCollection();
 
 			prms.CreateInputParameters<SqlMapModel>(smv, dbLogger);
 
@@ -191,8 +194,10 @@ namespace ArgentSea.Sql.Test
                 DataShard2 = ShardKey<long>.Empty,
                 ChildShard2 = null
             };
-			var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-			var prms = new ParameterCollection();
+            //var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            var dbLogger = new DebugLogger();
+
+            var prms = new ParameterCollection();
 
 			prms.CreateInputParameters<SqlMapModel>(smv, dbLogger);
 			Assert.True(((SqlParameter)prms["@ArgentSeaTestDataId"]).SqlDbType == System.Data.SqlDbType.Int);
@@ -357,8 +362,10 @@ namespace ArgentSea.Sql.Test
 				RecordKey = new ShardKey<int>('9', 33, int.MinValue),
 				RecordChild = new ShardKey<int, short>('A', 34, 35, -1),
 			};
-			var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-			var prms = new ParameterCollection();
+			//var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+			var dbLogger = new DebugLogger();
+
+            var prms = new ParameterCollection();
 
 			prms.CreateOutputParameters<SqlMapModel>(dbLogger);
 
@@ -480,7 +487,7 @@ namespace ArgentSea.Sql.Test
 			cmd.Parameters.Add(new SqlParameter("@TrueFalse", System.Data.SqlDbType.Bit) { Value = false, Direction = System.Data.ParameterDirection.Output });
 			cmd.Parameters.Add(new SqlParameter("@GuidValue", System.Data.SqlDbType.UniqueIdentifier) { Value = guid, Direction = System.Data.ParameterDirection.Output });
 			cmd.Parameters.Add(new SqlParameter("@GuidNull", System.Data.SqlDbType.UniqueIdentifier) { Value = guid, Direction = System.Data.ParameterDirection.Output });
-			cmd.Parameters.Add(new SqlParameter("@Birthday", System.Data.SqlDbType.Date) { Value = new DateTime(2018, 1, 1), Direction = System.Data.ParameterDirection.Output });
+			cmd.Parameters.Add(new SqlParameter("@Birthday", System.Data.SqlDbType.Date) { Value = new DateOnly(2018, 1, 1), Direction = System.Data.ParameterDirection.Output });
 			cmd.Parameters.Add(new SqlParameter("@RightNow", System.Data.SqlDbType.DateTime) { Value = new DateTime(2018, 2, 1), Direction = System.Data.ParameterDirection.Output });
 			cmd.Parameters.Add(new SqlParameter("@ExactlyNow", System.Data.SqlDbType.DateTime2) { Value = new DateTime(2018, 3, 1), Direction = System.Data.ParameterDirection.Output });
 			cmd.Parameters.Add(new SqlParameter("@NowElsewhere", System.Data.SqlDbType.DateTimeOffset) { Value = new DateTimeOffset(2018, 1, 1, 1, 1, 1, new TimeSpan()), Direction = System.Data.ParameterDirection.Output });
@@ -532,7 +539,7 @@ namespace ArgentSea.Sql.Test
 			result.TrueFalse.Should().Be(false, "that was the output parameter value");
 			result.GuidValue.Should().Be(guid, "that was the output parameter value");
 			result.GuidNull.Should().Be(guid, "that was the output parameter value");
-			result.Birthday.Should().Be(new DateTime(2018, 1, 1), "that was the output parameter value");
+			result.Birthday.Should().Be(new DateOnly(2018, 1, 1), "that was the output parameter value");
 			result.RightNow.Should().Be(new DateTime(2018, 2, 1), "that was the output parameter value");
 			result.ExactlyNow.Should().Be(new DateTime(2018, 3, 1), "that was the output parameter value");
 			result.NowElsewhere.Should().Be(new DateTimeOffset(2018, 1, 1, 1, 1, 1, new TimeSpan()), "that was the output parameter value");
@@ -579,8 +586,9 @@ namespace ArgentSea.Sql.Test
 		public void ValidateOutNullParameterReader()
 		{
 
-			var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-			var prms = new ParameterCollection();
+            //var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            var dbLogger = new DebugLogger();
+            var prms = new ParameterCollection();
 			var guid = Guid.NewGuid();
 
 
@@ -695,7 +703,7 @@ namespace ArgentSea.Sql.Test
 				TrueFalse = true,
 				GuidValue = Guid.NewGuid(),
 				GuidNull = Guid.NewGuid(),
-				Birthday = new DateTime(2008, 8, 8),
+				Birthday = new DateOnly(2008, 8, 8),
 				RightNow = new DateTime(2009, 9, 9),
 				ExactlyNow = new DateTime(2010, 10, 10),
 				NowElsewhere = new DateTimeOffset(2011, 11, 11, 11, 11, 11, new TimeSpan(11, 11, 00)),
@@ -722,9 +730,10 @@ namespace ArgentSea.Sql.Test
                 DataShard2 = new ShardKey<long>('*', (short)0, 123L),
                 ChildShard2 = new Nullable<ShardKey<short, string>>(new ShardKey<short, string>('@', 200, (short)1234, "testing..."))
             };
-			var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            //var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            var dbLogger = new DebugLogger();
 
-			var result = TvpMapper.ToTvpRecord<SqlMapModel>(smv, dbLogger);
+            var result = TvpMapper.ToTvpRecord<SqlMapModel>(smv, dbLogger);
 
 			result.GetInt32(0).Should().Be(smv.ArgentSeaTestDataId, "that was the id value provided");
 			result.GetString(1).Should().Be(smv.Name, "that was the Name value provided");
@@ -738,7 +747,7 @@ namespace ArgentSea.Sql.Test
 			result.GetBoolean(9).Should().Be(smv.TrueFalse.Value, "that was the value provided");
 			result.GetGuid(10).Should().Be(smv.GuidValue, "that was the value provided");
 			result.GetGuid(11).Should().Be(smv.GuidNull.Value, "that was the value provided");
-			result.GetDateTime(12).Should().Be(smv.Birthday.Value, "that was the value provided");
+			result.GetDateTime(12).Should().Be(smv.Birthday.Value.ToDateTime(new TimeOnly()), "that was the value provided");
 			result.GetDateTime(13).Should().Be(smv.RightNow.Value, "that was the value provided");
 			result.GetDateTime(14).Should().Be(smv.ExactlyNow.Value, "that was the value provided");
 			result.GetDateTimeOffset(15).Should().Be(smv.NowElsewhere.Value, "that was the value provided");
@@ -829,8 +838,9 @@ namespace ArgentSea.Sql.Test
                 DataShard2 = ShardKey<long>.Empty,
                 ChildShard2= null
             };
-			var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-			var prms = new ParameterCollection();
+            //var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            var dbLogger = new DebugLogger();
+            var prms = new ParameterCollection();
 
 			var result = TvpMapper.ToTvpRecord<SqlMapModel>(smv, dbLogger);
 
@@ -892,7 +902,7 @@ namespace ArgentSea.Sql.Test
 				TrueFalse = true,
 				GuidValue = Guid.NewGuid(),
 				GuidNull = Guid.NewGuid(),
-				Birthday = new DateTime(2008, 8, 8),
+				Birthday = new DateOnly(2008, 8, 8),
 				RightNow = new DateTime(2009, 9, 9),
 				ExactlyNow = new DateTime(2010, 10, 10),
 				NowElsewhere = new DateTimeOffset(2011, 11, 11, 11, 11, 11, new TimeSpan(11, 11, 00)),
@@ -944,7 +954,7 @@ namespace ArgentSea.Sql.Test
 			rdr.GetFieldValue<bool>(9).Returns(modelValues.TrueFalse.Value);
 			rdr.GetFieldValue<Guid>(10).Returns(modelValues.GuidValue);
 			rdr.GetFieldValue<Guid>(11).Returns(modelValues.GuidNull.Value);
-			rdr.GetFieldValue<DateTime>(12).Returns(modelValues.Birthday.Value);
+			rdr.GetFieldValue<DateOnly>(12).Returns(modelValues.Birthday.Value);
 			rdr.GetFieldValue<DateTime>(13).Returns(modelValues.RightNow.Value);
 			rdr.GetFieldValue<DateTime>(14).Returns(modelValues.ExactlyNow.Value);
 			rdr.GetFieldValue<DateTimeOffset>(15).Returns(modelValues.NowElsewhere.Value);
@@ -1070,8 +1080,9 @@ namespace ArgentSea.Sql.Test
             rdr.GetName(41).Returns("ParentRecord2Id");
             rdr.GetName(42).Returns("ChildRecord2Id");
 
-            var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
-			var resultList = Mapper.ToList<SqlMapModel>(rdr, 32, dbLogger);
+            //var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            var dbLogger = new DebugLogger();
+            var resultList = Mapper.ToList<SqlMapModel>(rdr, 32, dbLogger);
 			var result = resultList[0];
 			result.ArgentSeaTestDataId.Should().Be(modelValues.ArgentSeaTestDataId, "that is the source value");
 			result.Name.Should().Be(modelValues.Name, "that is the source value");
@@ -1284,7 +1295,8 @@ namespace ArgentSea.Sql.Test
             //rdr.GetFieldValue<short>(36).Returns((short)1);
             //rdr.GetFieldValue<short>(40).Returns((short)1);
 
-            var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            //var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
+            var dbLogger = new DebugLogger();
 
             var resultList = Mapper.ToList<SqlMapModel>(rdr, 200, dbLogger);
 
