@@ -13,6 +13,7 @@ using System.Data;
 using System.Data.Common;
 using System.Data.SqlTypes;
 using System.ComponentModel;
+using System.Text.Json;
 
 namespace ArgentSea.Sql
 {
@@ -1268,6 +1269,60 @@ namespace ArgentSea.Sql
 
         public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
     }
+
+
+    /// <summary>
+    /// This attribute maps a model property to/from a SQL VarBinary parameter or column.
+    /// </summary>
+    public class MapToSqlJsonAttribute : SqlParameterMapAttribute
+    {
+        /// <summary>
+        /// Map this property to the specified JSON database column.
+        /// </summary>
+        /// <param name="parameterName">The name of the parameter or column that contains the value. The system will automatically add or remove the prefix '@' as needed.</param>
+        /// <param name="length">The maximum length of the binary value or blob. Set to -1 for VarBinary(max).</param>
+        public MapToSqlJsonAttribute(string parameterName) : base(parameterName, SqlDbType.Json)
+        {
+            //
+        }
+        /// <summary>
+        /// Map this property to the specified VarBinary database column.
+        /// </summary>
+        /// <param name="parameterName">The name of the parameter or column that contains the value. The system will automatically add or remove the prefix '@' as needed.</param>
+        /// <param name="length">The maximum length of the binary value or blob. Set to -1 for VarBinary(max).</param>
+        /// <param name="isRequired">When true, set the entire model instance to null if the parameter or column is db null. Typically this is set on key columns because they are never null unless the record does not exist.</param>
+		public MapToSqlJsonAttribute(string parameterName, bool isRequired) : base(parameterName, SqlDbType.Json, isRequired)
+        {
+            //
+        }
+        public override bool IsValidType(Type candidateType)
+            => candidateType == typeof(JsonDocument);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
+            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlJsonInputParameter), null, null, parameterNames, expLogger, logger);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expColumnList, ParameterExpression expLogger, ILogger logger)
+            => throw new NotImplementedException("Json data type is not implemented in ADO.NET for table-valued functions.");
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override void AppendSetOutParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, ParameterExpression expLogger, ILogger logger)
+            => ExpressionHelpers.OutParameterBuilder(this.ParameterName, expSprocParameters, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlJsonOutputParameter), null, null, parameterNames, expIgnoreParameters, logger);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override void AppendReadOutParameterExpressions(Expression expProperty, IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expPrm, Type propertyType, ParameterExpression expLogger, ILogger logger)
+            => ExpressionHelpers.ReadOutParameterBinaryExpressions(this.ParameterName, typeof(DbParameterExtensions), nameof(DbParameterExtensions.GetJson), expProperty, expressions, expSprocParameters, expPrm, propertyType, expLogger, logger);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override void AppendReaderExpressions(Expression expProperty, IList<MethodCallExpression> columnLookupExpressions, IList<Expression> expressions, ParameterExpression prmSqlRdr, ParameterExpression expOrdinals, ParameterExpression expOrdinal, ref int propIndex, Type propertyType, ParameterExpression expLogger, ILogger logger)
+            => ExpressionHelpers.ReaderSimpleValueExpressions(this.ColumnName, expProperty, columnLookupExpressions, expressions, prmSqlRdr, expOrdinals, expOrdinal, ref propIndex, propertyType, expLogger, logger);
+
+        public override string ParameterName { get => SqlParameterCollectionExtensions.NormalizeSqlParameterName(base.Name); }
+
+        public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
+    }
+
 
     #endregion
 }

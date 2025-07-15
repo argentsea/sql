@@ -10,6 +10,7 @@ using System.Data.Common;
 using System.Data;
 using Microsoft.SqlServer.Server;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace ArgentSea.Sql
 {
@@ -1075,6 +1076,41 @@ namespace ArgentSea.Sql
         public static DbParameterCollection AddSqlBinaryOutputParameter(this DbParameterCollection prms, string parameterName, int length)
 		{
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Binary, length)
+            {
+                Direction = ParameterDirection.Output
+            };
+            prms.Add(prm);
+            return prms;
+        }
+
+
+        //JSON
+        /// <summary>
+        /// Creates a parameter for providing a JSON object to a stored procedure. A null reference will save DBNull.
+        /// </summary>
+        /// <param name="prms">The existing parameter collection to which this parameter should be added.</param>
+        /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
+        /// <param name="value">A JSON document, or null.</param>
+        /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
+        public static DbParameterCollection AddSqlJsonInputParameter(this DbParameterCollection prms, string parameterName, JsonDocument value)
+        {
+            var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Json)
+            {
+                Value = value ?? (dynamic)System.DBNull.Value,
+                Direction = ParameterDirection.Input
+            };
+            prms.Add(prm);
+            return prms;
+        }
+        /// <summary>
+        /// Creates a parameter for retrieving a JSON object from a stored procedure.
+        /// </summary>
+        /// <param name="prms">The existing parameter collection to which this output parameter should be added.</param>
+        /// <param name="parameterName">The name of the parameter. If the name doesn’t start with “@”, it will be automatically pre-pended.</param>
+        /// <returns>The DbParameterCollection to which the parameter was appended.</returns>
+        public static DbParameterCollection AddSqlJsonOutputParameter(this DbParameterCollection prms, string parameterName)
+        {
+            var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Json)
             {
                 Direction = ParameterDirection.Output
             };
