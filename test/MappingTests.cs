@@ -51,10 +51,10 @@ namespace ArgentSea.Sql.Test
 				Modifier = ConsoleModifiers.Control,
 				DayOfTheWeek = DayOfWeek.Sunday,
 				GarbageCollectorNotificationStatus = GCNotificationStatus.NotApplicable,
-				RecordKey = new ShardKey<int>('x', 2, 1234),
-				RecordChild = new ShardKey<int, short>('y', 3, 4567, (short)-23456),
-                DataShard2 = new ShardKey<long>('z', (short)22, 123432L),
-                ChildShard2 = new ShardKey<short, string>('!', 255, 255, "testing123")
+				RecordKey = new ShardKey<int>(2, 1234),
+				RecordChild = new ShardKey<int, short>(3, 4567, (short)-23456),
+                DataShard2 = new ShardKey<long>((short)22, 123432L),
+                ChildShard2 = new ShardKey<short, string>(255, 255, "testing123")
 			};
 			//var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
 			var dbLogger = new DebugLogger();
@@ -146,8 +146,8 @@ namespace ArgentSea.Sql.Test
 			((SqlParameter)prms["@ParentRecordId"]).Value.Should().Be(smv.RecordChild.RecordId, "that is the assigned value");
 			((SqlParameter)prms["@ChildRecordId"]).Value.Should().Be(smv.RecordChild.ChildId, "that is the assigned value");
 			((SqlParameter)prms["@DataRecordId2"]).Value.Should().Be(smv.DataShard2.RecordId, "that is the assigned value");
-			((SqlParameter)prms["@ChildShard2"]).Value.Should().Be(smv.ChildShard2.Value.Key.ShardId, "that is the assigned value");
-			((SqlParameter)prms["@ParentRecord2Id"]).Value.Should().Be(smv.ChildShard2.Value.Key.RecordId, "that is the assigned value");
+			((SqlParameter)prms["@ChildShard2"]).Value.Should().Be(smv.ChildShard2.Value.ShardId, "that is the assigned value");
+			((SqlParameter)prms["@ParentRecord2Id"]).Value.Should().Be(smv.ChildShard2.Value.RecordId, "that is the assigned value");
 			((SqlParameter)prms["@ChildRecord2Id"]).Value.Should().Be(smv.ChildShard2.Value.ChildId, "that is the assigned value");
 		}
 		[Fact]
@@ -359,8 +359,8 @@ namespace ArgentSea.Sql.Test
 				Modifier = ConsoleModifiers.Shift,
 				DayOfTheWeek = DayOfWeek.Saturday,
 				GarbageCollectorNotificationStatus = GCNotificationStatus.Succeeded,
-				RecordKey = new ShardKey<int>('9', 33, int.MinValue),
-				RecordChild = new ShardKey<int, short>('A', 34, 35, -1),
+				RecordKey = new ShardKey<int>(33, int.MinValue),
+				RecordChild = new ShardKey<int, short>(34, 35, -1),
 			};
 			//var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
 			var dbLogger = new DebugLogger();
@@ -563,20 +563,16 @@ namespace ArgentSea.Sql.Test
 			result.DayOfTheWeek.Value.Should().Be(DayOfWeek.Tuesday, "that was the output parameter value");
 			result.GarbageCollectorNotificationStatus.Should().Be(GCNotificationStatus.Failed, "that was the output parameter value");
 
-            result.RecordKey.Value.Origin.Should().Be('x', "that is the data origin value");
             result.RecordKey.Value.ShardId.Should().Be(6, "that was the output parameter value");
             result.RecordKey.Value.RecordId.Should().Be(4, "that was the output parameter value");
 
-            result.RecordChild.Key.Origin.Should().Be('y', "that is the data origin value");
-            result.RecordChild.Key.ShardId.Should().Be(15, "that was the output parameter value");
-            result.RecordChild.Key.RecordId.Should().Be(5, "that was the output parameter value");
+            result.RecordChild.ShardId.Should().Be(15, "that was the output parameter value");
+            result.RecordChild.RecordId.Should().Be(5, "that was the output parameter value");
             result.RecordChild.ChildId.Should().Be(6, "that was the output parameter value");
 
-            result.DataShard2.Origin.Should().Be('A', "that is the data origin value");
             result.DataShard2.ShardId.Should().Be(5, "that is the value of the current shard");
             result.DataShard2.RecordId.Should().Be(long.MaxValue, "that is the record id");
 
-            result.ChildShard2.Value.Origin.Should().Be('B', "that is the data origin value");
             result.ChildShard2.Value.ShardId.Should().Be(255, "that is the value of the current shard");
             result.ChildShard2.Value.RecordId.Should().Be(12345, "that is the record id");
             result.ChildShard2.Value.ChildId.Should().Be("Test123", "that is the child id");
@@ -677,11 +673,9 @@ namespace ArgentSea.Sql.Test
 			result.GarbageCollectorNotificationStatus.HasValue.Should().BeFalse("the output parameter was set to DbNull");
 
             result.RecordKey.HasValue.Should().BeFalse("because the input arguments are dbNull");
-            result.RecordChild.Origin.Should().Be('0', "that is the empty data origin value");
-            result.RecordChild.Key.ShardId.Should().Be(0, "that is the empty shardchild value");
-            result.RecordChild.Key.RecordId.Should().Be(0, "that is the empty shardchild value");
+            result.RecordChild.ShardId.Should().Be(0, "that is the empty shardchild value");
+            result.RecordChild.RecordId.Should().Be(0, "that is the empty shardchild value");
             result.RecordChild.ChildId.Should().Be(0, "that is the empty shardchild value");
-            result.DataShard2.Origin.Should().Be('0', "that is the empty data origin value");
             result.DataShard2.ShardId.Should().Be(0, "that is the empty shardKey value");
             result.DataShard2.RecordId.Should().Be(0, "that is the empty shardKey value");
             result.ChildShard2.Should().BeNull("because the data values are dbNull");
@@ -725,10 +719,10 @@ namespace ArgentSea.Sql.Test
 				Modifier = ConsoleModifiers.Shift,
 				DayOfTheWeek = DayOfWeek.Wednesday,
 				GarbageCollectorNotificationStatus = GCNotificationStatus.NotApplicable,
-                RecordKey = new ShardKey<int>('?', (short)254, int.MaxValue),
-                RecordChild = new ShardKey<int, short>('!', (short)0, 35, short.MinValue),
-                DataShard2 = new ShardKey<long>('*', (short)0, 123L),
-                ChildShard2 = new Nullable<ShardKey<short, string>>(new ShardKey<short, string>('@', 200, (short)1234, "testing..."))
+                RecordKey = new ShardKey<int>((short)254, int.MaxValue),
+                RecordChild = new ShardKey<int, short>((short)0, 35, short.MinValue),
+                DataShard2 = new ShardKey<long>((short)0, 123L),
+                ChildShard2 = new Nullable<ShardKey<short, string>>(new ShardKey<short, string>(200, (short)1234, "testing..."))
             };
             //var dbLogger = Substitute.For<Microsoft.Extensions.Logging.ILogger>();
             var dbLogger = new DebugLogger();
@@ -924,10 +918,10 @@ namespace ArgentSea.Sql.Test
 				Modifier = ConsoleModifiers.Control,
 				DayOfTheWeek = DayOfWeek.Sunday,
 				GarbageCollectorNotificationStatus = GCNotificationStatus.NotApplicable,
-				RecordKey = new Nullable<ShardKey<int>>(new ShardKey<int>('x', 2, 1234)),
-				RecordChild = new ShardKey<int, short>('y', 3, 4567, (short)-23456),
-                DataShard2 = new ShardKey<long>('z', 32, -1234),
-                ChildShard2 = new ShardKey<short, string>('y', 3, -4567, "testing...")
+				RecordKey = new Nullable<ShardKey<int>>(new ShardKey<int>(2, 1234)),
+				RecordChild = new ShardKey<int, short>(3, 4567, (short)-23456),
+                DataShard2 = new ShardKey<long>(32, -1234),
+                ChildShard2 = new ShardKey<short, string>(3, -4567, "testing...")
 			};
 
 			var rdr = Substitute.For<System.Data.Common.DbDataReader>();

@@ -258,6 +258,7 @@ namespace ArgentSea.Sql
 
             if (parameterNames.Add(dataName))
             {
+
                 var ctor = typeof(SqlMetaData).GetConstructor(new[] { typeof(string), typeof(SqlDbType), typeof(int) });
                 var expPrmName = Expression.Constant(dataName, typeof(string));
                 var expPrmType = Expression.Constant(sqlType, typeof(SqlDbType));
@@ -269,13 +270,28 @@ namespace ArgentSea.Sql
                 var expOrdinal = Expression.Call(typeof(TvpExpressionHelpers).GetMethod(nameof(TvpExpressionHelpers.GetOrdinal), BindingFlags.NonPublic | BindingFlags.Static), Expression.Constant(ordinal, typeof(int)), Expression.Constant(parameterName, typeof(string)), prmColumnList);
                 var expFieldOffset = Expression.Constant(0L, typeof(long));
                 var expBufOffset = Expression.Constant(0, typeof(int));
-                var expLength = Expression.Property(expProperty, typeof(byte[]).GetProperty(nameof(Array.Length)));
 
-                var expAssign = Expression.Condition(
-                    Expression.Equal(expProperty, Expression.Constant(null, typeof(byte[]))),
-                    Expression.Call(expRecord, miDbNull, new Expression[] { Expression.Constant(ordinal, typeof(int)) }),
-                    Expression.Call(expRecord, miSet, new Expression[] { Expression.Constant(ordinal, typeof(int)), expFieldOffset, expProperty, expBufOffset, expLength })
-                    );
+                var expLength = Expression.Property(expProperty, typeof(byte[]).GetProperty(nameof(Array.Length))); // also works for ReadOnlySpan<byte>.Length, etc.
+
+                Expression expAssign;
+                if (propertyType != typeof(byte[]))
+                {
+                    var expConvert = Expression.Call(expProperty, propertyType.GetMethod(nameof(ReadOnlySpan<byte>.ToArray)));
+                    expAssign = Expression.Condition(
+                        Expression.Property(expProperty, propertyType.GetProperty(nameof(ReadOnlySpan<byte>.IsEmpty))),
+                        Expression.Call(expRecord, miDbNull, new Expression[] { Expression.Constant(ordinal, typeof(int)) }),
+                        Expression.Call(expRecord, miSet, new Expression[] { Expression.Constant(ordinal, typeof(int)), expFieldOffset, expConvert, expBufOffset, expLength })
+                        );
+                }
+                else
+                {
+                    expAssign = Expression.Condition(
+                        Expression.Equal(expProperty, Expression.Constant(null, typeof(byte[]))),
+                        Expression.Call(expRecord, miDbNull, new Expression[] { Expression.Constant(ordinal, typeof(int)) }),
+                        Expression.Call(expRecord, miSet, new Expression[] { Expression.Constant(ordinal, typeof(int)), expFieldOffset, expProperty, expBufOffset, expLength })
+                        );
+                }
+
                 setExpressions.Add(Expression.IfThen(
                     Expression.Call(typeof(TvpExpressionHelpers).GetMethod(nameof(TvpExpressionHelpers.IncludeThisColumn), BindingFlags.NonPublic | BindingFlags.Static), new Expression[] { Expression.Constant(parameterName, typeof(string)), prmColumnList }), //if
                     expAssign)); //then

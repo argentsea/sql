@@ -109,21 +109,21 @@ namespace ArgentSea.Sql.Test
 		[MapToSqlChar("GCNotificationStatus", 16, 1033)]
 		public GCNotificationStatus? GarbageCollectorNotificationStatus { get; set; }
 
-        [MapSqlShardKey("DataShard", 'x', "DataRecordId")]
+        [MapSqlShardKey("DataShard", "DataRecordId")]
         [MapToSqlInt("DataRecordId")]
         public ShardKey<int>? RecordKey { get; set; } = ShardKey<int>.Empty;
 
-        [MapSqlShardKey("ChildShard", 'y', "ParentRecordId", "ChildRecordId")]
+        [MapSqlShardKey("ChildShard", "ParentRecordId", "ChildRecordId")]
         [MapToSqlInt("ParentRecordId")]
         [MapToSqlSmallInt("ChildRecordId")]
         public ShardKey<int, short> RecordChild { get; set; } = ShardKey<int, short>.Empty;
 
 
-        [MapSqlShardKey('A', "@DataRecordId2")]
+        [MapSqlShardKey("@DataRecordId2")]
         [MapToSqlBigInt("@DataRecordId2")]
-        public ShardKey<long> DataShard2 { get; set; } = new ShardKey<long>('A', 123, 54321L);
+        public ShardKey<long> DataShard2 { get; set; } = new ShardKey<long>(123, 54321L);
 
-        [MapSqlShardKey("ChildShard2", 'B', "ParentRecord2Id", "ChildRecord2Id")]
+        [MapSqlShardKey("ChildShard2", "ParentRecord2Id", "ChildRecord2Id")]
         [MapToSqlSmallInt("ParentRecord2Id")]
         [MapToSqlNVarChar("ChildRecord2Id", 255)]
         public ShardKey<short, string>? ChildShard2 { get; set; } = null;

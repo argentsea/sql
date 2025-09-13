@@ -1031,7 +1031,8 @@ namespace ArgentSea.Sql
 		}
 
 		public override bool IsValidType(Type candidateType)
-            => candidateType == typeof(TimeSpan) || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && (Nullable.GetUnderlyingType(candidateType) == typeof(TimeSpan)));
+            => (candidateType == typeof(TimeSpan) || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && (Nullable.GetUnderlyingType(candidateType) == typeof(TimeSpan)))) ||
+            (candidateType == typeof(TimeOnly) || (candidateType.IsGenericType && candidateType.GetGenericTypeDefinition() == typeof(Nullable<>) && (Nullable.GetUnderlyingType(candidateType) == typeof(TimeOnly))));
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
@@ -1125,7 +1126,7 @@ namespace ArgentSea.Sql
             this.Length = length;
         }
         /// <summary>
-        /// Map this property to the specified VarBinary database column.
+        /// Map this property (byte[], ReadOnlySpan&lt;byte&gt; or ReadOnlyMemory&lt;byte&gt;) to the specified VarBinary database column.
         /// </summary>
         /// <param name="parameterName">The name of the parameter or column that contains the value. The system will automatically add or remove the prefix '@' as needed.</param>
         /// <param name="length">The maximum length of the binary value or blob. Set to -1 for VarBinary(max).</param>
@@ -1137,11 +1138,11 @@ namespace ArgentSea.Sql
 		public int Length { get; private set; }
 
         public override bool IsValidType(Type candidateType)
-            => candidateType == typeof(byte[]);
+            => candidateType == typeof(byte[]) || candidateType == typeof(ReadOnlySpan<byte>) || candidateType == typeof(ReadOnlyMemory<byte>) || candidateType == typeof(Span<byte>) || candidateType == typeof(Memory<byte>);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override void AppendInParameterExpressions(IList<Expression> expressions, ParameterExpression expSprocParameters, ParameterExpression expIgnoreParameters, HashSet<string> parameterNames, Expression expProperty, Type propertyType, ParameterExpression expLogger, ILogger logger)
-            => ExpressionHelpers.InParameterSimpleBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlVarBinaryInputParameter), Expression.Constant(this.Length, typeof(int)), null, parameterNames, expLogger, logger);
+            => ExpressionHelpers.InParameterBinaryBuilder(this.ParameterName, propertyType, expSprocParameters, expIgnoreParameters, expProperty, expressions, typeof(SqlParameterCollectionExtensions), nameof(SqlParameterCollectionExtensions.AddSqlVarBinaryInputParameter), Expression.Constant(this.Length, typeof(int)), null, parameterNames, expLogger, logger);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override void AppendTvpExpressions(ParameterExpression expRecord, Expression expProperty, IList<Expression> setExpressions, IList<NewExpression> sqlMetaDataTypeExpressions, HashSet<string> parameterNames, ref int ordinal, Type propertyType, ParameterExpression expColumnList, ParameterExpression expLogger, ILogger logger)
