@@ -2,20 +2,22 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-	  <!-- Required in both test/product projects. This is a temporary workaround for https://github.com/Microsoft/vstest/issues/800 -->
-	  <DebugType>Full</DebugType>
-	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <PackageProjectUrl>https://www.argentsea.com</PackageProjectUrl>
-	  <AssemblyVersion>2.0.0.0</AssemblyVersion>
-	  <FileVersion>2.0.0.0</FileVersion>
-	  <Version>2.0.0-prerelease-7</Version>
-	  <Authors>johnhicks</Authors>
-	  <Description>Microsoft SQL Server implementation of ArgentSea, a .NET open source framework for accessing databases, built for simplicity, high-performance and global scale.</Description>
-	  <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
-	  <RepositoryUrl>https://github.com/argentsea/sql</RepositoryUrl>
-	  <PackageIconUrl>https://www.argentsea.com/images/argentsea-logo.png</PackageIconUrl>
-	  <Copyright>© John Hicks</Copyright>
-	  <Title>ArgentSea Implementation for SQL Server</Title>
+	<!-- Required in both test/product projects. This is a temporary workaround for https://github.com/Microsoft/vstest/issues/800 -->
+	<DebugType>Full</DebugType>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<PackageProjectUrl>https://www.argentsea.com</PackageProjectUrl>
+	<AssemblyVersion>2.0.0.0</AssemblyVersion>
+	<FileVersion>2.0.0.0</FileVersion>
+	<Version>2.0.0-prerelease-7</Version>
+	<Authors>johnhicks</Authors>
+	<Description>Microsoft SQL Server implementation of ArgentSea, a .NET open source framework for accessing databases, built for simplicity, high-performance and global scale.</Description>
+	<RepositoryUrl>https://github.com/argentsea/sql</RepositoryUrl>
+	<Copyright>© John Hicks</Copyright>
+	<Title>ArgentSea Implementation for SQL Server</Title>
+	<IncludeSymbols>true</IncludeSymbols>
+	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	<PackageIcon>argentsea-logo.png</PackageIcon>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -26,22 +28,16 @@
     <Optimize>False</Optimize>
   </PropertyGroup>
 
-	<PropertyGroup>
-		<IncludeSymbols>true</IncludeSymbols>
-		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-	</PropertyGroup>
-
 	<ItemGroup>
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.2" />
 	<None Include="readme.md" Pack="true" PackagePath="\" />
+	<None Include="argentsea-logo.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\ArgentSea.Shared\src\ArgentSea.csproj" />
+	  <InternalsVisibleTo Include="$(MSBuildProjectName).Test" />
   </ItemGroup>
-	<ItemGroup>
-		<InternalsVisibleTo Include="$(MSBuildProjectName).Test" />
-	</ItemGroup>
 
 </Project>
