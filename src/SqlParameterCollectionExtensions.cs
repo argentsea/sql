@@ -1152,9 +1152,11 @@ namespace ArgentSea.Sql
             {
                 tvp.Add(TvpMapper.ToTvpRecord<TModel>(val, null, logger));
             }
+            // An IEnumerable<SqlDataRecord> with zero elements cannot supply TDS metadata and is rejected by the driver;
+            // SQL Server treats a DbNull table-valued parameter as an empty table, so that is how zero rows are represented.
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Structured)
             {
-                Value = tvp,
+                Value = tvp.Count > 0 ? (object)tvp : System.DBNull.Value,
                 Direction = ParameterDirection.Input
             };
             prms.Add(prm);
@@ -1368,9 +1370,11 @@ namespace ArgentSea.Sql
             {
                 tvp.Add(TvpMapper.ToTvpRecord<TModel>(val, columnList, logger));
             }
+            // An IEnumerable<SqlDataRecord> with zero elements cannot supply TDS metadata and is rejected by the driver;
+            // SQL Server treats a DbNull table-valued parameter as an empty table, so that is how zero rows are represented.
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Structured)
             {
-                Value = tvp,
+                Value = tvp.Count > 0 ? (object)tvp : System.DBNull.Value,
                 Direction = ParameterDirection.Input
             };
             prms.Add(prm);
