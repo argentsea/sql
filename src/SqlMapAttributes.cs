@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.SqlClient.Server;
 using System.Reflection;
@@ -1324,6 +1326,82 @@ namespace ArgentSea.Sql
         public override string ColumnName { get => SqlParameterCollectionExtensions.NormalizeSqlColumnName(base.Name); }
     }
 
+
+    #endregion
+
+    #region Table-valued parameter
+
+    /// <summary>
+    /// Maps a collection property to a SQL table-valued parameter for writes
+    /// and a second result set for reads. The element type must have its own
+    /// MapToSql* attributes for column mapping.
+    /// </summary>
+    public class MapToSqlTableValuedParameterAttribute : CollectionMapAttributeBase
+    {
+        public MapToSqlTableValuedParameterAttribute(string parameterName, string typeName)
+            : base(parameterName)
+        {
+            TypeName = typeName;
+        }
+
+        public string TypeName { get; }
+
+        public override void AppendCollectionInParameterExpressions(
+            List<Expression> expressions,
+            ParameterExpression prmSqlPrms,
+            Expression expCollection,
+            Type elementType,
+            ParameterExpression expLogger,
+            ILogger logger)
+        {
+            // Build expression:
+            //   SqlParameterCollectionExtensions.AddSqlTableValuedParameter<TElement>(prms, paramName, collection, logger)
+            //   Then set TypeName on the last added SqlParameter
+
+            var miAddTvp = typeof(SqlParameterCollectionExtensions)
+                .GetMethods()
+                .First(m => m.Name == nameof(SqlParameterCollectionExtensions.AddSqlTableValuedParameter)
+                    && m.IsGenericMethodDefinition
+                    && m.GetParameters().Length == 4)  // (prms, paramName, values, logger)
+                .MakeGenericMethod(elementType);
+
+            // A default (uninitialized) ImmutableArray<TElement> throws InvalidOperationException when enumerated,
+            // so it is normalized to ImmutableArray<TElement>.Empty before being treated as an empty collection.
+            var immutableArrayType = typeof(ImmutableArray<>).MakeGenericType(elementType);
+            if (expCollection.Type == immutableArrayType)
+            {
+                var isDefaultProperty = immutableArrayType.GetProperty(nameof(ImmutableArray<object>.IsDefault));
+                var emptyField = immutableArrayType.GetField(nameof(ImmutableArray<object>.Empty));
+                expCollection = Expression.Condition(
+                    Expression.Property(expCollection, isDefaultProperty),
+                    Expression.Field(null, emptyField),
+                    expCollection);
+            }
+
+            // A value-type collection (e.g. ImmutableArray<TElement>) is not reference-assignable to the
+            // IEnumerable<TElement> parameter, so Expression.Call rejects it without an explicit conversion.
+            var expEnumerable = Expression.Convert(expCollection, typeof(IEnumerable<>).MakeGenericType(elementType));
+
+            // Call: prms.AddSqlTableValuedParameter<TElement>(parameterName, collection, logger)
+            expressions.Add(Expression.Call(
+                miAddTvp,
+                prmSqlPrms,
+                Expression.Constant(ParameterName),
+                expEnumerable,
+                expLogger));
+
+            // Set TypeName on the last parameter: ((SqlParameter)prms[prms.Count - 1]).TypeName = typeName
+            var expLastIndex = Expression.Subtract(
+                Expression.Property(prmSqlPrms, nameof(DbParameterCollection.Count)),
+                Expression.Constant(1));
+            var expLastParam = Expression.Convert(
+                Expression.Property(prmSqlPrms, "Item", expLastIndex),
+                typeof(SqlParameter));
+            expressions.Add(Expression.Assign(
+                Expression.Property(expLastParam, nameof(SqlParameter.TypeName)),
+                Expression.Constant(TypeName)));
+        }
+    }
 
     #endregion
 }
