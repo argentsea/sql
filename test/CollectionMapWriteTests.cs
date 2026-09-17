@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Xunit;
@@ -66,7 +66,7 @@ namespace ArgentSea.Sql.Test
         }
 
         [Fact]
-        public void AddSqlTableValuedParameter_EmptyCollection_ProducesDbNullNotAnEmptyEnumeration()
+        public void AddSqlTableValuedParameter_EmptyCollection_ProducesNullValueNotAnEmptyEnumeration()
         {
             // Arrange
             var dbLogger = new DebugLogger();
@@ -77,16 +77,17 @@ namespace ArgentSea.Sql.Test
             prms.AddSqlTableValuedParameter<CollectionWriteChild>("@Children", values, dbLogger);
 
             // Assert
-            // SQL Server cannot infer TVP row metadata from an IEnumerable<SqlDataRecord> with zero elements, so an
-            // empty collection must be represented as DbNull (which SQL Server treats as an empty table), never as
-            // a non-null empty enumeration.
+            // SQL Server cannot infer TVP row metadata from an IEnumerable<SqlDataRecord> with zero elements, and the
+            // driver rejects DBNull for table-valued parameters outright. An empty collection must therefore be
+            // represented as a null Value, which the driver sends as DEFAULT (an empty table for a READONLY TVP),
+            // never as a non-null empty enumeration and never as DBNull.
             var prm = (SqlParameter)prms["@Children"];
             prm.SqlDbType.Should().Be(System.Data.SqlDbType.Structured);
-            prm.Value.Should().Be(DBNull.Value, "SQL Server represents a zero-row table-valued parameter as DbNull");
+            prm.Value.Should().BeNull("a zero-row table-valued parameter is sent as DEFAULT via a null Value; DBNull is rejected by the driver");
         }
 
         [Fact]
-        public void AddSqlTableValuedParameter_WithColumnList_EmptyCollection_ProducesDbNull()
+        public void AddSqlTableValuedParameter_WithColumnList_EmptyCollection_ProducesNullValue()
         {
             // Arrange
             var dbLogger = new DebugLogger();
@@ -98,7 +99,7 @@ namespace ArgentSea.Sql.Test
 
             // Assert
             var prm = (SqlParameter)prms["@Children"];
-            prm.Value.Should().Be(DBNull.Value, "the column-list overload must apply the same empty-collection rule as the default overload");
+            prm.Value.Should().BeNull("the column-list overload must apply the same empty-collection rule as the default overload");
         }
 
         [Fact]
@@ -130,7 +131,7 @@ namespace ArgentSea.Sql.Test
         }
 
         [Fact]
-        public void CreateInputParameters_EmptyCollectionProperty_SendsDbNullTvp()
+        public void CreateInputParameters_EmptyCollectionProperty_SendsDefaultTvp()
         {
             // Arrange
             var dbLogger = new DebugLogger();
@@ -148,7 +149,7 @@ namespace ArgentSea.Sql.Test
             // Assert
             var prm = (SqlParameter)prms["@Children"];
             prm.TypeName.Should().Be("ChildTableType");
-            prm.Value.Should().Be(DBNull.Value, "an empty collection must still produce a valid (empty) table-valued parameter");
+            prm.Value.Should().BeNull("an empty collection must still produce a valid (empty) table-valued parameter");
         }
 
         [Fact]
@@ -181,7 +182,7 @@ namespace ArgentSea.Sql.Test
         }
 
         [Fact]
-        public void CreateInputParameters_EmptyImmutableArrayCollectionProperty_SendsDbNullTvp()
+        public void CreateInputParameters_EmptyImmutableArrayCollectionProperty_SendsDefaultTvp()
         {
             // Arrange
             var dbLogger = new DebugLogger();
@@ -199,11 +200,11 @@ namespace ArgentSea.Sql.Test
             // Assert
             var prm = (SqlParameter)prms["@Children"];
             prm.TypeName.Should().Be("ChildTableType");
-            prm.Value.Should().Be(DBNull.Value, "an empty collection must still produce a valid (empty) table-valued parameter");
+            prm.Value.Should().BeNull("an empty collection must still produce a valid (empty) table-valued parameter");
         }
 
         [Fact]
-        public void CreateInputParameters_DefaultImmutableArrayCollectionProperty_DoesNotThrowAndSendsDbNullTvp()
+        public void CreateInputParameters_DefaultImmutableArrayCollectionProperty_DoesNotThrowAndSendsDefaultTvp()
         {
             // Arrange
             // A default (uninitialized) ImmutableArray<T> - as opposed to ImmutableArray<T>.Empty - throws
@@ -226,7 +227,7 @@ namespace ArgentSea.Sql.Test
             act.Should().NotThrow("a default ImmutableArray<T> must be treated as an empty collection, not enumerated directly");
             var prm = (SqlParameter)prms["@Children"];
             prm.TypeName.Should().Be("ChildTableType");
-            prm.Value.Should().Be(DBNull.Value, "a default collection must still produce a valid (empty) table-valued parameter");
+            prm.Value.Should().BeNull("a default collection must still produce a valid (empty) table-valued parameter");
         }
     }
 }

@@ -1120,6 +1120,18 @@ namespace ArgentSea.Sql
 
         //TVP
         /// <summary>
+        /// Returns the value to assign to a <see cref="SqlDbType.Structured"/> parameter for the given rows.
+        /// </summary>
+        /// <remarks>
+        /// An <see cref="IEnumerable{T}"/> of <see cref="SqlDataRecord"/> with zero elements cannot supply the
+        /// TDS row metadata and is rejected by the driver, and <see cref="DBNull"/> is rejected outright for
+        /// table-valued parameters ("Table-valued parameters cannot be DBNull"). A <c>null</c> value is the
+        /// documented representation: the driver sends the parameter as DEFAULT, and a READONLY table-valued
+        /// parameter's default is an empty table.
+        /// </remarks>
+        private static object TvpValueOrDefault(List<SqlDataRecord> tvp) => tvp.Count > 0 ? tvp : null;
+
+        /// <summary>
         /// Creates a parameter for providing a user-defined table to a stored procedure.
         /// </summary>
         /// <param name="prms">The existing parameter collection to which this parameter should be added.</param>
@@ -1152,11 +1164,9 @@ namespace ArgentSea.Sql
             {
                 tvp.Add(TvpMapper.ToTvpRecord<TModel>(val, null, logger));
             }
-            // An IEnumerable<SqlDataRecord> with zero elements cannot supply TDS metadata and is rejected by the driver;
-            // SQL Server treats a DbNull table-valued parameter as an empty table, so that is how zero rows are represented.
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Structured)
             {
-                Value = tvp.Count > 0 ? (object)tvp : System.DBNull.Value,
+                Value = TvpValueOrDefault(tvp),
                 Direction = ParameterDirection.Input
             };
             prms.Add(prm);
@@ -1178,7 +1188,7 @@ namespace ArgentSea.Sql
             }
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Structured)
             {
-                Value = tvp,
+                Value = TvpValueOrDefault(tvp),
                 Direction = ParameterDirection.Input
             };
             prms.Add(prm);
@@ -1201,7 +1211,7 @@ namespace ArgentSea.Sql
             }
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Structured)
             {
-                Value = tvp,
+                Value = TvpValueOrDefault(tvp),
                 Direction = ParameterDirection.Input
             };
             prms.Add(prm);
@@ -1226,7 +1236,7 @@ namespace ArgentSea.Sql
             }
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Structured)
             {
-                Value = tvp,
+                Value = TvpValueOrDefault(tvp),
                 Direction = ParameterDirection.Input
             };
             prms.Add(prm);
@@ -1254,7 +1264,7 @@ namespace ArgentSea.Sql
             }
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Structured)
             {
-                Value = tvp,
+                Value = TvpValueOrDefault(tvp),
                 Direction = ParameterDirection.Input
             };
             prms.Add(prm);
@@ -1275,7 +1285,7 @@ namespace ArgentSea.Sql
             }
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Structured)
             {
-                Value = tvp,
+                Value = TvpValueOrDefault(tvp),
                 Direction = ParameterDirection.Input
             };
             prms.Add(prm);
@@ -1297,7 +1307,7 @@ namespace ArgentSea.Sql
             }
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Structured)
             {
-                Value = tvp,
+                Value = TvpValueOrDefault(tvp),
                 Direction = ParameterDirection.Input
             };
             prms.Add(prm);
@@ -1322,7 +1332,7 @@ namespace ArgentSea.Sql
             }
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Structured)
             {
-                Value = tvp,
+                Value = TvpValueOrDefault(tvp),
                 Direction = ParameterDirection.Input
             };
             prms.Add(prm);
@@ -1348,7 +1358,7 @@ namespace ArgentSea.Sql
             }
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Structured)
             {
-                Value = tvp,
+                Value = TvpValueOrDefault(tvp),
                 Direction = ParameterDirection.Input
             };
             prms.Add(prm);
@@ -1370,11 +1380,9 @@ namespace ArgentSea.Sql
             {
                 tvp.Add(TvpMapper.ToTvpRecord<TModel>(val, columnList, logger));
             }
-            // An IEnumerable<SqlDataRecord> with zero elements cannot supply TDS metadata and is rejected by the driver;
-            // SQL Server treats a DbNull table-valued parameter as an empty table, so that is how zero rows are represented.
             var prm = new SqlParameter(NormalizeSqlParameterName(parameterName), SqlDbType.Structured)
             {
-                Value = tvp.Count > 0 ? (object)tvp : System.DBNull.Value,
+                Value = TvpValueOrDefault(tvp),
                 Direction = ParameterDirection.Input
             };
             prms.Add(prm);
